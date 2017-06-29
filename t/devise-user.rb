@@ -8,12 +8,12 @@ unless File.exists? 'config/initializers/devise.rb'
   inside 'spec' do
 
     file 'support/devise.rb', <<-CODE
-    RSpec.configure do |config|
-      config.include Devise::Test::ControllerHelpers, type: :controller
-      config.include Devise::Test::ControllerHelpers, type: :view
-      config.include Devise::Test::IntegrationHelpers, type: :feature
-      config.include Devise::Test::IntegrationHelpers, type: :request
-    end
+RSpec.configure do |config|
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :request
+end
     CODE
 
     insert_into_file 'factories/users.rb', after: %/factory :user do\n/ do
@@ -35,7 +35,7 @@ unless File.exists? 'config/initializers/devise.rb'
       CODE
     end
 
-    gsub_file 'models/user_spec.rb', /^(\s$)pending .*\n/, <<-CODE
+    gsub_file 'models/user_spec.rb', /^(\s?)pending .*\n/, <<-CODE
 \\1describe "#create" do
 \\1  it "should increment the count" do
 \\1    expect{ create(:user) }.to change{User.count}.by(1)
