@@ -7,20 +7,20 @@ inside 'app/models/' do
   inject_into_class 'user.rb', 'User', <<-CODE
 has_many :user_comments
 has_many :comments, as: :commentable, class_name: 'Comment'
-CODE
+  CODE
 
   inject_into_class 'comment.rb', 'Comment', <<-CODE
   validates :user, presence: true
   validates :content, presence: true
   validates :commentable, presence: true
-CODE
+  CODE
 end
 
 inside 'app/controllers/' do
   gsub_file 'comments_controller.rb', /(\n(\s*))(before_action :set_comment)(, only.*?)\n/, <<-CODE
 \\1before_action :set_commentable, only: [:index, :create, :new]
 \\2\\3_commentable\\4
-CODE
+  CODE
 
   gsub_file 'comments_controller.rb', /(\n(\s*))def set_comment\n.*?end\n/m, <<-CODE
 \\1def set_comment_commentable
@@ -39,15 +39,20 @@ CODE
 \\2    return nil
 \\2  }.call
 \\2end
-CODE
+  CODE
 
   gsub_file 'comments_controller.rb', /(def index\n.*?)Comment.all\n/m, <<-CODE
 \\1@commentable.comments
-CODE
+  CODE
 
   gsub_file 'comments_controller.rb', /(def (new|create)\n.*?)Comment.new(.*?)\n/m, <<-CODE
 \\1@commentable.comments.new\\3
-CODE
+  CODE
+
+  gsub_file 'comments_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
+\\1\\2  @comment.user = current_user
+\\3
+  CODE
 
   gsub_file 'comments_controller.rb', /(redirect_to )comments_url(, )/, '\1polymorphic_url([@commentable, Comment])\2'
 end
@@ -57,7 +62,7 @@ inside 'app/views/comments/' do
   gsub_file '_form.html.haml', /= form_for @comment( do .*)\n/, <<-CODE
 - form_path = comment.id ? comment_path(comment) : polymorphic_url([comment.commentable, :comments], only_path: true)
 = form_for comment, url: form_path\\1
-CODE
+  CODE
 
   gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment])'
 
@@ -89,7 +94,7 @@ inside('spec/factories/') do
       content nil
       commentable nil
     end
-CODE
+    CODE
   end
 end
 
@@ -130,7 +135,7 @@ inside 'spec/controllers' do
 let(:valid_attributes) {
     build(:comment, commentable: create(:user)).attributes.except("id", "created_at", "updated_at")
   }
-CODE
+  CODE
 
   gsub_file 'comments_controller_spec.rb', /(get :(index|new), params: \{)(})/, '\1 user_id: create(:user) \3'
   gsub_file 'comments_controller_spec.rb', /(post :create, params: {comment: (valid_attributes|invalid_attributes))(})/, %q!\1, user_id: \2['commentable_id']\3!
@@ -139,23 +144,23 @@ CODE
 let(:invalid_attributes) {
     build(:invalid_comment, commentable: create(:user)).attributes.except("id", "created_at", "updated_at")
   }
-CODE
+  CODE
 
   gsub_file 'comments_controller_spec.rb', /let\(:new_attributes\) \{\n\s*skip.*?\n\s*\}\n/m, <<-CODE
 let(:new_attributes) {
         build(:comment).attributes.except("id", "created_at", "updated_at")
       }
-CODE
+  CODE
 
   gsub_file 'comments_controller_spec.rb', /(updates the requested comment.*?)skip\(.*?\)\n/m, <<-CODE
 \\1expect(comment.attributes.fetch_values(*new_attributes.keys)).to be == new_attributes.values
-CODE
+  CODE
 
   gsub_file 'comments_controller_spec.rb', /(DELETE #destroy.*?redirects to the comments list.*?)\n(\s*)(delete :destroy.*?)comments_url(.*)\n/m, <<-CODE
 \\1
 \\2commentable = comment.commentable
 \\2\\3[commentable, Comment]\\4
-CODE
+  CODE
 
 end
 
@@ -163,18 +168,19 @@ inside 'spec/views/comments/' do
   gsub_file 'new.html.haml_spec.rb', /(before.*\n(\s*))assign\(:comment, Comment.new\(.*?\)\)\n/m, <<-CODE
 \\1@commentable = create :user
 \\2assign(:comment, build(:comment, commentable: @commentable))
-CODE
+  CODE
+
   gsub_file 'new.html.haml_spec.rb', /(, )(comments_path)(, )/, '\1user_\2(@commentable)\3'
 
   gsub_file 'edit.html.haml_spec.rb', /(before.*?\n(\s*))(.*?)Comment.create!\(.*?\)\)\n/m, <<-CODE
 \\1@commentable = build(:user)
 \\2@comment = assign(:comment, create(:comment, commentable: @commentable))
-CODE
+  CODE
 
   gsub_file 'index.html.haml_spec.rb', /assign\(:comments,.*?\]\)(\n)/m, <<-CODE
 @commentable = create :user
     @comments = assign(:comments, create_list(:comment, 2, commentable: @commentable))
-CODE
+  CODE
 
   gsub_file 'index.html.haml_spec.rb', /(renders a list of comments.*?)\n\s+render(\s*assert_select.*?\n)+/m, <<-CODE
 \\1
@@ -185,16 +191,16 @@ CODE
     @comments.each do |comment|
       assert_select "tr>td", :text => comment.content.to_s, :count => 1
     end
-CODE
+  CODE
 
   gsub_file 'show.html.haml_spec.rb', /(before.*?\n(\s*))(.*?)Comment.create!\(.*?\)\)\n/m, <<-CODE
 \\1@commentable = create :user
 \\2\\3create(:comment, commentable: @commentable))
-CODE
+  CODE
 
   gsub_file 'show.html.haml_spec.rb', /(renders attributes in .*?)expect.*?(\s+end)\n/m, <<-CODE
 \\1expect(rendered).to match(/\#{@comment.content}/)\\2
-CODE
+  CODE
 
 end
 
