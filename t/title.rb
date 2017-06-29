@@ -1,7 +1,7 @@
 
 #========== Title ==========#
 inside 'app/views/layouts/' do
-  gsub_file 'application.html.erb', /(<title>).*(<\/title>)/, %^\1<%= title %>\2^
+  gsub_file 'application.html.erb', /(<title>).*(<\/title>)/, %q^\1<%= title %>\2^
 end
 
 inside 'config/locales/' do
