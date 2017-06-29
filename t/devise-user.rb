@@ -35,7 +35,7 @@ end
       CODE
     end
 
-    gsub_file 'models/user_spec.rb', /^(\s?)pending .*\n/, <<-CODE
+    gsub_file 'models/user_spec.rb', /^(\s*?)pending .*\n/, <<-CODE
 \\1describe "#create" do
 \\1  it "should increment the count" do
 \\1    expect{ create(:user) }.to change{User.count}.by(1)
