@@ -42,11 +42,11 @@ inside('app/assets/javascripts') do
   end
 
   file 'navbar_hide.coffee', <<-CODE
-  $(document).ready ->
-    $(window).scroll ->
-      if $(this).scrollTop() > 100
-        $('#navbar').fadeOut 500
-      else
-        $('#navbar').fadeIn 500
+$(document).ready ->
+  $(window).scroll ->
+    if $(this).scrollTop() > 100
+      $('#navbar').fadeOut 500
+    else
+      $('#navbar').fadeIn 500
   CODE
 end
