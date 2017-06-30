@@ -126,9 +126,9 @@ CODE
 # modules setup
 after_bundle do
   # Depencencies:
-  #   i18n ~> devise-user -> commentable
+  #   i18n ~> devise-user -> commentable, followable
   modules = %w{
-    i18n devise-user commentable
+    i18n devise-user commentable followable
     layout theme
     pages-landing
     title
