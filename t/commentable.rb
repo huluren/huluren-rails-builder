@@ -5,8 +5,8 @@ route %Q{concern :commentable do\n    resources :comments, shallow: true\n  end\
 
 inside 'app/models/' do
   inject_into_class 'user.rb', 'User', <<-CODE
-has_many :user_comments
-has_many :comments, as: :commentable, class_name: 'Comment'
+  has_many :user_comments
+  has_many :comments, as: :commentable, class_name: 'Comment'
   CODE
 
   inject_into_class 'comment.rb', 'Comment', <<-CODE
