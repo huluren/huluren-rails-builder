@@ -10,6 +10,7 @@ gem 'pg'
 gem 'puma'
 gem 'rails-timeago'
 gem 'devise'
+gem 'acts_as_followable', github: 'huluren/acts_as_followable'
 
 # i18n
 gem 'rails-i18n'
