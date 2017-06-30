@@ -129,9 +129,9 @@ after_bundle do
   #   i18n ~> devise-user -> commentable, followable -> place
   modules = %w{
     i18n devise-user commentable followable place
-    layout theme
     pages-landing
     title
+    layout theme
   }
 
   modules.each do |fn|
