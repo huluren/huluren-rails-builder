@@ -1,4 +1,4 @@
-generate 'model place user:references:index name:string:uniq description:text'
+generate 'scaffold place user:references:index name:string:uniq description:text'
 
 inside 'app/models/' do
 
@@ -19,15 +19,52 @@ inside 'app/models/' do
 
 end
 
-inside 'spec/' do
-  gsub_file 'factories/places.rb', /(^\s*?)(user) nil$/, '\1\2'
-  gsub_file 'factories/places.rb', /(^\s*?)(name|description) .*?$/, %q^\1sequence(:\2) {|n| 'place_\2_%d' % n }^
+inside 'app/controllers/' do
 
-  gsub_file 'models/place_spec.rb', /(^(\s*)?)pending .*\n/, <<-CODE
+  gsub_file 'places_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
+\\1\\2  @place.user = current_user
+\\3
+  CODE
+
+end
+
+inside 'app/views/places/' do
+  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '\1\2_id'
+
+  gsub_file '_form.html.haml', /@place/, 'place'
+  gsub_file 'new.html.haml', /= render 'form'$/, '\0, place: @place'
+  gsub_file 'edit.html.haml', /= render 'form'$/, '\0, place: @place'
+end
+
+inside 'spec/factories/' do
+  gsub_file 'places.rb', /(^\s*?)(user) nil$/, '\1\2'
+  gsub_file 'places.rb', /(^\s*?)(name|description) .*?$/, %q^\1sequence(:\2) {|n| 'place_\2_%d' % n }^
+
+  insert_into_file 'places.rb', before: /^(\s\s)end$/ do
+    <<-CODE
+\\1  factory :invalid_place do
+\\1    user nil
+\\1    name nil
+\\1  end
+\\1  factory :bare_place do
+\\1    user nil
+\\1    name nil
+\\1    description nil
+\\1  end
+    CODE
+  end
+end
+
+inside 'spec/models/' do
+  gsub_file 'place_spec.rb', /(^(\s*)?)pending .*\n/, <<-CODE
 \\1describe "#create" do
 \\2  it "should increment the count" do
 \\2    expect{ create(:place) }.to change{Place.count}.by(1)
 \\2  end
+
+\\2it "should fail with invalid" do
+\\2  expect( build(:invalid_place) ).to be_invalid
+\\2end
 
 \\2  it "should fail without :name" do
 \\2    expect( build(:place, name: nil) ).to be_invalid
@@ -52,7 +89,64 @@ inside 'spec/' do
 \\2    expect( follower.follow?(followable) ).to be true
 \\2  end
 \\2end
-
   CODE
 
 end
+
+inside 'spec/controllers' do
+  gsub_file 'places_controller_spec.rb', /(\n\s*?let\(:valid_attributes\) \{\n\s*)skip.*?\n(\s*\})\n/m, <<-CODE
+\\1build(:place).attributes.except("id", "created_at", "updated_at")
+\\2
+  CODE
+
+  gsub_file 'places_controller_spec.rb', /(\n\s*?let\(:invalid_attributes\) \{\n\s*?)skip.*?\n(\s*\})\n/m, <<-CODE
+\\1build(:invalid_place).attributes.except("id", "created_at", "updated_at")
+\\2
+  CODE
+
+  gsub_file 'places_controller_spec.rb', /(\n\s*?let\(:new_attributes\) \{\n\s*)skip.*?\n(\s*\})\n/m, <<-CODE
+\\1build(:place).attributes.except("id", "created_at", "updated_at")
+\\2
+  CODE
+
+  gsub_file 'places_controller_spec.rb', /(updates the requested place.*?)skip\(.*?\)\n/m, <<-CODE
+\\1expect(place.attributes.fetch_values(*new_attributes.keys)).to be == new_attributes.values
+  CODE
+
+end
+
+inside 'spec/views/places/' do
+  gsub_file 'index.html.haml_spec.rb', /(\s*?)assign\(:places,.*?\]\)(\n)/m, <<-CODE
+\\1@places = assign(:places, create_list(:place, 2))
+  CODE
+
+  gsub_file 'index.html.haml_spec.rb', /(renders a list of places.*?)\n\s+render(\s*assert_select.*?\n)+/m, <<-CODE
+\\1
+    expect(@places.size).to be(2)
+    render
+    @places.each do |place|
+      assert_select "tr>td", :text => place.name.to_s, :count => 1
+      assert_select "tr>td", :text => place.description.to_s, :count => 1
+    end
+  CODE
+
+  gsub_file 'new.html.haml_spec.rb', /(before.*\n(\s*?))(.*?)Place.new\(.*?\)\)\n/m, <<-CODE
+\\1\\3build(:place))
+  CODE
+
+  gsub_file 'edit.html.haml_spec.rb', /(before.*?\n(\s*?))(.*?)Place.create!\(.*?\)\)\n/m, <<-CODE
+\\1\\3create(:place))
+  CODE
+
+  gsub_file 'show.html.haml_spec.rb', /(before.*?\n(\s*?))(.*?)Place.create!\(.*?\)\)\n/m, <<-CODE
+\\1\\3create(:place))
+  CODE
+
+  gsub_file 'show.html.haml_spec.rb', /(it.*renders attributes in .*\n(\s*?)?)(expect.*?\n)+?(\s+end)\n/m, <<-CODE
+\\1expect(rendered).to match(/\#{@place.name}/)
+\\2expect(rendered).to match(/\#{@place.description}/)
+\\4
+  CODE
+end
+
+gsub_file 'spec/helpers/places_helper_spec.rb', /^\s.pending .*\n/, ''
