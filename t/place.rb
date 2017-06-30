@@ -12,6 +12,8 @@ inside 'app/models/' do
 
   scope :random, ->(limit=1) { order("RANDOM()").limit(limit) }
 
+  acts_as_followable
+
   has_many :comments, as: :commentable
   CODE
 
@@ -41,6 +43,16 @@ inside 'spec/' do
 \\2    expect { 2.times {create(:place, name: 'duplicate_name')} }.to raise_error(ActiveRecord::RecordInvalid)
 \\2  end
 \\2end
+
+\\2describe "followable" do
+\\2  it "can be followed by user" do
+\\2    follower = create(:user)
+\\2    followable = create(:place)
+\\2    expect{ follower.follow(followable) }.to change{Follow.count}.by(1)
+\\2    expect( follower.follow?(followable) ).to be true
+\\2  end
+\\2end
+
   CODE
 
 end
