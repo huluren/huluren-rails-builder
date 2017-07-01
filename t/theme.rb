@@ -12,7 +12,8 @@ end
 inside('app/assets/stylesheets') do
   run 'mv application.css application.scss'
 
-  insert_into_file 'application.scss', %^ *= require jquery-ui\n^, before: /^\s.*= require_tree \.\n/
+  insert_into_file 'application.scss', %^ *= require normalize-rails\n^, before: /^\s\*= require_tree \.\n/
+  insert_into_file 'application.scss', %^ *= require jquery-ui\n^, before: /^\s\*= require_tree \.\n/
 
   gsub_file 'application.scss', /^\s*\*= require_tree \.\n/, ''
   gsub_file 'application.scss', /^\s*\*= require_self\n/, ''
