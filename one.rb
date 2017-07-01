@@ -127,14 +127,18 @@ CODE
 # modules setup
 after_bundle do
   # Depencencies:
-  #   i18n ~> devise-user -> commentable, followable, place
-  #   commentable, followable -> place
-  #   pages-landing(root), devise-user(login) -> layout
+  #   i18n ~> devise-user
+  #   devise-user -> commentable
+  #   devise-user -> followable
+  #   devise-user, commentable, followable -> place
+  #   devise-user, commentable, followable, place -> activity
+  #   devise-user(login), place, activity, pages-landing(root) -> layout
   modules = %w{
-    i18n devise-user commentable followable place
-    pages-landing
-    layout theme
-    title
+    i18n devise-user commentable
+    followable place activity
+    pages-landing layout
+
+    theme title
   }
 
   modules.each do |fn|
