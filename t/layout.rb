@@ -84,6 +84,9 @@ inside 'app/views/layouts/' do
         %i.material-icons.md-18<> home
         = t('menu.home')
         %span.sr-only> (current)
+      = link_to :places, class: active_class(places_path, base: 'nav-item nav-link') do
+        %i.material-icons.md-18<> map
+        = t('menu.places')
       = content_for?(:controller_menu) ? yield(:controller_menu) : ''
 
     .navbar-nav
