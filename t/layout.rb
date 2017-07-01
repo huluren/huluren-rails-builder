@@ -87,6 +87,9 @@ inside 'app/views/layouts/' do
       = link_to :places, class: active_class(places_path, base: 'nav-item nav-link') do
         %i.material-icons.md-18<> map
         = t('menu.places')
+      = link_to :activities, class: active_class(activities_path, base: 'nav-item nav-link') do
+        %i.material-icons.md-18<> person_pin_circle
+        = t('menu.activities')
       = content_for?(:controller_menu) ? yield(:controller_menu) : ''
 
     .navbar-nav
