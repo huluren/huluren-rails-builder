@@ -29,10 +29,13 @@ inside 'app/controllers/' do
 end
 
 inside 'app/views/places/' do
-  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '\1\2_id'
+  gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
 
+  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '\1\2_id'
   gsub_file '_form.html.haml', /@place/, 'place'
+
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, place: @place'
+
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, place: @place'
 end
 
