@@ -29,10 +29,13 @@ inside 'app/controllers/' do
 end
 
 inside 'app/views/activities/' do
-  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '\1\2_id'
+  gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
 
+  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '\1\2_id'
   gsub_file '_form.html.haml', /@activity/, 'activity'
+
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, activity: @activity'
+
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, activity: @activity'
 end
 
