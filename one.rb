@@ -132,10 +132,11 @@ after_bundle do
   #   devise-user -> followable
   #   devise-user, commentable, followable -> place
   #   devise-user, commentable, followable, place -> activity
+  #   place, activity -> schedule
   #   devise-user(login), place, activity, pages-landing(root) -> layout
   modules = %w{
     i18n devise-user commentable
-    followable place activity
+    followable place activity schedule
     pages-landing layout
 
     theme title
