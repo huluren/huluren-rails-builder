@@ -143,6 +143,8 @@ after_bundle do
   }
 
   modules.each do |fn|
+    say '%s %s %s' % ['#' * 10, fn, '#' * 10], :cyan
+
     sfp = '%s/t/%s.rb' % [__dir__, fn]
     fp = 'tmp/t/%s.rb' % fn
 
