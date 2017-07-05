@@ -137,10 +137,12 @@ inside 'spec/views/places/' do
   gsub_file 'new.html.haml_spec.rb', /(before.*\n(\s*?))(.*?)Place.new\(.*?\)\)\n/m, <<-CODE
 \\1\\3build(:place))
   CODE
+  insert_into_file 'new.html.haml_spec.rb', %^\\1  sign_in(create(:user))^, after: /(\s+?)before\(:each\) do/
 
   gsub_file 'edit.html.haml_spec.rb', /(before.*?\n(\s*?))(.*?)Place.create!\(.*?\)\)\n/m, <<-CODE
 \\1\\3create(:place))
   CODE
+  insert_into_file 'edit.html.haml_spec.rb', %^\\1  sign_in(create(:user))^, after: /(\s+?)before\(:each\) do/
 
   gsub_file 'show.html.haml_spec.rb', /(before.*?\n(\s*?))(.*?)Place.create!\(.*?\)\)\n/m, <<-CODE
 \\1\\3create(:place))
