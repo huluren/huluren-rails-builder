@@ -78,8 +78,8 @@ end
 
 inside('app/assets/stylesheets') do
 
-  insert_into_file 'application.scss', %^ *= require selectize\n^, after: /^\s\*= require jquery-ui\n/
-  insert_into_file 'application.scss', %^ *= require selectize.default\n^, after: /^\s\*= require selectize\n/
+  insert_into_file 'application.css', %^ *= require selectize\n^, before: /^\s\*= require_tree \.\n/
+  insert_into_file 'application.css', %^ *= require selectize.default\n^, after: /^\s\*= require selectize\n/
 
 end
 
