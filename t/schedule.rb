@@ -63,7 +63,7 @@ inside 'app/views/activities/' do
   end
 
   file '_schedule_fields.html.haml', <<-CODE
-%fieldset
+%fieldset.activity_schedule
   = f.label :place
   = f.select :place_id, Place.all.pluck(:name, :id), {include_blank: false, prompt: 'Select City'}, {class: 'selectize'}
   = f.label :start_date
@@ -126,16 +126,20 @@ setup_selectize = (selectize) ->
 
   true
 
-setup_field = (idx) ->
-  field_prefix = "#activity_schedules_attributes_"
-  setup_datepicker($(field_prefix + idx + "_start_date"), $(field_prefix + idx + "_end_date"))
-  setup_selectize($(field_prefix + idx + "_place_id"))
+setup_schedules = () ->
+  field = $(".activity_schedule")
+  place = field.children("select[id$=_place_id]")
+  start_date = field.children("input[id$=_start_date]")
+  end_date = field.children("input[id$=_end_date]")
+
+  setup_selectize(place)
+  setup_datepicker(start_date, end_date)
 
   true
 
 $(document).on "turbolinks:load", ->
 
-  setup_field(0)
+  setup_schedules()
 
   $('form').on 'click', '.remove_fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
@@ -147,9 +151,7 @@ $(document).on "turbolinks:load", ->
     time = new Date().getTime()
     regexp = new RegExp($(this).data('id'), 'g')
     $(this).before($(this).data('fields').replace(regexp, time))
-
-    setup_field(time)
-
+    setup_schedules()
     event.preventDefault()
 
   true
