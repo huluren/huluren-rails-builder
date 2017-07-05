@@ -6,7 +6,7 @@ inside 'app/models/' do
   has_many :schedules
   has_many :places, through: :schedules
 
-  accepts_nested_attributes_for :schedules, allow_destroy: true
+  accepts_nested_attributes_for :schedules, allow_destroy: true, reject_if: ->(attributes) { attributes['place_id'].blank? }
   CODE
 
   inject_into_class 'schedule.rb', 'Schedule', <<-CODE
