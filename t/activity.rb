@@ -129,10 +129,12 @@ inside 'spec/views/activities/' do
   gsub_file 'new.html.haml_spec.rb', /(before.*\n(\s*?))(.*?)Activity.new\(.*?\)\)\n/m, <<-CODE
 \\1\\3build(:activity))
   CODE
+  insert_into_file 'new.html.haml_spec.rb', %^\\1  sign_in(create(:user))^, after: /(\s+?)before\(:each\) do/
 
   gsub_file 'edit.html.haml_spec.rb', /(before.*?\n(\s*?))(.*?)Activity.create!\(.*?\)\)\n/m, <<-CODE
 \\1\\3create(:activity))
   CODE
+  insert_into_file 'edit.html.haml_spec.rb', %^\\1  sign_in(create(:user))^, after: /(\s+?)before\(:each\) do/
 
   gsub_file 'show.html.haml_spec.rb', /(before.*?\n(\s*?))(.*?)Activity.create!\(.*?\)\)\n/m, <<-CODE
 \\1\\3create(:activity))
