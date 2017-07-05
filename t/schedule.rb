@@ -61,12 +61,12 @@ inside 'app/views/activities/' do
 %fieldset
   = f.label :place
   = f.text_field :place_id
-  = f.label :activity
-  = f.text_field :activity_id
   = f.label :start_date
   = f.date_field :start_date
   = f.label :end_date
   = f.date_field :end_date
+  = f.label :description
+  = f.text_field :description
   CODE
 
 end
