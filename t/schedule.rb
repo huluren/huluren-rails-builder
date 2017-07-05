@@ -21,6 +21,11 @@ end
 
 inside 'app/controllers/' do
 
+  gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n.*?\n)(\2end)\n/m, <<-CODE
+\\1\\2  @activity.schedules.new
+\\3
+  CODE
+
   gsub_file 'activities_controller.rb', /(def activity_params\n(\s+?)params[^\n]+)(\))\n/m, <<-CODE
 \\1, schedules_attributes: {}\\3
   CODE
