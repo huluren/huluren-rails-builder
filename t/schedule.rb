@@ -70,8 +70,10 @@ inside 'app/views/activities/' do
   = f.date_field :start_date
   = f.label :end_date
   = f.date_field :end_date
-  = f.label :description
+  = f.label :description, :note
   = f.text_field :description
+  = f.hidden_field :_destroy
+  = link_to "remove", '#', class: 'remove_fields'
   CODE
 
 end
