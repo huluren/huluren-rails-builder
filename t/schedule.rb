@@ -92,18 +92,64 @@ inside 'app/assets/javascripts/' do
   end
 
   append_to_file 'activities.coffee', <<-CODE
+//= require jquery-ui/widgets/datepicker
+
+setup_datepicker = (start_date, end_date) ->
+  start_date.datepicker({
+      dateFormat: 'yy-mm-dd'
+      defaultDate: "+1w"
+      changeMonth: true
+      numberOfMonths: 1
+      onSelect: ( selectedDate ) ->
+        end_date.datepicker( "option", "minDate", selectedDate );
+    })
+
+  end_date.datepicker({
+      dateFormat: 'yy-mm-dd'
+      defaultDate: "+1w"
+      changeMonth: false
+      numberOfMonths: 1
+      onSelect: ( selectedDate ) ->
+        start_date.datepicker( "option", "maxDate", selectedDate );
+    })
+
+  true
+
+setup_selectize = (selectize) ->
+  selectize.selectize({
+      hideSelected: true,
+      create: true,
+      maxOptions: 100,
+      maxItems: 1,
+      loadThrottle: 3000
+    })
+
+  true
+
+setup_field = (idx) ->
+  field_prefix = "#activity_schedules_attributes_"
+  setup_datepicker($(field_prefix + idx + "_start_date"), $(field_prefix + idx + "_end_date"))
+  setup_selectize($(field_prefix + idx + "_place_id"))
+
+  true
+
 $(document).on "turbolinks:load", ->
-  $(".selectize").selectize()
+
+  setup_field(0)
 
   $('form').on 'click', '.remove_fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
     $(this).closest('fieldset').hide()
+
     event.preventDefault()
 
   $('form').on 'click', '.add_fields', (event) ->
     time = new Date().getTime()
     regexp = new RegExp($(this).data('id'), 'g')
     $(this).before($(this).data('fields').replace(regexp, time))
+
+    setup_field(time)
+
     event.preventDefault()
 
   true
