@@ -76,10 +76,25 @@ inside 'app/views/activities/' do
 
 end
 
+inside('app/assets/stylesheets') do
+
+  insert_into_file 'application.scss', %^ *= require selectize\n^, after: /^\s\*= require jquery-ui\n/
+  insert_into_file 'application.scss', %^ *= require selectize.default\n^, after: /^\s\*= require selectize\n/
+
+end
+
 inside 'app/assets/javascripts/' do
+
+  insert_into_file 'application.js', before: '//= require rails-ujs' do
+    <<-CODE
+//= require selectize
+    CODE
+  end
 
   append_to_file 'activities.coffee', <<-CODE
 $(document).on "turbolinks:load", ->
+  $(".selectize").selectize()
+
   $('form').on 'click', '.remove_fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
     $(this).closest('fieldset').hide()
