@@ -60,7 +60,7 @@ inside 'app/views/activities/' do
   file '_schedule_fields.html.haml', <<-CODE
 %fieldset
   = f.label :place
-  = f.text_field :place_id
+  = f.select :place_id, Place.all.pluck(:name, :id), {include_blank: false, prompt: 'Select City'}, {class: 'selectize'}
   = f.label :start_date
   = f.date_field :start_date
   = f.label :end_date
