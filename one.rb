@@ -76,7 +76,9 @@ file 'Procfile', 'web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-d
 file '.env-template', <<-CODE
 RACK_ENV=development
 PORT=4000
-# SECRET_KEY_BASE=$(rails secret)
+SECRET_KEY_BASE=CHANGE_ME_PLEASE #$(rails secret)
+DEVISE_SECRET_KEY=${SECRET_KEY_BASE}
+DEVISE_PEPPER=CHANGE_ME_PLEASE
 CODE
 
 #========== Database Config ==========#
@@ -107,6 +109,10 @@ production:
   url: <%= ENV['DATABASE_URL'] %>
   CODE
 
+  gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1ENV['SECRET_KEY_BASE']^
+
+  gsub_file 'initializers/devise.rb', /^(\s*# config.secret_key = ).*$/, %q^\1ENV['DEVISE_SECRET_KEY']^
+  gsub_file 'initializers/devise.rb', /^(\s*# config.pepper = ).*$/, %q^\1ENV['DEVISE_PEPPER']^
 end
 
 #========== Spec Setup ==========#
