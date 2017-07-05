@@ -85,7 +85,7 @@ end
 
 inside 'app/assets/javascripts/' do
 
-  insert_into_file 'application.js', before: '//= require rails-ujs' do
+  insert_into_file 'application.js', after: '//= require rails-ujs' do
     <<-CODE
 //= require selectize
     CODE
