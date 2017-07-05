@@ -36,7 +36,6 @@ inside('app/assets/javascripts') do
 //= require jquery_ujs
 //= require tether
 //= require bootstrap-sprockets
-//= require turbolinks
 //= require rails-timeago
 //= require locales/jquery.timeago.zh-CN.js
     CODE
