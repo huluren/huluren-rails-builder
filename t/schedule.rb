@@ -74,7 +74,7 @@ end
 inside 'app/assets/javascripts/' do
 
   append_to_file 'activities.coffee', <<-CODE
-$ ->
+$(document).on "turbolinks:load", ->
   $('form').on 'click', '.remove_fields', (event) ->
     $(this).prev('input[type=hidden]').val('1')
     $(this).closest('fieldset').hide()
