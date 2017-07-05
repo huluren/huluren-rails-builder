@@ -111,8 +111,6 @@ production:
 
   gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1ENV['SECRET_KEY_BASE']^
 
-  gsub_file 'initializers/devise.rb', /^(\s*# config.secret_key = ).*$/, %q^\1ENV['DEVISE_SECRET_KEY']^
-  gsub_file 'initializers/devise.rb', /^(\s*# config.pepper = ).*$/, %q^\1ENV['DEVISE_PEPPER']^
 end
 
 #========== Spec Setup ==========#
