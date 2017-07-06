@@ -37,13 +37,13 @@ inside 'app/helpers/' do
   insert_into_file 'application_helper.rb', after: %/module ApplicationHelper\n/ do
     <<-CODE
 
-  def link_to_add_fields(name, f, association)
+  def link_to_add_fields(name, f, association, options={})
     new_object = f.object.send(association).klass.new
     id = new_object.object_id
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
       render(association.to_s.singularize + "_fields", f: builder)
     end
-    link_to(name, '#', class: "add_fields", data: {id: id, fields: fields.gsub("\n", "")})
+    link_to(name, '#', class: "add_fields", class: options.fetch(:class, []) << "add_fields", data: {id: id, fields: fields.gsub("\n", "")})
   end
 
     CODE
@@ -53,27 +53,42 @@ end
 
 inside 'app/views/activities/' do
 
+  gsub_file '_form.html.haml', /(\n+?).field\n\s+?=f\.label[^\n]+\n\s+?(=f\.[^\n]+?\n)/m, '\1\2'
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n+description\n)+/m, <<-CODE
+\\1.form-group.row
+\\2  .input-group
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.description')
+\\2    = f.text_area :description,
+\\2                  class: 'form-control',
+\\2                  placeholder: t('activity.add_description'),
+\\2                  'aria-describedby': 'activity-description-help',
+\\2                  rows: 3
+\\2  %small#activity-description-help.form-text.text-muted<>= t('activity.add_description')
+  CODE
+
   insert_into_file '_form.html.haml', before: /^(\s+?)\.actions$/ do
     <<-CODE
-\\1.field
+\\1.form-group.row.field
 \\1  = f.fields_for :schedules do |builder|
 \\1    = render 'schedule_fields', f: builder
-\\1  = link_to_add_fields :add_schedule, f, :schedules
+\\1  = link_to_add_fields t("activity.schedule.add_schedule"), f, :schedules, class: [:btn, "btn-link", "btn-block"]
     CODE
   end
 
+  gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?=f.submit [^\n]+/m, <<-CODE
+\\1.form-group.row.actions
+\\2  = f.submit t('activity.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
+  CODE
+
   file '_schedule_fields.html.haml', <<-CODE
-%fieldset.activity_schedule
-  = f.label :place
-  = f.select :place_id, Place.all.pluck(:name, :id), {include_blank: false, prompt: 'Select City'}, {class: 'selectize'}
-  = f.label :start_date
-  = f.date_field :start_date
-  = f.label :end_date
-  = f.date_field :end_date
-  = f.label :description, :note
-  = f.text_field :description
+%fieldset.activity_schedule.card
+  = f.select :place_id, Place.all.pluck(:name, :id), {include_blank: false, prompt: t('activity.place.where_to_go')}, {class: 'selectize'}
+  = f.date_field :start_date, placeholder: t('activity.schedule.arrival_at')
+  = f.date_field :end_date, placeholder: t('activity.schedule.departure_at')
+  = f.text_field :description, placeholder: t('activity.schedule.description')
   = f.hidden_field :_destroy
-  = link_to "remove", '#', class: 'remove_fields'
+  = link_to t("activity.schedule.remove"), '#', class: 'remove_fields'
   CODE
 
 end
