@@ -81,8 +81,10 @@ DEVISE_SECRET_KEY=${SECRET_KEY_BASE}
 DEVISE_PEPPER=CHANGE_ME_PLEASE
 CODE
 
-#========== Database Config ==========#
-inside 'config' do
+inside 'config/' do
+  gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1ENV['SECRET_KEY_BASE']^
+
+  #========== Database Config ==========#
   run 'mv database.yml database.yml.orig'
 
   file 'database.yml', <<-CODE
@@ -109,7 +111,43 @@ production:
   url: <%= ENV['DATABASE_URL'] %>
   CODE
 
-  gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1ENV['SECRET_KEY_BASE']^
+end
+
+inside 'config/initializers/' do
+
+  file 'better_errors.rb', <<-CODE
+BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']
+  CODE
+
+  file 'field_with_error.rb', <<-CODE
+ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
+  class_attr_index = html_tag.index('class="')
+  first_tag_end_index = html_tag.index('>')
+
+  if class_attr_index.nil? || class_attr_index > first_tag_end_index
+    html_tag.insert(first_tag_end_index, ' class="error"')
+  else
+    html_tag.insert(class_attr_index + 7, 'error ')
+  end
+end
+  CODE
+
+  file 'i18n.rb', <<-CODE
+Rails.application.configure do
+  config.time_zone = 'Asia/Shanghai'
+
+  #I18n.available_locales = [:en, :'zh-CN']
+  config.i18n.available_locales = [:en, :'zh-CN']
+  config.i18n.default_locale = :zh-CN
+
+  config.i18n.fallbacks = true
+  Globalize.fallbacks = {:en => [:en, :'zh-CN'], :'zh-CN' => [:'zh-CN', :en]}
+end
+  CODE
+
+  file 'timeago.rb, <<-CODE
+Rails::Timeago.default_options limit: -> { 5.days.ago }, date_only: false, format: :short, nojs: false
+  CODE
 
 end
 
