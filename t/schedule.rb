@@ -55,7 +55,7 @@ inside 'app/views/activities/' do
 
   gsub_file '_form.html.haml', /(\n+?).field\n\s+?=f\.label[^\n]+\n\s+?(=f\.[^\n]+?\n)/m, '\1\2'
 
-  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n+description\n)+/m, <<-CODE
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+description\n)+/m, <<-CODE
 \\1.form-group.row
 \\2  .input-group
 \\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.description')
