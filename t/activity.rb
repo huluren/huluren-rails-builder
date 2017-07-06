@@ -1,5 +1,28 @@
 generate 'scaffold activity user:references:index description:text'
 
+file 'config/locales/activity.yml', <<-CODE
+en:
+  activity:
+    create: New Activity
+
+    save: Save
+    add_description: Write more about your journey...
+
+zh-CN:
+  activity:
+    create: '发布新行程'
+    posted: '提交于'
+    from: 来自
+    back: 返回
+    from_/_back: 来自／返回
+
+    post_new_activity: 发布行程
+
+    save: 保存
+    description: 详情
+    add_description: 关于旅行的更多细节……
+CODE
+
 inside 'app/models/' do
 
   inject_into_class 'user.rb', 'User', <<-CODE
