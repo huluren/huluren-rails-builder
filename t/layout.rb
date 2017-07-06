@@ -1,3 +1,24 @@
+file 'config/locales/menu.yml', <<-CODE
+en:
+  menu:
+    languages:
+      lang: "Language"
+      en: English
+      zh-CN: 中文
+
+zh-CN:
+  menu:
+    home: 首页
+    places: 目的地
+    activities: 行程拼伴
+    profile: 个人帐户
+
+    sign_up: 注册
+    login: 登入
+    logout: 登出
+    edit_profile: 更改账户信息
+CODE
+
 #========== Layout Helpers ==========#
 insert_into_file 'app/helpers/application_helper.rb', after: %/module ApplicationHelper\n/ do
   <<-CODE
