@@ -19,6 +19,16 @@ zh-CN:
     edit_profile: 更改账户信息
 CODE
 
+file 'config/locales/action.yml', <<-CODE
+en:
+
+zh-CN:
+  action:
+    show: 查看
+    edit: 修改
+    back: 返回
+CODE
+
 #========== Layout Helpers ==========#
 insert_into_file 'app/helpers/application_helper.rb', after: %/module ApplicationHelper\n/ do
   <<-CODE
