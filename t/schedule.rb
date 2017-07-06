@@ -43,7 +43,7 @@ inside 'app/helpers/' do
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
       render(association.to_s.singularize + "_fields", f: builder)
     end
-    link_to(name, '#', class: "add_fields", class: options.fetch(:class, []) << "add_fields", data: {id: id, fields: fields.gsub("\n", "")})
+    link_to(name, '#', class: options.fetch(:class, []) << "add_fields", data: {id: id, fields: fields.gsub("\n", "")})
   end
 
     CODE
@@ -53,7 +53,7 @@ end
 
 inside 'app/views/activities/' do
 
-  gsub_file '_form.html.haml', /(\n+?).field\n\s+?=f\.label[^\n]+\n\s+?(=f\.[^\n]+?\n)/m, '\1\2'
+  gsub_file '_form.html.haml', /(\s+?).field\n\s+?=f\.label[^\n]+\n\s+?(=f\.hidden_field [^\n]+?\n)/m, '\1\2'
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+description\n)+/m, <<-CODE
 \\1.form-group.row
