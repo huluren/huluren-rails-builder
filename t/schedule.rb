@@ -1,5 +1,17 @@
 generate 'model schedule activity:references:index place:references:index start_date:date:index end_date:date description:text'
 
+file 'config/locales/schedule.yml', <<-CODE
+en:
+
+zh-CN:
+  schedule:
+    arrival_at: 到达日期
+    departure_at: 离开日期
+    description: 备注
+    add_schedule: 添加地点
+    remove: 移除
+CODE
+
 inside 'app/models/' do
 
   inject_into_class 'activity.rb', 'Activity', <<-CODE
