@@ -53,7 +53,7 @@ end
 
 inside 'app/views/activities/' do
 
-  gsub_file '_form.html.haml', /(\s+?).field\n\s+?=f\.label[^\n]+\n\s+?(=f\.hidden_field [^\n]+?\n)/m, '\1\2'
+  gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+description\n)+/m, <<-CODE
 \\1.form-group.row
@@ -76,7 +76,7 @@ inside 'app/views/activities/' do
     CODE
   end
 
-  gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?=f.submit [^\n]+/m, <<-CODE
+  gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?= f.submit [^\n]+/m, <<-CODE
 \\1.form-group.row.actions
 \\2  = f.submit t('activity.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
   CODE
