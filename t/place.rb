@@ -1,5 +1,20 @@
 generate 'scaffold place user:references:index name:string:uniq description:text'
 
+file 'config/locales/place.yml', <<-CODE
+en:
+  place:
+    choose:
+      from: From city...
+      to: To city...
+
+zh-CN:
+  place:
+    where_to_go: 目的地...
+    choose:
+      from: 来源城市...
+      to: 返回城市...
+CODE
+
 inside 'app/models/' do
 
   inject_into_class 'user.rb', 'User', <<-CODE
