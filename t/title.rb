@@ -5,13 +5,11 @@ inside 'app/views/layouts/' do
 end
 
 inside 'config/locales/' do
-  file 'title.en.yml', <<-CODE
+  file 'title.yml', <<-CODE
 en:
   titles:
     application: #{app_name.camelize}
-  CODE
 
-  file 'title.zh-CN.yml', <<-CODE
 zh-CN:
   titles:
     application: #{app_name.camelize}
