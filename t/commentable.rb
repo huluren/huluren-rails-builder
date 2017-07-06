@@ -3,6 +3,22 @@ generate 'scaffold comment user:references content:text commentable:references{p
 
 route %Q{concern :commentable do\n    resources :comments, shallow: true\n  end\n  resources :users, only: [], concerns: :commentable}
 
+file 'config/locales/comment.yml', <<-CODE
+en:
+  comment:
+    comment: Comment
+    write_comment: Write your comment...
+    leave_comment_here: Leave comment here.
+    save: Post
+
+zh-CN:
+  comment:
+    comment: 评论
+    write_comment: 发表评论……
+    leave_comment_here: 留下你的评论。
+    save: 发布
+CODE
+
 inside 'app/models/' do
   inject_into_class 'user.rb', 'User', <<-CODE
   has_many :user_comments, class_name: 'Comment'
