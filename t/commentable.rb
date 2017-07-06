@@ -10,13 +10,25 @@ en:
     write_comment: Write your comment...
     leave_comment_here: Leave comment here.
     save: Post
-
+    comments:
+      zero: "No comments"
+      one: "%{count} comment"
+      few: "%{count} comments"
+      many: "%{count} comments"
+      other: "%{count} comments"
 zh-CN:
   comment:
     comment: 评论
     write_comment: 发表评论……
     leave_comment_here: 留下你的评论。
     save: 发布
+    comments:
+      zero: "无评论"
+      one: "%{count} 条评论"
+      few: "%{count} 条评论"
+      many: "%{count} 条评论"
+      other: "%{count} 条评论"
+    new_comment: 添加评论
 CODE
 
 inside 'app/models/' do
