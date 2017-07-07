@@ -314,12 +314,10 @@ inside 'spec/models/' do
 
   insert_into_file 'activity_spec.rb', before: /^(\n+?(\s+?))it .should fail with invalid. do$/ do
     <<-CODE
-
 \\1it "should increment the count with schedules" do
 \\2  expect{ create(:activity_with_schedules) }.to change{Activity.count}.by(1)
 \\2  expect{ create(:activity_with_schedules, schedules_count: 5) }.to change{Schedule.count}.by(5)
 \\2end
-
     CODE
   end
 
