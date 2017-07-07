@@ -26,6 +26,13 @@ inside('app/assets/stylesheets') do
 body {
   margin: 85px auto 0 auto;
 }
+
+footer {
+  padding: 3rem 0 3rem 0;
+  margin: 3rem auto 0 auto;
+  text-align: left;
+  background-color: $gray-lightest;
+}
 CODE
 end
 
