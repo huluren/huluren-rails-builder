@@ -28,6 +28,7 @@ inside 'app/models/' do
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   scope :random, ->(limit=1) { order("RANDOM()").limit(limit) }
+  scope :q, ->(query_string) { query_string.nil? ? nil : where("name LIKE ?", "%#{query_string}%") }
 
   acts_as_followable
 
@@ -37,6 +38,10 @@ inside 'app/models/' do
 end
 
 inside 'app/controllers/' do
+
+  gsub_file 'places_controller.rb', /(\n(\s*?)def index\n[^\n]*?Place\.)all\n/m, <<-CODE
+\\1q(params[:term])
+  CODE
 
   gsub_file 'places_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
 \\1\\2  @place.user = current_user
