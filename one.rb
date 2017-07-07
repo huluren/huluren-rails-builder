@@ -81,7 +81,7 @@ DEVISE_PEPPER=CHANGE_ME_PLEASE
 CODE
 
 inside 'config/' do
-  gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1ENV['SECRET_KEY_BASE']^
+  gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1<%= ENV['SECRET_KEY_BASE'] %>^
 
   #========== Database Config ==========#
   run 'mv database.yml database.yml.orig'
