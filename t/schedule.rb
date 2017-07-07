@@ -93,6 +93,28 @@ inside 'app/views/activities/' do
 \\2  = f.submit t('activity.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
   CODE
 
+  append_into_file '_form.html.haml', <<-CODE
+
+.modal.fade.place-modal#modalNewPlace{"aria-labelledby": "newPlace", role: "dialog", tabindex: "-1"}
+  .modal-dialog.modal-sm{role: "document"}
+    .modal-content
+      .modal-header
+        %button.close{"aria-label": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"aria-hidden": "true"} ×
+        %h4#newPlace.modal-title= t("place.add_place")
+      .modal-body
+        = form_for Place.new do |f|
+          = f.hidden_field :user_id, value: current_user.id
+          .form-group
+            = f.label :name
+            = f.text_field :name, class: "form-control"
+          .form-group
+            = f.label :description
+            = f.text_area :description, class: "form-control"
+          .form-group
+            = f.submit class: "btn btn-primary"
+  CODE
+
   file '_schedule_fields.html.haml', <<-CODE
 %fieldset.activity_schedule.card
   = f.label :place_id, f.object.place.try(:name), class: ["btn", "btn-secondary"]
