@@ -1,8 +1,8 @@
 #========== Theme Setup ==========#
 default_theme = :materia
 
-bs_theme = ask('Bootstrap theme name? (Go to https://bootswatch.com/4-alpha/ for available themes.) [default: %s]: ' % default_theme, :cyan)
-bs_theme = default_theme if bs_theme.blank?
+#bs_theme = ask('Bootstrap theme name? (Go to https://bootswatch.com/4-alpha/ for available themes.) [default: %s]: ' % default_theme, :cyan)
+bs_theme = default_theme # if bs_theme.blank?
 
 inside('app/assets/stylesheets/%s/' % bs_theme) do
   get 'http://bootswatch.com/4-alpha/%s/_variables.scss' % bs_theme, '_variables.scss'
