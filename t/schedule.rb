@@ -180,7 +180,7 @@ setup_place_field = (place, place_id, place_label) ->
       $.ajax
         method: "GET"
         url: '/places'
-        data: request
+        data: {q: request.term}
         dataType: "json"
         success: (res) ->
           data = ({label: item.name, name: item.name, id: item.id} for item in res)
