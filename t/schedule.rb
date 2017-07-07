@@ -273,6 +273,20 @@ inside 'spec/factories/' do
     CODE
   end
 
+  insert_into_file 'activities.rb', before: /^(\s+?)factory :invalid_activity do$/ do
+    <<-CODE
+\\1factory :activity_with_schedules do
+\\1  transient do
+\\1    schedules_count 3
+\\1  end
+
+\\1  after(:create) do |activity, evaluator|
+\\1    create_list(:schedule, evaluator.schedules_count, activity: activity)
+\\1  end
+\\1end
+    CODE
+  end
+
 end
 
 inside 'spec/models/' do
@@ -296,6 +310,16 @@ inside 'spec/models/' do
 \\2  end
 \\2end
   CODE
+
+  insert_into_file 'activity_spec.rb', before: /^(\s*?)it .should fail with invalid. do$/, do
+    <<-CODE
+\\1it "should increment the count with schedules" do
+\\1  expect{ create(:activity_with_schedules) }.to change{Activity.count}.by(1)
+\\1  expect{ create(:activity_with_schedules, schedules_count: 5) }.to change{Schedule.count}.by(5)
+\\1end
+
+    CODE
+  end
 
 end
 
