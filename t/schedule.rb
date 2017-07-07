@@ -95,9 +95,14 @@ inside 'app/views/activities/' do
 
   file '_schedule_fields.html.haml', <<-CODE
 %fieldset.activity_schedule.card
-  = f.select :place_id, Place.all.pluck(:name, :id), {include_blank: false, prompt: t('place.where_to_go')}, {class: 'selectize'}
-  = f.date_field :start_date, placeholder: t('schedule.arrival_at')
-  = f.date_field :end_date, placeholder: t('schedule.departure_at')
+  = f.label :place_id, f.object.place.try(:name), class: ["btn", "btn-secondary"]
+  = f.hidden_field :place_id
+  = f.fields_for :place do |fp|
+    = fp.text_field :name, {name: nil, class: 'place_name', placeholder: t('place.search')}
+  = f.label :start_date, t('schedule.arrival_at')
+  = f.date_field :start_date
+  = f.label :end_date, t('schedule.departure_at')
+  = f.date_field :end_date
   = f.text_field :description, placeholder: t('schedule.description')
   = f.hidden_field :_destroy
   = link_to t("schedule.remove"), '#', class: 'remove_fields'
