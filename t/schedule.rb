@@ -160,11 +160,18 @@ setup_datepicker = (start_date, end_date) ->
   true
 
 setup_place_field = (place, place_id, place_label) ->
+  selected_place = (src) ->
+    place_id.val(src.id)
+    place_label.text(src.name)
+    place_label.attr("title", src.id)
+
   place.autocomplete
-    minLength: 2
+    minLength: 1
     select: ( event, ui ) ->
-      place_id.val(ui.item.id)
-      place_label.text(ui.item.label)
+      if ui.item.id == 0
+        create_place place.val(), (new_place) ->
+          selected_place new_place
+      selected_place ui.item
     close: ( event, ui ) ->
       $(this).val(null)
     source: (request, response) ->
@@ -174,15 +181,9 @@ setup_place_field = (place, place_id, place_label) ->
         data: request
         dataType: "json"
         success: (res) ->
-          if res.length > 0
-            data = ({label: item.name, id: item.id} for item in res)
-            response( data )
-          else
-            create_place request.term, (new_place) ->
-              place_id.val(new_place.id)
-              place_label.text(new_place.name)
-              place.val(null)
-
+          data = ({label: item.name, name: item.name, id: item.id} for item in res)
+          data.unshift(label: 'Add ' + request.term + '...', id: 0) unless request.term in (item.name for item in res)
+          response( data )
         error: (res) ->
           false
 
@@ -204,7 +205,6 @@ create_place = (name, callback) ->
       error: (response) ->
         $('#new_place').off( "submit" )
         $("#new_place").trigger("reset")
-
   true
 
 setup_schedules = () ->
@@ -228,6 +228,7 @@ $(document).on "turbolinks:load", ->
     $(this).prev('input[type=hidden]').val('1')
     $(this).closest('fieldset').hide()
     true
+
   $('form').on 'click', '.add_fields', (event) ->
     event.preventDefault()
     time = new Date().getTime()
