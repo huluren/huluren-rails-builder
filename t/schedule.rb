@@ -26,6 +26,11 @@ inside 'app/models/' do
   validates :place, presence: true
   CODE
 
+  inject_into_class 'user.rb', 'User', <<-CODE
+  has_many :schedules, through: :activities
+  has_many :destinations, -> { distinct }, through: :schedules, source: :place
+  CODE
+
 end
 
 inside 'app/controllers/' do
