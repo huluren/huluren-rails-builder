@@ -88,9 +88,9 @@ inside 'spec/models/' do
 \\2    expect{ create(:activity) }.to change{Activity.count}.by(1)
 \\2  end
 
-\\2it "should fail with invalid" do
-\\2  expect( build(:invalid_activity) ).to be_invalid
-\\2end
+\\2  it "should fail with invalid" do
+\\2    expect( build(:invalid_activity) ).to be_invalid
+\\2  end
 
 \\2  it "should fail without :description" do
 \\2    expect( build(:activity, description: nil) ).to be_invalid
