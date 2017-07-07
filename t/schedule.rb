@@ -1,4 +1,4 @@
-generate 'model schedule activity:references:index place:references:index start_date:date:index end_date:date description:text'
+generate 'model schedule activity:references:index place:references:index start_date:date:index end_date:date:index description:text'
 
 file 'config/locales/schedule.yml', <<-CODE
 en:
