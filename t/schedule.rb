@@ -107,81 +107,107 @@ end
 
 inside('app/assets/stylesheets') do
 
-  insert_into_file 'application.css', %^ *= require selectize\n^, after: /^\s\*= require_tree \.\n/
-  insert_into_file 'application.css', %^ *= require selectize.default\n^, after: /^\s\*= require selectize\n/
-
 end
 
 inside 'app/assets/javascripts/' do
 
-  insert_into_file 'application.js', after: /\/\/= require rails-ujs\n/ do
-    <<-CODE
-//= require selectize
-    CODE
-  end
-
   append_to_file 'activities.coffee', <<-CODE
 //= require jquery-ui/widgets/datepicker
+//= require jquery-ui/widgets/autocomplete
 
 setup_datepicker = (start_date, end_date) ->
-  start_date.datepicker({
-      dateFormat: 'yy-mm-dd'
-      defaultDate: "+1w"
-      changeMonth: true
-      numberOfMonths: 1
-      onSelect: ( selectedDate ) ->
-        end_date.datepicker( "option", "minDate", selectedDate );
-    })
-
-  end_date.datepicker({
-      dateFormat: 'yy-mm-dd'
-      defaultDate: "+1w"
-      changeMonth: false
-      numberOfMonths: 1
-      onSelect: ( selectedDate ) ->
-        start_date.datepicker( "option", "maxDate", selectedDate );
-    })
-
+  start_date.datepicker
+    dateFormat: 'yy-mm-dd'
+    defaultDate: "+1w"
+    changeMonth: true
+    numberOfMonths: 1
+    onSelect: (selectedDate) ->
+      end_date.datepicker "option", "minDate", selectedDate
+  end_date.datepicker
+    dateFormat: 'yy-mm-dd'
+    defaultDate: "+1w"
+    changeMonth: false
+    numberOfMonths: 1
+    onSelect: (selectedDate) ->
+      start_date.datepicker "option", "maxDate", selectedDate
   true
 
-setup_selectize = (selectize) ->
-  selectize.selectize({
-      hideSelected: true,
-      create: true,
-      maxOptions: 100,
-      maxItems: 1,
-      loadThrottle: 3000
-    })
+setup_place_field = (place, place_id, place_label) ->
+  place.autocomplete
+    minLength: 2
+    select: ( event, ui ) ->
+      place_id.val(ui.item.id)
+      place_label.text(ui.item.label)
+    close: ( event, ui ) ->
+      $(this).val(null)
+    source: (request, response) ->
+      $.ajax
+        method: "GET"
+        url: '/places'
+        data: request
+        dataType: "json"
+        success: (res) ->
+          if res.length > 0
+            data = ({label: item.name, id: item.id} for item in res)
+            response( data )
+          else
+            create_place request.term, (new_place) ->
+              place_id.val(new_place.id)
+              place_label.text(new_place.name)
+              place.val(null)
+
+        error: (res) ->
+          false
+
+create_place = (name, callback) ->
+  $('#place_name').val(name)
+  $('#modalNewPlace').modal()
+
+  $('#new_place').submit (e) ->
+    e.preventDefault()
+    $.ajax
+      method: 'POST'
+      url: $(this).attr("action")
+      data: $(this).serialize()
+      dataType: "json"
+      success: (response) ->
+        $('#new_place').off( "submit" )
+        $('#modalNewPlace').modal('toggle')
+        callback(response)
+      error: (response) ->
+        $('#new_place').off( "submit" )
+        $("#new_place").trigger("reset")
 
   true
 
 setup_schedules = () ->
-  field = $(".activity_schedule")
-  place = field.children("select[id$=_place_id]")
-  start_date = field.children("input[id$=_start_date]")
-  end_date = field.children("input[id$=_end_date]")
+  fields = $(".activity_schedule")
+  fields.each (idx) ->
+    setup_schedule $(this)
 
-  setup_selectize(place)
-  setup_datepicker(start_date, end_date)
-
-  true
+setup_schedule = (schedule_fs) ->
+  setup_place_field(schedule_fs.children("input[id$=_place_name]"), schedule_fs.children('input[id$=_place_id]'), schedule_fs.children('label[for$=_place_id]'))
+  setup_datepicker(schedule_fs.children("input[id$=_start_date]"), schedule_fs.children("input[id$=_end_date]"))
 
 $(document).on "turbolinks:load", ->
-
   setup_schedules()
 
+  $("#modalNewPlace").on "hide.bs.modal", (e) ->
+    $("#new_place").trigger("reset")
+    $.rails.enableFormElements($("#new_place"))
+
   $('form').on 'click', '.remove_fields', (event) ->
+    event.preventDefault()
     $(this).prev('input[type=hidden]').val('1')
     $(this).closest('fieldset').hide()
-
-    event.preventDefault()
-
+    true
   $('form').on 'click', '.add_fields', (event) ->
+    event.preventDefault()
     time = new Date().getTime()
     regexp = new RegExp($(this).data('id'), 'g')
     $(this).before($(this).data('fields').replace(regexp, time))
-    setup_schedules()
-    event.preventDefault()
+    setup_schedule($(this).prev('fieldset'))
+    true
 
   true
   CODE
