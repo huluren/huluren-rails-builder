@@ -311,7 +311,7 @@ inside 'spec/models/' do
 \\2end
   CODE
 
-  insert_into_file 'activity_spec.rb', before: /^(\n*?(\s*?))it .should fail with invalid. do$/ do
+  insert_into_file 'activity_spec.rb', before: /^(\n+?(\s*?))it .should fail with invalid. do$/ do
     <<-CODE
 \\1it "should increment the count with schedules" do
 \\2  expect{ create(:activity_with_schedules) }.to change{Activity.count}.by(1)
