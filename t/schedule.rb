@@ -275,7 +275,6 @@ inside 'spec/factories/' do
 
   insert_into_file 'activities.rb', before: /^(\s+?)factory :invalid_activity do$/ do
     <<-CODE
-
 \\1factory :activity_with_schedules do
 \\1  transient do
 \\1    schedules_count 3
