@@ -22,11 +22,8 @@ inside 'app/models/' do
   CODE
 
   inject_into_class 'schedule.rb', 'Schedule', <<-CODE
-  validates :place, presence: true
   validates :activity, presence: true
-
-  belongs_to :place
-  belongs_to :activity
+  validates :place, presence: true
   CODE
 
 end
