@@ -87,9 +87,9 @@ inside 'app/views/layouts/' do
       %a.m-2{href: '/'}<>= t('menu.support')
 
     %p<
-      .small<
-        = surround " 由", " 提供技术支持" do
-          %a<> Lax
+      .small.m-2<
+        = surround "由", "提供技术支持" do
+          = link_to 'Lax', '', class: 'm-1'
   CODE
 
   file '_flash.html.haml', <<-CODE
