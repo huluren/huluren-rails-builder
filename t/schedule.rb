@@ -93,7 +93,7 @@ inside 'app/views/activities/' do
 \\2  = f.submit t('activity.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
   CODE
 
-  append_into_file '_form.html.haml', <<-CODE
+  append_to_file '_form.html.haml', <<-CODE
 
 .modal.fade.place-modal#modalNewPlace{"aria-labelledby": "newPlace", role: "dialog", tabindex: "-1"}
   .modal-dialog.modal-sm{role: "document"}
