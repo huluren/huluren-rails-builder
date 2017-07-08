@@ -114,6 +114,16 @@ end
 
 inside 'config/initializers/' do
 
+  file '12factor.rb', <<-CODE
+config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
+
+if ENV["RAILS_LOG_TO_STDOUT"].present?
+  logger           = ActiveSupport::Logger.new(STDOUT)
+  logger.formatter = config.log_formatter
+  config.logger = ActiveSupport::TaggedLogging.new(logger)
+end
+  CODE
+
   file 'better_errors.rb', <<-CODE
 BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']
   CODE
