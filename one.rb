@@ -194,6 +194,7 @@ after_bundle do
     pages-landing layout
 
     theme title
+    models
   }
 
   modules.each do |fn|
