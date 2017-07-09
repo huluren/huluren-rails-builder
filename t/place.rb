@@ -27,7 +27,6 @@ inside 'app/models/' do
   validates :user, presence: true
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
-  scope :random, ->(limit=1) { order("RANDOM()").limit(limit) }
   scope :q, ->(query_string) { query_string.nil? ? nil : where("name LIKE ?", "%\#{query_string}%") }
 
   acts_as_followable
