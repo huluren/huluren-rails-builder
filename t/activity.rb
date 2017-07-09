@@ -33,8 +33,6 @@ inside 'app/models/' do
   validates :user, presence: true
   validates :description, presence: true
 
-  scope :random, ->(limit=1) { order("RANDOM()").limit(limit) }
-
   acts_as_followable
 
   has_many :comments, as: :commentable
