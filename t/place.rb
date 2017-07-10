@@ -54,7 +54,7 @@ inside 'app/views/places/' do
 
   gsub_file '_form.html.haml', /@place/, 'place'
 
-  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :\1_id, value: current_user.id'
+  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :\2_id, value: current_user.id'
   gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+name\n)+/m, <<-CODE
