@@ -73,8 +73,6 @@ append_to_file '.gitignore', '/db/*.sqlite'
 file 'Procfile', 'web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}'
 
 file '.env', <<-CODE
-test -f .env-local && source .env-local
-
 RACK_ENV=development
 PORT=4000
 SECRET_KEY_BASE=${SECRET_KEY_BASE:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
