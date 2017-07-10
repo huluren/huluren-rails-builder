@@ -4,8 +4,15 @@ file 'config/locales/activity.yml', <<-CODE
 en:
   activity:
     create: New Activity
+    posted: Post at
+    from: From
+    back: Back
+    from_/_back: From/Back
+
+    post_new_activity: Publish new activity
 
     save: Save
+    description: Description
     add_description: Write more about your journey...
 
 zh-CN:
