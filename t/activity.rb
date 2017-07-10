@@ -42,7 +42,7 @@ end
 
 inside 'app/controllers/' do
   inject_into_class 'activities_controller.rb', ActivitiesController, <<-CODE
-before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy]
+  before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy]
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
