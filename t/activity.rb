@@ -115,7 +115,7 @@ inside 'spec/models/' do
 end
 
 inside 'spec/controllers' do
-  insert_into_file 'activities_controller_spec.rb', after: /^(\n+?(\s+?))describe "(GET|POST|PUT|DELETE) #(new|edit|create|update|destroy)" do/ do
+  insert_into_file 'activities_controller_spec.rb', after: /^(\n+?(\s+?))describe "(GET|POST|PUT|DELETE) #(new|edit|create|update|destroy)" do\n/ do
     <<-CODE
 \\2  before do
 \\2    sign_in create(:user)
