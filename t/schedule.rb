@@ -2,6 +2,12 @@ generate 'model schedule activity:references:index place:references:index start_
 
 file 'config/locales/schedule.yml', <<-CODE
 en:
+  schedule:
+    arrival_at: Arrival Date
+    departure_at: Departure Date
+    description: Description
+    add_schedule: Add schedule
+    remove: Remove
 
 zh-CN:
   schedule:
