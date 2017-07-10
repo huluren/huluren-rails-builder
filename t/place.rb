@@ -152,6 +152,15 @@ inside 'spec/models/' do
 end
 
 inside 'spec/controllers' do
+  insert_into_file 'places_controller_spec.rb', after: /^(\n+?(\s+?))describe "(GET|POST|PUT|DELETE) #(new|edit|create|update|destroy)" do/ do
+    <<-CODE
+\\2  before do
+\\2    sign_in create(:user)
+\\2  end
+
+    CODE
+  end
+
   gsub_file 'places_controller_spec.rb', /(\n\s*?let\(:valid_attributes\) \{\n\s*)skip.*?\n(\s*\})\n/m, <<-CODE
 \\1build(:place).attributes.except("id", "created_at", "updated_at")
 \\2
