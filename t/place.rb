@@ -37,6 +37,9 @@ inside 'app/models/' do
 end
 
 inside 'app/controllers/' do
+  inject_into_class 'places_controller.rb', PlacesController, <<-CODE
+before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy]
+  CODE
 
   gsub_file 'places_controller.rb', /(\n(\s*?)def index\n[^\n]*?Place\.)all\n/m, <<-CODE
 \\1q(params[:q])
