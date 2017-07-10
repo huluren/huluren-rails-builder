@@ -52,9 +52,39 @@ end
 inside 'app/views/places/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
 
-  gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
-  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
   gsub_file '_form.html.haml', /@place/, 'place'
+
+  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :\1_id, value: current_user.id'
+  gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+name\n)+/m, <<-CODE
+\\1.form-group.row
+\\2  .input-group
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.name')
+\\2    = f.text_field :name,
+\\2                  class: 'form-control',
+\\2                  placeholder: t('place.add_name'),
+\\2                  'aria-describedby': 'place-name-help',
+\\2                  rows: 3
+\\2  %small#place-name-help.form-text.text-muted<>= t('place.add_name')
+  CODE
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+description\n)+/m, <<-CODE
+\\1.form-group.row
+\\2  .input-group
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.description')
+\\2    = f.text_area :description,
+\\2                  class: 'form-control',
+\\2                  placeholder: t('place.add_description'),
+\\2                  'aria-describedby': 'place-description-help',
+\\2                  rows: 3
+\\2  %small#place-description-help.form-text.text-muted<>= t('place.add_description')
+  CODE
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?= f.submit [^\n]+?\n/m, <<-CODE
+\\1.form-group.row.actions
+\\2  = f.submit t('place.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
+  CODE
 
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, place: @place'
 
