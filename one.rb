@@ -72,12 +72,12 @@ append_to_file '.gitignore', '/db/*.sqlite'
 #========== Foreman ==========#
 file 'Procfile', 'web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}'
 
-file '.env-template', <<-CODE
+file '.env', <<-CODE
 RACK_ENV=development
 PORT=4000
-SECRET_KEY_BASE=CHANGE_ME_PLEASE #$(rails secret)
-DEVISE_SECRET_KEY=${SECRET_KEY_BASE}
-DEVISE_PEPPER=CHANGE_ME_PLEASE
+SECRET_KEY_BASE=${SECRET_KEY_BASE:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
+DEVISE_SECRET_KEY=${DEVISE_SECRET_KEY:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
+DEVISE_PEPPER=${DEVISE_PEPPER:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
 CODE
 
 inside 'config/' do
