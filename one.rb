@@ -223,5 +223,7 @@ end
 
 after_bundle do
   rails_command 'db:migrate'
+  
+  require 'dotenv/load'
   rails_command :spec
 end
