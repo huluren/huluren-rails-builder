@@ -66,6 +66,7 @@ end
 
 inside 'app/views/places/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
+  gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= h('place.list_places')^
 
   gsub_file '_form.html.haml', /@place/, 'place'
 
@@ -102,8 +103,10 @@ inside 'app/views/places/' do
   CODE
 
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, place: @place'
+  gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= h('place.new_place')^
 
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, place: @place'
+  gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= h('place.edit_place')^
 end
 
 inside 'spec/factories/' do
