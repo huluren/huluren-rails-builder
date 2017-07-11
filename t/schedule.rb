@@ -21,7 +21,7 @@ CODE
 inside 'app/models/' do
 
   inject_into_class 'activity.rb', 'Activity', <<-CODE
-  has_many :schedules
+  has_many :schedules, dependent: :destroy
   has_many :places, through: :schedules
 
   accepts_nested_attributes_for :schedules, allow_destroy: true, reject_if: ->(attributes) { attributes['place_id'].blank? }
