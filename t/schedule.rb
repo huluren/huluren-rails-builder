@@ -27,6 +27,11 @@ inside 'app/models/' do
   accepts_nested_attributes_for :schedules, allow_destroy: true, reject_if: ->(attributes) { attributes['place_id'].blank? }
   CODE
 
+  inject_into_class 'place.rb', 'Place', <<-CODE
+  has_many :schedules, dependent: :destroy
+  has_many :activities, through: :schedules
+  CODE
+
   inject_into_class 'schedule.rb', 'Schedule', <<-CODE
   validates :activity, presence: true
   validates :place, presence: true
