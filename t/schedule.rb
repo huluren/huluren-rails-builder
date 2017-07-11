@@ -299,13 +299,14 @@ inside 'spec/models/' do
 
   gsub_file 'schedule_spec.rb', /(^(\s*)?)pending .*\n/, <<-CODE
 \\1describe "#create" do
+
 \\2  it "should increment the count" do
 \\2    expect{ create(:schedule) }.to change{Schedule.count}.by(1)
 \\2  end
 
-\\2it "should fail with invalid" do
-\\2  expect( build(:invalid_schedule) ).to be_invalid
-\\2end
+\\2  it "should fail with invalid" do
+\\2    expect( build(:invalid_schedule) ).to be_invalid
+\\2  end
 
 \\2  it "should fail without :activity" do
 \\2    expect( build(:schedule, activity: nil) ).to be_invalid
@@ -314,6 +315,21 @@ inside 'spec/models/' do
 \\2  it "should fail without :place" do
 \\2    expect( build(:schedule, place: nil) ).to be_invalid
 \\2  end
+
+\\2end
+
+\\2describe "#destroy" do
+
+\\2  it "should decrease the count" do
+\\2    schedule = create(:schedule)
+\\2    expect{ schedule.destroy }.to change{Schedule.count}.by(-1)
+\\2  end
+
+\\2  it "should decrease the count when destroy activity" do
+\\2    activity = create(:activity_with_schedules, schedules_count: 5)
+\\2    expect{ activity.destroy }.to change{Schedule.count}.by(-5)
+\\2  end
+
 \\2end
   CODE
 
