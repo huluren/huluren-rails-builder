@@ -8,15 +8,15 @@ inside('app/views/pages/') do
   file 'landing.html.haml', <<-CODE
 .row.d-flex.justify-content-center<>
   .articles.col-lg-3
-    = t('articles')
+    %h5= t('articles')
   .col-lg-9.row.d-flex.flex-row-reverse
     .app.col-md-2
-      = t('app')
+      %h5= t('app')
     .activities.col-md
-      = t('menu.activities')
+      %h5= t('menu.activities')
       #activities
     .places.col-md
-      = t('menu.places')
+      %h5= t('menu.places')
       #places
   CODE
 end
@@ -27,10 +27,9 @@ $("#activities").replaceWith "<%= escape_javascript(render 'activities', items: 
   CODE
 
   file '_activities.html.haml', <<-CODE
-%ul#activities
+#activities.list-group
   - items.each do |activity|
-    %li
-      = activity.places.pluck(:name).to_sentence
+    .list-group-item.list-group-item-action= activity.places.pluck(:name).to_sentence
   CODE
 end
 
@@ -40,10 +39,9 @@ $("#places").replaceWith "<%= escape_javascript(render 'places', items: @places)
   CODE
 
   file '_places.html.haml', <<-CODE
-%ul#places
+#places.list-group
   - items.each do |place|
-    %li
-      = place.name
+    .list-group-item.list-group-item-action= place.name
   CODE
 end
 
