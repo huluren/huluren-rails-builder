@@ -6,6 +6,16 @@ en:
       en: English
       zh-CN: 中文
 
+    home: Home
+    places: Place
+    activities: Activity
+    profile: Profile
+
+    sign_up: Sign Up
+    login: Login
+    logout: Logout
+    edit_profile: Update Profile
+
 zh-CN:
   menu:
     home: 首页
