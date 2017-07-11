@@ -61,14 +61,17 @@ end
 
 inside 'app/views/activities/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
+  gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= h('activity.list_activities')^
 
   gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
   gsub_file '_form.html.haml', /@activity/, 'activity'
 
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, activity: @activity'
+  gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= h('activity.new_activity')^
 
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, activity: @activity'
+  gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= h('activity.edit_activity')^
 end
 
 inside 'spec/factories/' do
