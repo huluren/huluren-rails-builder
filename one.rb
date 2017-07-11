@@ -181,13 +181,14 @@ after_bundle do
   #   place, activity -> schedule
   #   devise-user(login), place, activity, pages-landing(root) -> layout
   modules = %w{
+    env
+
     i18n devise-user commentable
     followable place activity schedule
     pages-landing layout
 
     theme title
     models
-    env
   }
 
   modules.each do |fn|
