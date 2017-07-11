@@ -10,12 +10,15 @@ default: &default
   username: duang
   password:
   host: localhost
+
 development:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL") { "sqlite3:%s/%s.sqlite" % [ENV.fetch("DATABASE_DIR", "./db"), Rails.env] } %>
+
 test:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL") { "sqlite3:%s/%s.sqlite" % [ENV.fetch("DATABASE_DIR", "./db"), Rails.env] } %>
+
 production:
   <<: *default
   username: <%= ENV['DATABASE_USERNAME'] %>
