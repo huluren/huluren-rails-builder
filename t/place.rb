@@ -14,6 +14,10 @@ en:
     add_name: Add Name of the Place
     add_description: Add some description of the place...
 
+    list_places: Places
+    new_place: New Place
+    edit_place: Update Place
+
 zh-CN:
   place:
     where_to_go: 目的地...
@@ -27,6 +31,10 @@ zh-CN:
     description: 详情
     add_name: 填写地点名称
     add_description: 添加地点描述与介绍
+
+    list_places: 地点列表
+    new_place: 创建新地点
+    edit_place: 编辑地点
 CODE
 
 inside 'app/models/' do
@@ -66,7 +74,7 @@ end
 
 inside 'app/views/places/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
-  gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= h('place.list_places')^
+  gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('place.list_places')^
 
   gsub_file '_form.html.haml', /@place/, 'place'
 
@@ -103,10 +111,10 @@ inside 'app/views/places/' do
   CODE
 
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, place: @place'
-  gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= h('place.new_place')^
+  gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= t('place.new_place')^
 
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, place: @place'
-  gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= h('place.edit_place')^
+  gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('place.edit_place')^
 end
 
 inside 'spec/factories/' do
