@@ -62,7 +62,7 @@ inside 'app/controllers/' do
   CODE
 
   gsub_file 'places_controller.rb', /(\n(\s*?)def index\n[^\n]*?Place\.)all\n/m, <<-CODE
-\\1q(params[:q])
+\\1sample(params[:s]).q(params[:q]).limit(params[:c])
   CODE
 
   gsub_file 'places_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
