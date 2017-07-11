@@ -15,6 +15,10 @@ en:
     description: Description
     add_description: Write more about your journey...
 
+    list_activities: Activities
+    new_activity: New Activity
+    edit_activity: Update Activity
+
 zh-CN:
   activity:
     create: '发布新行程'
@@ -28,6 +32,10 @@ zh-CN:
     save: 保存
     description: 详情
     add_description: 关于旅行的更多细节……
+
+    list_activities: 行程列表
+    new_activity: 发布新行程
+    edit_activity: 更新行程
 CODE
 
 inside 'app/models/' do
@@ -61,17 +69,17 @@ end
 
 inside 'app/views/activities/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
-  gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= h('activity.list_activities')^
+  gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('activity.list_activities')^
 
   gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
   gsub_file '_form.html.haml', /@activity/, 'activity'
 
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, activity: @activity'
-  gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= h('activity.new_activity')^
+  gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= t('activity.new_activity')^
 
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, activity: @activity'
-  gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= h('activity.edit_activity')^
+  gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('activity.edit_activity')^
 end
 
 inside 'spec/factories/' do
