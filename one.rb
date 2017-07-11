@@ -72,26 +72,6 @@ append_to_file '.gitignore', '/db/*.sqlite'
 #========== Foreman ==========#
 file 'Procfile', 'web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}'
 
-file '.env', <<-CODE
-RACK_ENV=development
-PORT=4000
-SECRET_KEY_BASE=
-DEVISE_SECRET_KEY=
-DEVISE_PEPPER=
-CODE
-
-file '.env.development', <<-CODE
-SECRET_KEY_BASE=${SECRET_KEY_BASE:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
-DEVISE_SECRET_KEY=${DEVISE_SECRET_KEY:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
-DEVISE_PEPPER=${DEVISE_PEPPER:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
-CODE
-
-file '.env.test', <<-CODE
-SECRET_KEY_BASE=aa8c1aec5281b166c90a5dec2efef087de19043b7e70ee53d0a0c721d7007b360af9cdd4bb00176b4da1ff028fcd5a920af9aa0a4d4088c9ed4ff648dc628500
-DEVISE_SECRET_KEY=62cf6885502ca9c593de130ecbc5e77b11c8dcc177de605bfb849d38af2523338cc3df3b6f24e8b887b60f6424e59be6999312c37481dd40144f1363faaba125
-DEVISE_PEPPER=27507721a05689385d2e48a6dd00bc11a3d2553fb79a4142c52163c0932a535e32f4f1af53d3711dd6df103013e5041ead3f4a8c790d5aa2d68439c8bce6c031
-CODE
-
 inside 'config/' do
   gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1<%= ENV['SECRET_KEY_BASE'] %>^
 
@@ -207,6 +187,7 @@ after_bundle do
 
     theme title
     models
+    env
   }
 
   modules.each do |fn|
