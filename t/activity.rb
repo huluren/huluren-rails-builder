@@ -60,6 +60,10 @@ inside 'app/controllers/' do
   before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy]
   CODE
 
+  gsub_file 'activities_controller.rb', /(\n(\s*?)def index\n[^\n]*?Activity\.)all\n/m, <<-CODE
+\\1sample(params[:s]).limit(params[:c])
+  CODE
+
   gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
 \\1\\2  @activity.user = current_user
 \\3
