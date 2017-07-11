@@ -22,14 +22,14 @@ inside 'app/models/' do
 
   inject_into_class 'activity.rb', 'Activity', <<-CODE
   has_many :schedules, dependent: :destroy
-  has_many :places, through: :schedules
+  has_many :places, -> { distinct }, through: :schedules
 
   accepts_nested_attributes_for :schedules, allow_destroy: true, reject_if: ->(attributes) { attributes['place_id'].blank? }
   CODE
 
   inject_into_class 'place.rb', 'Place', <<-CODE
   has_many :schedules, dependent: :destroy
-  has_many :activities, through: :schedules
+  has_many :activities, -> { distinct }, through: :schedules
   CODE
 
   inject_into_class 'schedule.rb', 'Schedule', <<-CODE
