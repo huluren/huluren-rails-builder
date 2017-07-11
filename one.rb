@@ -161,6 +161,7 @@ after_bundle do
 
     theme title
     models
+    heroku
   }
 
   modules.each do |fn|
