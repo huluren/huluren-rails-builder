@@ -79,7 +79,8 @@ inside('spec/views/pages/') do
   gsub_file 'landing.html.haml_spec.rb', /^\s.pending .*\n/, <<-CODE
   it 'renders landing' do
     render
-    assert_select 'h1'
+    assert_select '#activities'
+    assert_select '#places'
   end
   CODE
 end
