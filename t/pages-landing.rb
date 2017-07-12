@@ -14,10 +14,10 @@ inside('app/views/pages/') do
       %h5= t('app')
     .activities.col-md
       %h5= t('menu.activities')
-      #activities
+      #activities{'data-url': activities_path}
     .places.col-md
       %h5= t('menu.places')
-      #places
+      #places{'data-url': places_path}
   CODE
 end
 
@@ -27,9 +27,15 @@ $("#activities").replaceWith "<%= escape_javascript(render 'activities', items: 
   CODE
 
   file '_activities.html.haml', <<-CODE
-#activities.list-group
+#activities.list-group{'data-url': activities_path}
   - items.each do |activity|
-    .list-group-item.list-group-item-action= activity.places.pluck(:name).to_sentence
+    .list-group-item.list-group-item-action.flex-column.align-items-start
+      .d-flex.w-100.justify-content-between
+        .mb-1= activity.places.pluck(:name).to_sentence
+        %small.text-muted
+          = precede t("activity.posted") do
+            = timeago_tag activity.created_at
+      %p.mb-1= activity.description
   CODE
 end
 
@@ -39,7 +45,7 @@ $("#places").replaceWith "<%= escape_javascript(render 'places', items: @places)
   CODE
 
   file '_places.html.haml', <<-CODE
-#places.list-group
+#places.list-group{'data-url': places_path}
   - items.each do |place|
     .list-group-item.list-group-item-action.justify-content-between
       = place.name
@@ -56,7 +62,7 @@ $(document).on "turbolinks:load", ->
 
   $.ajax
     method: "GET"
-    url: '/places'
+    url: $("#places").data("url")
     data:
       c: 6
       s: true
@@ -64,7 +70,7 @@ $(document).on "turbolinks:load", ->
 
   $.ajax
     method: "GET"
-    url: '/activities'
+    url: $("#activities").data("url")
     data:
       c: 6
       s: true
