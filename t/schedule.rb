@@ -25,6 +25,14 @@ inside 'app/models/' do
   has_many :places, -> { distinct }, through: :schedules
 
   accepts_nested_attributes_for :schedules, allow_destroy: true, reject_if: ->(attributes) { attributes['place_id'].blank? }
+
+  def start_date
+    schedules.pluck(:start_date).sort.first
+  end
+
+  def end_date
+    schedules.pluck(:end_date).sort.last
+  end
   CODE
 
   inject_into_class 'place.rb', 'Place', <<-CODE
