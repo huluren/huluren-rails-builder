@@ -41,7 +41,9 @@ $("#places").replaceWith "<%= escape_javascript(render 'places', items: @places)
   file '_places.html.haml', <<-CODE
 #places.list-group
   - items.each do |place|
-    .list-group-item.list-group-item-action= place.name
+    .list-group-item.list-group-item-action.justify-content-between
+      = place.name
+      .badge.badge-default.badge-pill= place.activities.count
   CODE
 end
 
