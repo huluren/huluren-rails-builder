@@ -29,13 +29,17 @@ $("#activities").replaceWith "<%= escape_javascript(render 'activities', items: 
   file '_activities.html.haml', <<-CODE
 #activities.list-group{'data-url': activities_path}
   - items.each do |activity|
-    .list-group-item.list-group-item-action.flex-column.align-items-start
+    .list-group-item.flex-column.align-items-start
       .d-flex.w-100.justify-content-between
         .mb-1= activity.places.pluck(:name).to_sentence
         %small.text-muted
-          = precede t("activity.posted") do
-            = timeago_tag activity.created_at
+          = activity.start_date
+          .m-1 -
+          = activity.end_date
       %p.mb-1= activity.description
+      %small<>
+        = precede t("activity.posted") do
+          = timeago_tag activity.created_at, class: 'ml-1'
   CODE
 end
 
