@@ -11,3 +11,19 @@ inside 'app/controllers/' do
   CODE
 
 end
+
+inside 'app/views/' do
+
+  insert_into_file 'activities/index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @places
+    CODE
+  end
+
+  insert_into_file 'places/index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @places
+    CODE
+  end
+
+end
