@@ -16,7 +16,7 @@ inside 'app/views/' do
 
   insert_into_file 'activities/index.html.haml', before: /^%(table|br)/ do
     <<-CODE
-= paginate @places
+= paginate @activities
     CODE
   end
 
