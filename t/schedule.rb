@@ -27,11 +27,11 @@ inside 'app/models/' do
   accepts_nested_attributes_for :schedules, allow_destroy: true, reject_if: ->(attributes) { attributes['place_id'].blank? }
 
   def start_date
-    schedules.pluck(:start_date).sort.first
+    schedules.pluck(:start_date).compact.sort.first
   end
 
   def end_date
-    schedules.pluck(:end_date).sort.last
+    schedules.pluck(:end_date).compact.sort.last
   end
   CODE
 
