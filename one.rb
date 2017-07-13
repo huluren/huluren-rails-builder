@@ -161,6 +161,7 @@ after_bundle do
     pages-landing layout
 
     theme title
+    kaminari
     models
     heroku
     travis
