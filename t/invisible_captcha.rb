@@ -7,3 +7,9 @@ insert_into_file 'app/views/activities/_form.html.haml', before: /^(  ?)= f\.hid
 \\1= invisible_captcha
   CODE
 end
+
+insert_into_file 'app/views/places/_form.html.haml', before: /^(  ?)= f\.hidden_field/ do
+  <<-CODE
+\\1= invisible_captcha
+  CODE
+end
