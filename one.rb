@@ -12,6 +12,7 @@ gem 'puma'
 gem 'rails-timeago'
 gem 'devise'
 gem 'acts_as_followable', github: 'huluren/acts_as_followable'
+gem 'invisible_captcha'
 
 # i18n
 gem 'rails-i18n'
@@ -161,6 +162,7 @@ after_bundle do
 
     theme title
     models
+    invisible_captcha
     heroku
     travis
   }
