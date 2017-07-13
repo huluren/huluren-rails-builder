@@ -62,7 +62,7 @@ inside 'app/controllers/' do
   CODE
 
   gsub_file 'places_controller.rb', /(\n(\s*?)def index\n[^\n]*?Place\.)all\n/m, <<-CODE
-\\1sample(params[:s]).q(params[:q]).limit(params[:c])
+\\1sample(params[:s]).q(params[:q]).limit(params[:c]).page(params[:page])
   CODE
 
   gsub_file 'places_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
@@ -75,6 +75,12 @@ end
 inside 'app/views/places/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('place.list_places')^
+
+  insert_into_file 'index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @places
+    CODE
+  end
 
   gsub_file '_form.html.haml', /@place/, 'place'
 

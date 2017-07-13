@@ -149,19 +149,19 @@ after_bundle do
   #   i18n ~> devise-user
   #   devise-user -> commentable
   #   devise-user -> followable
-  #   devise-user, commentable, followable -> place
-  #   devise-user, commentable, followable, place -> activity
+  #   devise-user, commentable, followable, kaminari -> place
+  #   devise-user, commentable, followable, kaminari, place -> activity
   #   place, activity -> schedule
   #   devise-user(login), place, activity, pages-landing(root) -> layout
   modules = %w{
     database env
 
     i18n devise-user commentable
-    followable place activity schedule
+    followable
+    kaminari place activity schedule
     pages-landing layout
 
     theme title
-    kaminari
     models
     heroku
     travis

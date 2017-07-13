@@ -63,7 +63,7 @@ inside 'app/controllers/' do
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def index\n[^\n]*?Activity\.)all\n/m, <<-CODE
-\\1sample(params[:s]).limit(params[:c])
+\\1sample(params[:s]).limit(params[:c]).page(params[:page])
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
@@ -76,6 +76,12 @@ end
 inside 'app/views/activities/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('activity.list_activities')^
+
+  insert_into_file 'index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @activities
+    CODE
+  end
 
   gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
