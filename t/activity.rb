@@ -8,6 +8,7 @@ en:
     from: From
     back: Back
     from_/_back: From/Back
+    date_range: dates
 
     post_new_activity: Publish new activity
 
@@ -26,6 +27,7 @@ zh-CN:
     from: 来自
     back: 返回
     from_/_back: 来自／返回
+    date_range: 往返时间
 
     post_new_activity: 发布行程
 
