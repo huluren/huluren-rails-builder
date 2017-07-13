@@ -31,12 +31,15 @@ $("#activities").replaceWith "<%= escape_javascript(render 'activities', items: 
   - items.each do |activity|
     .list-group-item.flex-column.align-items-start
       .d-flex.w-100.justify-content-between
-        .mb-1= activity.places.pluck(:name).to_sentence
-        %small.text-muted
-          = activity.start_date
-          .m-1 -
-          = activity.end_date
-      %p.mb-1= activity.description
+        .lead= activity.places.pluck(:name).to_sentence
+        %small.card.text-muted.p-1
+          .card-block.text-nowrap.p-0
+            .font-weight-bold= t('activity.date_range')
+          .card-block.text-nowrap.p-0
+            = timeago_tag activity.start_date
+            |
+            = timeago_tag activity.end_date
+      %p.m-1= activity.description
       %small<>
         = precede t("activity.posted") do
           = timeago_tag activity.created_at, class: 'ml-1'
