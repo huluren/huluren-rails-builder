@@ -162,6 +162,7 @@ after_bundle do
     theme title
     models
     heroku
+    travis
   }
 
   modules.each do |fn|
