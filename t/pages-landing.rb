@@ -70,7 +70,7 @@ $(document).on "turbolinks:load", ->
 
   $.ajax
     method: "GET"
-    url: $("#places").data("url")
+    url: $("#activities").data("url")
     data:
       c: 6
       s: true
@@ -78,7 +78,7 @@ $(document).on "turbolinks:load", ->
 
   $.ajax
     method: "GET"
-    url: $("#activities").data("url")
+    url: $("#places").data("url")
     data:
       c: 6
       s: true
