@@ -82,6 +82,19 @@ inside 'app/views/places/' do
     CODE
   end
 
+  gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
+\\1= render 'places', items: @places
+\\2
+  CODE
+
+  file '_places.html.haml', <<-CODE
+#places.list-group{'data-url': places_path}
+  - items.each do |place|
+    .list-group-item.list-group-item-action.justify-content-between
+      = place.name
+      .badge.badge-default.badge-pill= place.activities.count
+  CODE
+
   gsub_file '_form.html.haml', /@place/, 'place'
 
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :\2_id, value: current_user.id'
