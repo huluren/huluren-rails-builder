@@ -163,6 +163,7 @@ after_bundle do
 
     theme title
     models
+    db-seeds
     heroku
     travis
   }

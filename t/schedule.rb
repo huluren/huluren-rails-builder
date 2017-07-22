@@ -263,30 +263,6 @@ $(document).on "turbolinks:load", ->
 
 end
 
-append_to_file 'db/seeds.rb', <<-CODE
-activities = User.first.activities.create [
-  {
-    description: '北京旅行',
-    schedules: [
-      Schedule.new(place: Place.find_by_name('北京'), start_date: Date.today - 15.days)
-    ]
-  },
-  {
-    description: '泰国旅行',
-    schedules: [
-      Schedule.new(place: Place.find_by_name('曼谷'), start_date: Date.today + 1.months, end_date: Date.today + 45.days)
-    ]
-  },
-  {
-    description: '江浙沪一周',
-    schedules: [
-      Schedule.new(place: Place.find_by_name('上海'), start_date: Date.today),
-      Schedule.new(place: Place.find_by_name('杭州'), start_date: Date.tomorrow)
-    ]
-  },
-]
-CODE
-
 inside 'spec/factories/' do
 
   gsub_file 'schedules.rb', /(^\s*?)(activity|place) nil$/, '\1\2'
