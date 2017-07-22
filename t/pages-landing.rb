@@ -46,12 +46,12 @@ inside 'app/assets/javascripts/' do
 
   append_to_file 'pages.coffee', <<-CODE
 $(document).on "turbolinks:load", ->
-  $("#activities").html("Loading activities...")
-  $("#places").html("Loading places...")
+  $("main.pages.landing #activities").html("Loading activities...")
+  $("main.pages.landing #places").html("Loading places...")
 
   $.ajax
     method: "GET"
-    url: $("#activities").data("url")
+    url: $("main.pages.landing #activities").data("url")
     data:
       c: 6
       s: true
@@ -59,7 +59,7 @@ $(document).on "turbolinks:load", ->
 
   $.ajax
     method: "GET"
-    url: $("#places").data("url")
+    url: $("main.pages.landing #places").data("url")
     data:
       c: 6
       s: true
