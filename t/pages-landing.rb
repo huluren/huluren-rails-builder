@@ -40,14 +40,6 @@ inside('app/views/places/') do
   file 'index.js.coffee', <<-CODE
 $("#places").replaceWith "<%= escape_javascript(render 'places', items: @places) %>"
   CODE
-
-  file '_places.html.haml', <<-CODE
-#places.list-group{'data-url': places_path}
-  - items.each do |place|
-    .list-group-item.list-group-item-action.justify-content-between
-      = place.name
-      .badge.badge-default.badge-pill= place.activities.count
-  CODE
 end
 
 inside 'app/assets/javascripts/' do
