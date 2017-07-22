@@ -31,6 +31,10 @@ CODE
 
 file 'config/locales/action.yml', <<-CODE
 en:
+  action:
+    show: Show
+    edit: Edit
+    back: Back
 
 zh-CN:
   action:
