@@ -90,6 +90,17 @@ inside 'app/views/places/' do
   file '_places.html.haml', <<-CODE
 #places.list-group{'data-url': places_path}
   - items.each do |place|
+    .list-group-item.flex-column.align-items-start
+      .d-flex.w-100.justify-content-between<>
+        .lead= place.name
+        %small.card.text-muted.p-1
+      %p.place-description.mt-1<>= place.description
+      %small<>
+  CODE
+
+  file '_places_list.html.haml', <<-CODE
+#places.list-group{'data-url': places_path}
+  - items.each do |place|
     .list-group-item.list-group-item-action.justify-content-between
       = place.name
       .badge.badge-default.badge-pill= place.activities.count
