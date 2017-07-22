@@ -10,6 +10,13 @@ unless File.exists? 'config/initializers/devise.rb'
     gsub_file 'initializers/devise.rb', /^(\s*# config.pepper = ).*$/, %q^\1ENV['DEVISE_PEPPER']^
   end
 
+  append_to_file 'db/seeds.rb', <<-CODE
+users = User.create [
+  { email: 'liulantao@gmail.com', password: Devise.friendly_token[0, 20] },
+  { email: 'liulantao@liulantao.com', password: Devise.friendly_token[0, 20] },
+]
+  CODE
+
   inside 'spec' do
 
     file 'support/devise.rb', <<-CODE
