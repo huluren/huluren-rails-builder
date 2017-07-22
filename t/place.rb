@@ -127,6 +127,15 @@ inside 'app/views/places/' do
   gsub_file 'show.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
 end
 
+append_to_file 'db/seeds.rb', <<-CODE
+places = User.first.places.create [
+  { name: '北京', description: '北京市，简称“京”，是中华人民共和国首都、直辖市和京津冀城市群的中心，中国的政治、文化、交通、科技创新和国际交往中心，经济、金融的决策与管理中心。' },
+  { name: '上海', description: '上海市，简称沪，别称申，是中华人民共和国的一个直辖市，全国金融中心、交通枢纽。' },
+  { name: '杭州', description: '杭州市简称杭，位于中华人民共和国东南沿海、浙江省北部，钱塘江下游北岸，京杭大运河南端。' },
+  { name: '曼谷', description: '泰国首都' }
+]
+CODE
+
 inside 'spec/factories/' do
   gsub_file 'places.rb', /(^\s*?)(user) nil$/, '\1\2'
   gsub_file 'places.rb', /(^\s*?)(name|description) .*?$/, %q^\1sequence(:\2) {|n| 'place_\2_%d' % n }^
