@@ -38,7 +38,7 @@ end
 
 inside('app/views/places/') do
   file 'index.js.coffee', <<-CODE
-$("#places").replaceWith "<%= escape_javascript(render 'places', items: @places) %>"
+$("#places").replaceWith "<%= escape_javascript(render 'places_list', items: @places) %>"
   CODE
 end
 
