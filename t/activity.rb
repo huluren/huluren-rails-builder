@@ -92,6 +92,10 @@ inside 'app/views/activities/' do
 
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, activity: @activity'
   gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('activity.edit_activity')^
+
+  gsub_file 'new.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
+  gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
+  gsub_file 'show.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
 end
 
 inside 'spec/factories/' do
