@@ -17,15 +17,16 @@ inside('app/views/pages/') do
       %h5.nav-item.nav-link= t('menu.places')
       .nav-item.nav-link= link_to t('place.new_place'), new_place_path
     #places{'data-url': places_path}
-.row.d-flex.justify-content-center<>
-  .articles.col-md.card.border-0
-    .nav.nav-tabs.justify-content-between
-      %h5.nav-item.nav-link= t('articles')
-      .nav-item.nav-link= link_to '-', nil
-  .app.col-md-2.card.border-0
-    .nav.nav-tabs.justify-content-between
-      %h5.nav-item.nav-link= t('app')
-      .nav-item.nav-link= link_to '-', nil
+/
+  .row.d-flex.justify-content-center<>
+    .articles.col-md.card.border-0
+      .nav.nav-tabs.justify-content-between
+        %h5.nav-item.nav-link= t('articles')
+        .nav-item.nav-link= link_to '-', nil
+    .app.col-md-2.card.border-0
+      .nav.nav-tabs.justify-content-between
+        %h5.nav-item.nav-link= t('app')
+        .nav-item.nav-link= link_to '-', nil
   CODE
 end
 
