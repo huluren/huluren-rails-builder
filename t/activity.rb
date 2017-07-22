@@ -83,6 +83,12 @@ inside 'app/views/activities/' do
     CODE
   end
 
+  gsub_file 'app/views/activities/index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
+\\1
+= render 'activities', items: @activities
+\\2
+  CODE
+
   file '_activities.html.haml', <<-CODE
 #activities.list-group{'data-url': activities_path}
   - items.each do |activity|
