@@ -215,7 +215,7 @@ inside 'spec/views/activities/' do
     expect(@activities.size).to be(2)
     render
     @activities.each do |activity|
-      assert_select "tr>td", :text => activity.description.to_s, :count => 1
+      assert_select "#activities .activity-desc", :text => activity.description.to_s, :count => 1
     end
   CODE
 
