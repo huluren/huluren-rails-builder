@@ -108,6 +108,18 @@ inside 'app/views/activities/' do
           = timeago_tag activity.created_at, class: 'ml-1'
   CODE
 
+  file '_activities_list.html.haml', <<-CODE
+#activities.list-group{'data-url': activities_path}
+  - items.each do |activity|
+    .list-group-item.list-group-item-action.justify-content-between
+      = activity.places.pluck(:name).to_sentence
+      .badge.badge-default.badge-pill<>
+        = timeago_tag activity.start_date
+        %span.m-1<>
+          |
+        = timeago_tag activity.end_date
+  CODE
+
   gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
   gsub_file '_form.html.haml', /@activity/, 'activity'
