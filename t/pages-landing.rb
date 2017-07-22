@@ -34,26 +34,6 @@ inside('app/views/activities/') do
   file 'index.js.coffee', <<-CODE
 $("#activities").replaceWith "<%= escape_javascript(render 'activities', items: @activities) %>"
   CODE
-
-  file '_activities.html.haml', <<-CODE
-#activities.list-group{'data-url': activities_path}
-  - items.each do |activity|
-    .list-group-item.flex-column.align-items-start
-      .d-flex.w-100.justify-content-between<>
-        .lead= activity.places.pluck(:name).to_sentence
-        %small.card.text-muted.p-1
-          .card-block.text-nowrap.p-0<>
-            .font-weight-bold= t('activity.date_range')
-          .card-block.text-nowrap.p-0<>
-            = timeago_tag activity.start_date
-            %span.m-1<>
-              |
-            = timeago_tag activity.end_date
-      %p.activity-description.mt-1<>= activity.description
-      %small<>
-        = precede t("activity.posted") do
-          = timeago_tag activity.created_at, class: 'ml-1'
-  CODE
 end
 
 inside('app/views/places/') do
