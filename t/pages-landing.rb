@@ -7,17 +7,25 @@ inside('app/views/pages/') do
 
   file 'landing.html.haml', <<-CODE
 .row.d-flex.justify-content-center<>
-  .articles.col-lg-3
-    %h5= t('articles')
-  .col-lg-9.row.d-flex.flex-row-reverse
-    .app.col-md-2
-      %h5= t('app')
-    .activities.col-md
-      %h5= t('menu.activities')
-      #activities{'data-url': activities_path}
-    .places.col-md
-      %h5= t('menu.places')
-      #places{'data-url': places_path}
+  .activities.col-md.card.border-0
+    .nav.nav-tabs.justify-content-between
+      %h5.nav-item.nav-link= t('menu.activities')
+      .nav-item.nav-link= link_to t('activity.new_activity'), new_activity_path
+    #activities{'data-url': activities_path}
+  .places.col-md.col-lg-4.card.border-0
+    .nav.nav-tabs.justify-content-between
+      %h5.nav-item.nav-link= t('menu.places')
+      .nav-item.nav-link= link_to t('place.new_place'), new_place_path
+    #places{'data-url': places_path}
+.row.d-flex.justify-content-center<>
+  .articles.col-md.card.border-0
+    .nav.nav-tabs.justify-content-between
+      %h5.nav-item.nav-link= t('articles')
+      .nav-item.nav-link= link_to '-', nil
+  .app.col-md-2.card.border-0
+    .nav.nav-tabs.justify-content-between
+      %h5.nav-item.nav-link= t('app')
+      .nav-item.nav-link= link_to '-', nil
   CODE
 end
 
