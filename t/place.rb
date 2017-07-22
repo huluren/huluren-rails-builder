@@ -92,7 +92,7 @@ inside 'app/views/places/' do
   - items.each do |place|
     .list-group-item.flex-column.align-items-start
       .d-flex.w-100.justify-content-between<>
-        .lead= place.name
+        .lead.place-name= place.name
         %small.card.text-muted.p-1
       %p.place-description.mt-1<>= place.description
       %small<>
@@ -249,8 +249,8 @@ inside 'spec/views/places/' do
     expect(@places.size).to be(2)
     render
     @places.each do |place|
-      assert_select "tr>td", :text => place.name.to_s, :count => 1
-      assert_select "tr>td", :text => place.description.to_s, :count => 1
+      assert_select "#places .place-name", :text => place.name.to_s, :count => 1
+      assert_select "#places .place-description", :text => place.description.to_s, :count => 1
     end
   CODE
 
