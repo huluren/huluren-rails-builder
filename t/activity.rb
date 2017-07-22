@@ -84,8 +84,7 @@ inside 'app/views/activities/' do
   end
 
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
-\\1
-= render 'activities', items: @activities
+\\1= render 'activities', items: @activities
 \\2
   CODE
 
