@@ -66,7 +66,7 @@ end
 #========== Layout Views ==========#
 inside 'app/views/layouts/' do
   insert_into_file 'application.html.erb',
-    %^    <%= stylesheet_link_tag    'https://huluren.github.io/material-design-icons/iconfont/material-icons.css', media: 'all', 'data-turbolinks-track': 'reload' %>\n^,
+    %^    <%= stylesheet_link_tag    '//huluren.github.io/material-design-icons/iconfont/material-icons.css', media: 'all', 'data-turbolinks-track': 'reload' %>\n^,
     after: %^<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>\n^
 
   gsub_file 'application.html.erb', '= yield', %!= render 'layouts/body'!
