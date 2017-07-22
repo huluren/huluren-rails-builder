@@ -35,12 +35,14 @@ en:
     show: Show
     edit: Edit
     back: Back
+    more: More
 
 zh-CN:
   action:
     show: 查看
     edit: 修改
     back: 返回
+    more: 更多
 CODE
 
 #========== Layout Helpers ==========#
