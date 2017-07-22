@@ -122,7 +122,7 @@ inside 'app/views/layouts/' do
   %button.navbar-toggler.navbar-toggler-right{'aria-controls': 'navbarNavCollapse', 'aria-expanded': 'false', 'aria-label': 'Toggle navigation', 'data-target': '#navbarNavCollapse', 'data-toggle': 'collapse', type: 'button'}
     %span.navbar-toggler-icon
 
-  %a.navbar-brand{href: '#'}<
+  = link_to :root, class: 'navbar-brand' do
     %img{alt: :🏝⛵️🍀🌿}
 
   #navbarNavCollapse.collapse.navbar-collapse
