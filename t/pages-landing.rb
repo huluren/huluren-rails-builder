@@ -49,7 +49,7 @@ $("#activities").replaceWith "<%= escape_javascript(render 'activities', items: 
             %span.m-1<>
               |
             = timeago_tag activity.end_date
-      %p.mt-1<>= activity.description
+      %p.activity-description.mt-1<>= activity.description
       %small<>
         = precede t("activity.posted") do
           = timeago_tag activity.created_at, class: 'ml-1'
