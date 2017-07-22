@@ -87,7 +87,7 @@ inside 'app/views/layouts/' do
   CODE
 
   file '_main.html.haml', <<-CODE
-%main{class: params[:controller]}
+%main{class: [controller_name, action_name]}
   .container<
     = render 'layouts/flash'
   .container<
