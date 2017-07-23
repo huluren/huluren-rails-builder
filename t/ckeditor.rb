@@ -5,7 +5,7 @@ inside('app/assets/javascripts') do
     CODE
   end
 
-  file 'ckeditor-config.coffee', <<-CODE
+  file 'ckeditor/config.coffee', <<-CODE
 CKEDITOR.editorConfig = (config) ->
   config.toolbar_Mini = [
     { name: 'styles',      items: [ 'Font' ] },
