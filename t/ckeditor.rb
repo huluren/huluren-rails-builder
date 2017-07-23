@@ -26,6 +26,10 @@ inside('app/views/activities/') do
   = text_field_tag :url, nil, placeholder: t('activity.import')
   = submit_tag t('activity.import')
   CODE
+
+  append_to_file 'index.html.haml', <<-CODE
+= render 'import_activity'
+  CODE
 end
 
 gsub_file 'config/routes.rb', /^(\s+?)resources :activities$/, <<-CODE
