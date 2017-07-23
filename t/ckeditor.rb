@@ -33,7 +33,7 @@ inside('app/views/activities/') do
 end
 
 inside('app/controllers/') do
-  gsub_file 'activities_controller.rb', /^(\s+?)def new.*?\1[^\s]+\n/, <<-CODE
+  gsub_file 'activities_controller.rb', /^([ ]+?)def new.*?\1[^\s]+\n/, <<-CODE
 \\0
 \\1def import
 \\1  @activity = Activity.new
@@ -47,7 +47,7 @@ inside('app/controllers/') do
   CODE
 end
 
-gsub_file 'config/routes.rb', /^(\s+?)resources :activities$/, <<-CODE
+gsub_file 'config/routes.rb', /^([ ]+?)resources :activities$/, <<-CODE
 \\0 do
 \\1  get 'import', on: :new
 \\1end
