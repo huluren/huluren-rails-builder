@@ -19,3 +19,17 @@ CKEDITOR.editorConfig = (config) ->
   true
   CODE
 end
+
+inside('app/views/activities/') do
+  file '_import_activity.html.haml', <<-CODE
+= form_tag :import_new_activity, method: :get do
+  = text_field_tag :url, nil, placeholder: t('activity.import')
+  = submit_tag t('activity.import')
+  CODE
+end
+
+gsub_file 'config/routes.rb', /^(\s+?)resources :activities$/, <<-CODE
+\\0 do
+\\1  get 'import', on: :new
+\\1end
+CODE
