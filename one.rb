@@ -163,6 +163,7 @@ after_bundle do
     pages-landing layout
 
     theme title
+    ckeditor
     models
     db-seeds
     heroku
