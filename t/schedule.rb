@@ -93,7 +93,7 @@ inside 'app/views/activities/' do
 \\2  .input-group
 \\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.description')
 \\2    = f.text_area :description,
-\\2                  class: 'form-control',
+\\2                  class: 'form-control ckeditor',
 \\2                  placeholder: t('activity.add_description'),
 \\2                  'aria-describedby': 'activity-description-help',
 \\2                  rows: 3
