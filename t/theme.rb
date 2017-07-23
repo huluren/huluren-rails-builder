@@ -13,7 +13,13 @@ inside('app/assets/stylesheets') do
   run 'mv application.css application.scss'
 
   insert_into_file 'application.scss', %^ *= require normalize-rails\n^, before: /^\s\*= require_tree \.\n/
-  insert_into_file 'application.scss', %^ *= require jquery-ui\n^, before: /^\s\*= require_tree \.\n/
+  insert_into_file 'application.scss', before: /^\s\*= require_tree \.\n/ do
+    <<-CODE
+ *= require jquery-ui/datepicker
+ *= require jquery-ui/autocomplete
+ *= require jquery-ui/menu
+    CODE
+  end
 
   gsub_file 'application.scss', /^\s*\*= require_tree \.\n/, ''
   gsub_file 'application.scss', /^\s*\*= require_self\n/, ''
@@ -53,10 +59,10 @@ end
 inside('app/assets/javascripts') do
   insert_into_file 'application.js', before: '//= require rails-ujs' do
     <<-CODE
-//= require jquery
+//= require jquery.min
 //= require jquery_ujs
 //= require tether
-//= require bootstrap-sprockets
+//= require bootstrap.min
 //= require rails-timeago
 //= require locales/jquery.timeago.zh-CN.js
     CODE
