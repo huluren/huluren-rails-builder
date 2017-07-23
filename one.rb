@@ -168,6 +168,7 @@ after_bundle do
     db-seeds
     heroku
     travis
+    puma
   }
 
   modules.each do |fn|
