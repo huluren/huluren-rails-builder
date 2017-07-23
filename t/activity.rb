@@ -4,6 +4,7 @@ file 'config/locales/activity.yml', <<-CODE
 en:
   activity:
     create: New Activity
+    import: Import Activity
     posted: Post at
     from: From
     back: Back
@@ -23,6 +24,7 @@ en:
 zh-CN:
   activity:
     create: '发布新行程'
+    import: 导入行程
     posted: '提交于'
     from: 来自
     back: 返回
