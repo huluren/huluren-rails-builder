@@ -47,8 +47,8 @@ inside('app/controllers/') do
   CODE
 end
 
-gsub_file 'config/routes.rb', /^([ ]+?)resources :activities\n/, <<-CODE
-\\0 do
+insert_into_file 'config/routes.rb', after: /^([ ]+?)resources :activities$/, <<-CODE
+ do
 \\1  get 'import', on: :new
 \\1end
 CODE
