@@ -71,9 +71,6 @@ end
 #========== Git ==========#
 append_to_file '.gitignore', '/db/*.sqlite'
 
-#========== Foreman ==========#
-file 'Procfile', 'web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}'
-
 inside 'config/' do
   gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1<%= ENV['SECRET_KEY_BASE'] %>^
 end
