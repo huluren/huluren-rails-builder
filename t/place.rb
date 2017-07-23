@@ -94,7 +94,7 @@ inside 'app/views/places/' do
       .d-flex.w-100.justify-content-between<>
         .lead.place-name= place.name
         %small.card.text-muted.p-1
-      %p.place-description.mt-1<>= place.description
+      %p.place-description.mt-1<>= place.description.html_safe
       %small<>
   CODE
 
