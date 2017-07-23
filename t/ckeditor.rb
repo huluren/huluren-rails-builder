@@ -33,7 +33,7 @@ inside('app/views/activities/') do
 end
 
 inside('app/controllers/') do
-  gsub_file 'activities_controller.rb', /^([ ]+?)def new.*?\1end?\n/m, <<-CODE
+  gsub_file 'activities_controller.rb', /^([ ]+?)def new.*?\1end\n/m, <<-CODE
 \\0
 \\1def import
 \\1  @activity = Activity.new
