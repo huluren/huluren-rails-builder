@@ -17,3 +17,5 @@ on_worker_boot do
   ActiveRecord::Base.establish_connection
 end
 CODE
+
+file 'config/initializers/timeout.rb', 'Rack::Timeout.timeout = 20  # seconds'
