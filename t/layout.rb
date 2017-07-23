@@ -71,11 +71,18 @@ end
 
 #========== Layout Views ==========#
 inside 'app/views/layouts/' do
+  insert_into_file 'application.html.erb', before: '^([ ]+?)<title>.+' do
+    <<-CODE
+\\1<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    CODE
+  end
+
   insert_into_file 'application.html.erb',
     %^    <%= stylesheet_link_tag    '//huluren.github.io/material-design-icons/iconfont/material-icons.css', media: 'all', 'data-turbolinks-track': 'reload' %>\n^,
     after: %^<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>\n^
 
   gsub_file 'application.html.erb', '= yield', %!= render 'layouts/body'!
+
   file '_body.html.haml', <<-CODE
 = render 'layouts/header'
 = render 'layouts/main'
