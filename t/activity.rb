@@ -104,7 +104,7 @@ inside 'app/views/activities/' do
             %span.m-1<>
               |
             = timeago_tag activity.end_date
-      %p.activity-description.mt-1<>= activity.description
+      %p.activity-description.mt-1<>= activity.description.html_safe
       %small<>
         = precede t("activity.posted") do
           = timeago_tag activity.created_at, class: 'ml-1'
