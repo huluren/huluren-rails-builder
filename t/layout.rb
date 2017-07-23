@@ -71,7 +71,7 @@ end
 
 #========== Layout Views ==========#
 inside 'app/views/layouts/' do
-  insert_into_file 'application.html.erb', before: '^([ ]+?)<title>.+' do
+  insert_into_file 'application.html.erb', before: /^([ ]+?)<(title)>.+<\/(\2)>$/ do
     <<-CODE
 \\1<meta name="viewport" content="width=device-width, initial-scale=1.0">
     CODE
