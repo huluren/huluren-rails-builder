@@ -15,6 +15,17 @@ inside 'app/controllers/' do
 
 end
 
-gsub_file 'spec/views/comments/index.html.haml_spec.rb', /(@(comments) = assign\(:\2, )(create_list.+?)(\))\n/, <<-CODE
+inside 'spec/views/' do
+  gsub_file 'comments/index.html.haml_spec.rb', /(@(comments) = assign\(:\2, )(create_list.+?)(\))\n/, <<-CODE
 \\1Kaminari.paginate_array(\\3).page(1)\\4
 CODE
+
+  gsub_file 'places/index.html.haml_spec.rb', /(@(places) = assign\(:\2, )(create_list.+?)(\))\n/, <<-CODE
+\\1Kaminari.paginate_array(\\3).page(1)\\4
+CODE
+
+  gsub_file 'activities/index.html.haml_spec.rb', /(@(activities) = assign\(:\2, )(create_list.+?)(\))\n/, <<-CODE
+\\1Kaminari.paginate_array(\\3).page(1)\\4
+CODE
+
+end
