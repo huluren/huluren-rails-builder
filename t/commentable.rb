@@ -114,7 +114,7 @@ inside 'app/controllers/' do
 \\3
   CODE
 
-  insert_into_file 'comments_controller.rb', after: /(\s+?)if @comment.save/ do
+  insert_into_file 'comments_controller.rb', after: /^([ ]+?)if @comment.save\n/ do
     <<-CODE
 \\1  format.js
     CODE
