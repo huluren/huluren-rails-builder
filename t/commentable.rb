@@ -120,7 +120,7 @@ end
 inside 'app/views/comments/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('comment.list_comments')^
-  gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment])'
+  gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment]), id: 'new_comment''
 
   insert_into_file 'index.html.haml', before: /^%(table|br)/ do
     <<-CODE
@@ -159,7 +159,7 @@ inside 'app/views/comments/' do
 \\2  .input-group
 \\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('comment.content')
 \\2    = f.text_area :content,
-\\2                  class: 'form-control',
+\\2                  class: 'form-control ckeditor',
 \\2                  placeholder: t('comment.write_comment'),
 \\2                  'aria-describedby': 'comment-content-help',
 \\2                  rows: 3
@@ -175,11 +175,19 @@ inside 'app/views/comments/' do
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, comment: @comment'
   gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= t('comment.new_comment')^
 
+  file 'new.js.coffee', <<-CODE
+$("#new_comment").replaceWith "<%= escape_javascript(render 'form', comment: @comment) %>"
+  CODE
+
   gsub_file 'show.html.haml', /comments_path/, '[@commentable, Comment]'
 
   gsub_file 'edit.html.haml', /comments_path/, '[@commentable, Comment]'
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, comment: @comment'
   gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('comment.edit_comment')^
+
+  file 'create.js.coffee', <<-CODE
+$("#new_comment").replaceWith "<%= escape_javascript(render 'comments', commentable: @commentable, items: [@comment]) %>"
+  CODE
 
   gsub_file 'new.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
   gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
