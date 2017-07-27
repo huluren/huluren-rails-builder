@@ -64,6 +64,7 @@ inside('app/assets/javascripts') do
 //= require tether
 //= require bootstrap.min
     CODE
+  end
 
   insert_into_file 'application.js', after: '//= require rails-ujs' do
     <<-CODE
