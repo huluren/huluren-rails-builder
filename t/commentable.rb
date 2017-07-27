@@ -133,7 +133,7 @@ inside 'app/views/comments/' do
   gsub_file '_form.html.haml', /@comment/, 'comment'
 
   gsub_file '_form.html.haml', /(= f.text_field :)(user|commentable)$/, '= f.hidden_field :\2_id'
-  gsub_file '_form.html.haml', /(= f.hidden_field :)(user_id)$/, '\1, value: current_user.id'
+  gsub_file '_form.html.haml', /(= f.hidden_field :)(user_id)$/, '\1\2, value: current_user.id'
   gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
 
   gsub_file '_form.html.haml', /(= form_for ([@]*comment))( do .*)\n/, <<-CODE
