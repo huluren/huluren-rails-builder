@@ -100,7 +100,7 @@ inside 'app/views/places/' do
         - if place.respond_to? :comments
           %small
             = link_to t('comment.comments', count: place.comments.count),
-                      polymorphic_url([place, :comments], only_path: true)q
+                      polymorphic_url([place, :comments], only_path: true)
   CODE
 
   file '_places_list.html.haml', <<-CODE
