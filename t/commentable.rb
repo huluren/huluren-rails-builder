@@ -274,6 +274,7 @@ inside 'spec/views/comments/' do
 \\1@commentable = create :user
 \\2assign(:comment, build(:comment, commentable: @commentable))
   CODE
+  insert_into_file 'new.html.haml_spec.rb', %^\\1  sign_in(create(:user))^, after: /(\s+?)before\(:each\) do/
 
   gsub_file 'new.html.haml_spec.rb', /(, )(comments_path)(, )/, '\1user_\2(@commentable)\3'
 
@@ -281,6 +282,7 @@ inside 'spec/views/comments/' do
 \\1@commentable = build(:user)
 \\2@comment = assign(:comment, create(:comment, commentable: @commentable))
   CODE
+  insert_into_file 'edit.html.haml_spec.rb', %^\\1  sign_in(create(:user))^, after: /(\s+?)before\(:each\) do/
 
   gsub_file 'index.html.haml_spec.rb', /assign\(:comments,.*?\]\)(\n)/m, <<-CODE
 @commentable = create :user
