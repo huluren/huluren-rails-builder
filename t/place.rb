@@ -50,8 +50,6 @@ inside 'app/models/' do
   scope :q, ->(query_string) { query_string.nil? ? nil : where("name LIKE ?", "%\#{query_string}%") }
 
   acts_as_followable
-
-  has_many :comments, as: :commentable
   CODE
 
 end
