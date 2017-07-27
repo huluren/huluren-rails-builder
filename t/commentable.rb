@@ -40,6 +40,17 @@ CODE
 inside 'app/models/' do
   inject_into_class 'user.rb', 'User', <<-CODE
   has_many :user_comments, class_name: 'Comment'
+  CODE
+
+  inject_into_class 'user.rb', 'User', <<-CODE
+  has_many :comments, as: :commentable
+  CODE
+
+  inject_into_class 'place.rb', 'Place', <<-CODE
+  has_many :comments, as: :commentable
+  CODE
+
+  inject_into_class 'activity.rb', 'Activity', <<-CODE
   has_many :comments, as: :commentable
   CODE
 
