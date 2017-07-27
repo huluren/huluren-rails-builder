@@ -82,11 +82,11 @@ inside 'app/views/places/' do
   end
 
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
-\\1= render 'places', items: @places
+\\1= render 'items', items: @places
 \\2
   CODE
 
-  file '_places.html.haml', <<-CODE
+  file '_items.html.haml', <<-CODE
 #places.list-group{'data-url': places_path}
   - items.each do |place|
     .list-group-item.flex-column.align-items-start
@@ -104,7 +104,7 @@ inside 'app/views/places/' do
                       polymorphic_url([place, :comments], only_path: true)
   CODE
 
-  file '_places_list.html.haml', <<-CODE
+  file '_items_list.html.haml', <<-CODE
 #places.list-group{'data-url': places_path}
   - items.each do |place|
     .list-group-item.list-group-item-action.justify-content-between
