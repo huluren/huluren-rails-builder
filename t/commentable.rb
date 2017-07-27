@@ -73,6 +73,10 @@ inside 'app/models/' do
 end
 
 inside 'app/controllers/' do
+  inject_into_class 'comments_controller.rb', CommentsController, <<-CODE
+  before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy]
+  CODE
+
   gsub_file 'comments_controller.rb', /(\n(\s*))(before_action :set_comment)(, only.*?)\n/, <<-CODE
 \\1before_action :set_commentable, only: [:index, :create, :new]
 \\2\\3_commentable\\4
