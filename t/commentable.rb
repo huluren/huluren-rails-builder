@@ -13,6 +13,7 @@ file 'config/locales/comment.yml', <<-CODE
 en:
   comment:
     comment: Comment
+    content: Content
     write_comment: Write your comment...
     leave_comment_here: Leave comment here.
     save: Post
@@ -30,6 +31,7 @@ en:
 zh-CN:
   comment:
     comment: 评论
+    content: 内容
     write_comment: 发表评论……
     leave_comment_here: 留下你的评论。
     save: 发布
