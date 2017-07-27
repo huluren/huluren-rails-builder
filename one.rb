@@ -145,27 +145,28 @@ CODE
 after_bundle do
   # Depencencies:
   #   i18n ~> devise-user
-  #   devise-user -> commentable
-  #   devise-user -> followable
-  #   devise-user, commentable, followable, kaminari -> place
-  #   devise-user, commentable, followable, kaminari, place -> activity
+  #   devise-user -> place
+  #   devise-user, place -> activity
+  #   devise-user, place, activity -> followable
+  #   devise-user, place, activity -> commentable
   #   place, activity -> schedule
+  #   place, activity, commentable -> kaminari
+  #   activity -> ckeditor
   #   devise-user(login), place, activity, pages-landing(root) -> layout
   modules = %w{
+    heroku travis puma
     database env
 
-    i18n devise-user commentable
-    followable
-    kaminari place activity schedule
-    pages-landing layout
-
-    theme title
-    ckeditor
     models
+    i18n devise-user place activity ckeditor
+    schedule
+    followable
+    commentable
+    kaminari 
+    pages-landing layout
+    theme title
+
     db-seeds
-    heroku
-    travis
-    puma
   }
 
   modules.each do |fn|
