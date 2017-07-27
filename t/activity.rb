@@ -224,7 +224,7 @@ end
 
 inside 'spec/views/activities/' do
   gsub_file 'index.html.haml_spec.rb', /(\s*?)assign\(:activities,.*?\]\)(\n)/m, <<-CODE
-\\1@activities = assign(:activities, Kaminari.paginate_array(create_list(:activity, 2)).page(1))
+\\1@activities = assign(:activities, create_list(:activity, 2))
   CODE
 
   gsub_file 'index.html.haml_spec.rb', /(renders a list of activities.*?)\n\s+render(\s*assert_select.*?\n)+/m, <<-CODE
