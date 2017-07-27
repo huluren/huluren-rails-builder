@@ -86,11 +86,11 @@ inside 'app/views/activities/' do
   end
 
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
-\\1= render 'activities', items: @activities
+\\1= render 'items', items: @activities
 \\2
   CODE
 
-  file '_activities.html.haml', <<-CODE
+  file '_items.html.haml', <<-CODE
 #activities.list-group{'data-url': activities_path}
   - items.each do |activity|
     .list-group-item.flex-column.align-items-start
@@ -115,7 +115,7 @@ inside 'app/views/activities/' do
                       polymorphic_url([activity, :comments], only_path: true)
   CODE
 
-  file '_activities_list.html.haml', <<-CODE
+  file '_items_list.html.haml', <<-CODE
 #activities.list-group{'data-url': activities_path}
   - items.each do |activity|
     .list-group-item.list-group-item-action.justify-content-between
