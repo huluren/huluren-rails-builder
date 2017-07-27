@@ -138,7 +138,6 @@ inside 'app/views/activities/' do
 
   gsub_file 'new.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
   gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
-  gsub_file 'show.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
 end
 
 inside 'spec/factories/' do
