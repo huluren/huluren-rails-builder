@@ -93,7 +93,14 @@ inside 'app/views/places/' do
         .lead.place-name= place.name
         %small.card.text-muted.p-1
       %p.place-description.mt-1<>= place.description.html_safe
-      %small<>
+      .d-flex.w-100.justify-content-between<>
+        %small
+          = precede t("place.posted") do
+            = timeago_tag place.created_at, class: 'ml-1'
+        - if place.respond_to? :comments
+          %small
+            = link_to t('comment.comments', count: place.comments.count),
+                      polymorphic_url([place, :comments], only_path: true)q
   CODE
 
   file '_places_list.html.haml', <<-CODE
