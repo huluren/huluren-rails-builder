@@ -6,6 +6,25 @@ unless File.exists? 'config/initializers/devise.rb'
   generate :devise, :user
 
   route 'resources :users, only: []'
+  
+  inside 'app/views/users/' do
+    file '_items.html.haml', <<-CODE
+#users.list-group
+  - items.each do |user|
+    .list-group-item.flex-column.align-items-start
+      .d-flex.w-100.justify-content-between<>
+        .lead.user-name
+          = precede user.model_name.human do
+            %b.ml-1<>= user.id
+        %small.card.text-muted.p-1
+      %p.user-description.mt-1<>
+      .d-flex.w-100.justify-content-between<>
+        - if user.respond_to? :comments
+          %small
+            = link_to t('comment.comments', count: user.comments.count),
+                      polymorphic_url([user, :comments], only_path: true)
+    CODE
+  end
 
   inside 'config/' do
     gsub_file 'initializers/devise.rb', /^(\s*# config.secret_key = ).*$/, %q^\1ENV['DEVISE_SECRET_KEY']^
