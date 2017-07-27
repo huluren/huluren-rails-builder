@@ -1,7 +1,13 @@
 #========== Comment ==========#
 generate 'scaffold comment user:references content:text commentable:references{polymorphic}:index --no-resource-route'
 
-route %Q{concern :commentable do\n    resources :comments, shallow: true\n  end\n  resources :users, only: [], concerns: :commentable}
+route <<-CODE
+  concern :commentable do
+    resources :comments, shallow: true
+  end
+CODE
+
+gsub_file 'config/routes.rb', /resources :(users|places|activities)/, '\0, concerns: :commentable'
 
 file 'config/locales/comment.yml', <<-CODE
 en:
