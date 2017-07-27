@@ -136,11 +136,11 @@ inside 'app/views/comments/' do
   end
 
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
-\\1= render 'comments', commentable: @commentable, items: @comments
+\\1= render 'items', commentable: @commentable, items: @comments
 \\2
   CODE
 
-  file '_comments.html.haml', <<-CODE
+  file '_items.html.haml', <<-CODE
 / commentable, items
 #comments.list-group{'data-url': polymorphic_url([commentable, :comments], only_path: true)}
   - items.each do |comment|
@@ -193,7 +193,7 @@ $("#new_comment").replaceWith "<%= escape_javascript(render 'form', comment: @co
   gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('comment.edit_comment')^
 
   file 'create.js.coffee', <<-CODE
-$("#new_comment").replaceWith "<%= escape_javascript(render 'comments', commentable: @commentable, items: [@comment]) %>"
+$("#new_comment").replaceWith "<%= escape_javascript(render 'items', commentable: @commentable, items: [@comment]) %>"
   CODE
 
   gsub_file 'new.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
