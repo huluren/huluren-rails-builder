@@ -2,7 +2,7 @@
 generate 'scaffold comment user:references content:text commentable:references{polymorphic}:index --no-resource-route'
 
 route <<-CODE
-  concern :commentable do
+concern :commentable do
     resources :comments, shallow: true
   end
 CODE
