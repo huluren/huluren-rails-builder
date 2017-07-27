@@ -63,6 +63,10 @@ inside('app/assets/javascripts') do
 //= require jquery_ujs
 //= require tether
 //= require bootstrap.min
+    CODE
+
+  insert_into_file 'application.js', after: '//= require rails-ujs' do
+    <<-CODE
 //= require rails-timeago
 //= require locales/jquery.timeago.zh-CN.js
     CODE
