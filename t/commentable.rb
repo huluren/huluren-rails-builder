@@ -13,7 +13,6 @@ file 'config/locales/comment.yml', <<-CODE
 en:
   comment:
     comment: Comment
-    list_comments: Comments
     write_comment: Write your comment...
     leave_comment_here: Leave comment here.
     save: Post
@@ -23,10 +22,14 @@ en:
       few: "%{count} comments"
       many: "%{count} comments"
       other: "%{count} comments"
+
+    list_comments: Comments
+    new_comment: New Comment
+    edit_comment: Update Comment
+
 zh-CN:
   comment:
     comment: 评论
-    list_comments: 评论列表
     write_comment: 发表评论……
     leave_comment_here: 留下你的评论。
     save: 发布
@@ -37,6 +40,10 @@ zh-CN:
       many: "%{count} 条评论"
       other: "%{count} 条评论"
     new_comment: 添加评论
+
+    list_comments: 评论列表
+    new_comment: 添加评论
+    edit_comment: 编辑评论
 CODE
 
 inside 'app/models/' do
