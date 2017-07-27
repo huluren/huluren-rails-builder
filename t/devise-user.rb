@@ -5,6 +5,8 @@ unless File.exists? 'config/initializers/devise.rb'
   generate 'devise:i18n:locale', :'zh-CN'
   generate :devise, :user
 
+  route 'resources :users, only: []'
+
   inside 'config/' do
     gsub_file 'initializers/devise.rb', /^(\s*# config.secret_key = ).*$/, %q^\1ENV['DEVISE_SECRET_KEY']^
     gsub_file 'initializers/devise.rb', /^(\s*# config.pepper = ).*$/, %q^\1ENV['DEVISE_PEPPER']^
