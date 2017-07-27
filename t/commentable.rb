@@ -130,10 +130,32 @@ inside 'app/views/comments/' do
       %small<>
   CODE
 
-  gsub_file '_form.html.haml', /(= f.text_field :)(user|commentable)$/, '\1\2_id'
-  gsub_file '_form.html.haml', /= form_for @comment( do .*)\n/, <<-CODE
-- form_path = comment.id ? comment_path(comment) : polymorphic_url([comment.commentable, :comments], only_path: true)
-= form_for comment, url: form_path\\1
+  gsub_file '_form.html.haml', /@comment/, 'comment'
+
+  gsub_file '_form.html.haml', /(= f.text_field :)(user|commentable)$/, '= f.hidden_field :\2_id'
+  gsub_file '_form.html.haml', /(= f.hidden_field :)(user_id)$/, '\1, value: current_user.id'
+  gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
+
+  gsub_file '_form.html.haml', /(= form_for ([@]*comment))( do .*)\n/, <<-CODE
+- form_path = \\2.id ? comment_path(\\2) : polymorphic_url([\\2.commentable, :comments], only_path: true)
+\\1, url: form_path\\3
+  CODE
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
+\\1.form-group.row
+\\2  .input-group
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('comment.content')
+\\2    = f.text_area :content,
+\\2                  class: 'form-control',
+\\2                  placeholder: t('comment.write_comment'),
+\\2                  'aria-describedby': 'comment-content-help',
+\\2                  rows: 3
+\\2  %small#comment-content-help.form-text.text-muted<>= t('comment.write_comment')
+  CODE
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?= f.submit [^\n]+?\n/m, <<-CODE
+\\1.form-group.row.actions
+\\2  = f.submit t('comment.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
   CODE
 
   gsub_file 'new.html.haml', /comments_path/, '[@commentable, Comment]'
