@@ -64,7 +64,7 @@ inside 'app/controllers/' do
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def index\n[^\n]*?Activity\.)all\n/m, <<-CODE
-\\1sample(params[:s]).limit(params[:c]).page(params[:page])
+\\1sample(params[:s]).limit(params[:c])
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
