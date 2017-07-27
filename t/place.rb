@@ -73,6 +73,7 @@ end
 inside 'app/views/places/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('place.list_places')^
+  gsub_file 'index.html.haml', /link_to 'New Place'/, %q{link_to t('place.new_place')}
 
   insert_into_file 'index.html.haml', before: /^%(table|br)/ do
     <<-CODE
