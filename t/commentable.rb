@@ -114,6 +114,12 @@ inside 'app/controllers/' do
 \\3
   CODE
 
+  insert_into_file 'comments_controller.rb', after: /(\s+?)if @comment.save/ do
+    <<-CODE
+\\1  format.js
+    CODE
+  end
+
   gsub_file 'comments_controller.rb', /(redirect_to )comments_url(, )/, '\1polymorphic_url([@commentable, Comment])\2'
 end
 
