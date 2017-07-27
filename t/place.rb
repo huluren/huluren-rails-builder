@@ -246,7 +246,7 @@ end
 
 inside 'spec/views/places/' do
   gsub_file 'index.html.haml_spec.rb', /(\s*?)assign\(:places,.*?\]\)(\n)/m, <<-CODE
-\\1@places = assign(:places, Kaminari.paginate_array(create_list(:place, 2)).page(1))
+\\1@places = assign(:places, create_list(:place, 2))
   CODE
 
   gsub_file 'index.html.haml_spec.rb', /(renders a list of places.*?)\n\s+render(\s*assert_select.*?\n)+/m, <<-CODE
