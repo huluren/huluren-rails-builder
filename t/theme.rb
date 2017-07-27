@@ -66,7 +66,7 @@ inside('app/assets/javascripts') do
     CODE
   end
 
-  insert_into_file 'application.js', after: '//= require rails-ujs' do
+  insert_into_file 'application.js', after: "//= require rails-ujs\n" do
     <<-CODE
 //= require rails-timeago
 //= require locales/jquery.timeago.zh-CN.js
