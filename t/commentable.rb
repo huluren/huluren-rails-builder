@@ -241,7 +241,15 @@ inside 'spec/models/' do
 CODE
 end
 
-inside 'spec/controllers' do
+inside 'spec/controllers/' do
+  insert_into_file 'comments_controller_spec.rb', after: /^(\n+?(\s+?))describe "(GET|POST|PUT|DELETE) #(new|edit|create|update|destroy)" do\n/ do
+    <<-CODE
+\\2  before do
+\\2    sign_in create(:user)
+\\2  end
+    CODE
+  end
+
   gsub_file 'comments_controller_spec.rb', /let\(:valid_attributes\) \{\n\s*skip.*?\n\s*\}\n/m, <<-CODE
 let(:valid_attributes) {
     build(:comment, commentable: create(:user)).attributes.except("id", "created_at", "updated_at")
