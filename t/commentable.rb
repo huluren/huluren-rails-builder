@@ -193,6 +193,33 @@ $("#new_comment").replaceWith "<%= escape_javascript(render 'comments', commenta
   gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
 end
 
+inside 'app/assets/javascripts/' do
+
+  append_to_file 'comments.coffee', <<-CODE
+$(document).on "turbolinks:load", ->
+  setup_form_new_comment = ->
+    $("main.comments.index form#new_comment").submit (e) ->
+      e.preventDefault()
+      $.ajax
+        method: 'POST'
+        url: $(this).attr("action")
+        data: $(this).serialize()
+        dataType: "script"
+
+  $("main.comments.index a#new_comment").on 'click', (event) ->
+    event.preventDefault()
+
+    $.ajax
+      method: "GET"
+      url: $(this).attr("href")
+      dataType: "script"
+      complete: setup_form_new_comment
+
+  true
+  CODE
+
+end
+
 inside('spec/factories/') do
   gsub_file 'comments.rb', /^\s*user nil$/, '    user'
   gsub_file 'comments.rb', /^\s*content .*$/, '    sequence(:content) {|n| %/Comment Content #{n}/ }'
