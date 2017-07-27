@@ -35,7 +35,6 @@ gem_group :development do
   gem 'binding_of_caller'
   gem 'rails_best_practices'
   gem 'brakeman', require: false
-  gem 'bullet'
 end
 
 gem_group :test do
