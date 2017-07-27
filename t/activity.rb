@@ -54,8 +54,6 @@ inside 'app/models/' do
   validates :description, presence: true
 
   acts_as_followable
-
-  has_many :comments, as: :commentable
   CODE
 
 end
