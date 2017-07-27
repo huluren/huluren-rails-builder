@@ -126,6 +126,7 @@ end
 inside 'app/views/comments/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('comment.list_comments')^
+  gsub_file 'index.html.haml', /link_to 'New Comment'/, %q{link_to t('comment.new_comment')}
   gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment]), id: (user_signed_in? ? :new_comment : nil)'
 
   insert_into_file 'index.html.haml', before: /^%(table|br)/ do
