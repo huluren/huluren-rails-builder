@@ -104,9 +104,14 @@ inside 'app/views/activities/' do
               |
             = timeago_tag activity.end_date
       %p.activity-description.mt-1<>= activity.description.html_safe
-      %small<>
-        = precede t("activity.posted") do
-          = timeago_tag activity.created_at, class: 'ml-1'
+      .d-flex.w-100.justify-content-between<>
+        %small
+          = precede t("activity.posted") do
+            = timeago_tag activity.created_at, class: 'ml-1'
+        - if activity.respond_to? :comments
+          %small
+            = link_to t('comment.comments', count: activity.comments.count),
+                      polymorphic_url([activity, :comments], only_path: true)
   CODE
 
   file '_activities_list.html.haml', <<-CODE
