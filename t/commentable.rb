@@ -13,6 +13,7 @@ file 'config/locales/comment.yml', <<-CODE
 en:
   comment:
     comment: Comment
+    list_comments: Comments
     write_comment: Write your comment...
     leave_comment_here: Leave comment here.
     save: Post
@@ -25,6 +26,7 @@ en:
 zh-CN:
   comment:
     comment: 评论
+    list_comments: 评论列表
     write_comment: 发表评论……
     leave_comment_here: 留下你的评论。
     save: 发布
@@ -103,13 +105,36 @@ inside 'app/controllers/' do
 end
 
 inside 'app/views/comments/' do
+  gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
+  gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('comment.list_comments')^
+  gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment])'
+
+  insert_into_file 'index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @comments
+    CODE
+  end
+
+  gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
+\\1= render 'comments', commentable: @commentable, items: @comments
+\\2
+  CODE
+
+  file '_comments.html.haml', <<-CODE
+/ commentable, items
+#comments.list-group{'data-url': polymorphic_url([commentable, :comments], only_path: true)}
+  - items.each do |comment|
+    .list-group-item.flex-column.align-items-start
+      .d-flex.w-100.justify-content-between<>
+      %p.comment-content.mt-1<>= comment.content.html_safe
+      %small<>
+  CODE
+
   gsub_file '_form.html.haml', /(= f.text_field :)(user|commentable)$/, '\1\2_id'
   gsub_file '_form.html.haml', /= form_for @comment( do .*)\n/, <<-CODE
 - form_path = comment.id ? comment_path(comment) : polymorphic_url([comment.commentable, :comments], only_path: true)
 = form_for comment, url: form_path\\1
   CODE
-
-  gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment])'
 
   gsub_file 'new.html.haml', /comments_path/, '[@commentable, Comment]'
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, comment: @comment'
