@@ -259,7 +259,7 @@ inside 'spec/views/comments/' do
     render
 
     @comments.each do |comment|
-      assert_select "tr>td", :text => comment.content.to_s, :count => 1
+      assert_select "#comments .comment-content", :text => comment.content.to_s, :count => 1
     end
   CODE
 
