@@ -160,11 +160,17 @@ inside 'app/views/comments/' do
 
   gsub_file 'new.html.haml', /comments_path/, '[@commentable, Comment]'
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, comment: @comment'
+  gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= t('comment.new_comment')^
 
   gsub_file 'show.html.haml', /comments_path/, '[@commentable, Comment]'
 
   gsub_file 'edit.html.haml', /comments_path/, '[@commentable, Comment]'
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, comment: @comment'
+  gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('comment.edit_comment')^
+
+  gsub_file 'new.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
+  gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
+  gsub_file 'show.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
 end
 
 inside('spec/factories/') do
