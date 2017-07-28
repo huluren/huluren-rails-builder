@@ -2,8 +2,11 @@ generate 'model authentication', 'user:references provider uid token secret emai
 generate 'devise:controllers authentication', '-c=omniauth_callbacks'
 
 inside 'app/models/' do
-  inject_into_class 'user.rb', 'User', <<-CODE
+  inject_into_class 'authentication.rb', 'Authentication', <<-CODE
   validates :provider, :uid, :token, presence: true
+  CODE
+
+  inject_into_class 'user.rb', 'User', <<-CODE
   has_many :authentications
 
   def self.from_omniauth(auth, current_user)
