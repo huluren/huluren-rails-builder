@@ -6,6 +6,8 @@ DEVISE_SECRET_KEY=${DEVISE_SECRET_KEY:-$(ruby -rsecurerandom -e "puts SecureRand
 DEVISE_PEPPER=${DEVISE_PEPPER:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(64)")}
 #GITHUB_APP_ID=
 #GITHUB_APP_SECRET=
+#TWITTER_API_KEY=
+#TWITTER_API_SECRET=
 CODE
 
 file '.env.development', <<-CODE
