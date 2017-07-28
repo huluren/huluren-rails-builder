@@ -61,6 +61,7 @@ insert_into_file 'config/routes.rb', %q^, controllers: { omniauth_callbacks: 'au
 insert_into_file 'config/initializers/devise.rb', after: /# config.omniauth [^\n]+?\n/ do
   <<-CODE
   config.omniauth :github, ENV['GITHUB_APP_ID'], ENV['GITHUB_APP_SECRET'], scope: 'user:email'
+  config.omniauth :twitter, ENV['TWITTER_API_KEY'], ENV['TWITTER_API_SECRET'], scope: 'user:email'
   CODE
 end
 
