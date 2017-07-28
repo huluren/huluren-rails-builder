@@ -31,9 +31,7 @@ inside 'app/models/' do
   end
   CODE
   
-  insert_into_file 'user.rb', after: ':validatable' do
-    %q^, :omniauthable^
-  end
+  insert_into_file 'user.rb', ', :omniauthable', after: ':validatable'
 end
 
 inside 'app/controllers/authentication/' do
@@ -58,9 +56,7 @@ inside 'app/controllers/authentication/' do
 
 end
 
-insert_into_file 'config/routes.rb', after: 'devise_for :users' do
-  %q^, controllers: { omniauth_callbacks: 'authentication/omniauth_callbacks' }^
-end
+insert_into_file 'config/routes.rb', %q^, controllers: { omniauth_callbacks: 'authentication/omniauth_callbacks' }^, after: 'devise_for :users'
 
 insert_into_file 'config/initializers/devise.rb', after: /# config.omniauth [^\n]+?\n/ do
   <<-CODE
