@@ -49,7 +49,6 @@ inside 'app/models/' do
   CODE
 
   inject_into_class 'activity.rb', 'Activity', <<-CODE
-  default_scope { order('created_at desc') }
   validates :user, presence: true
   validates :description, presence: true
 
