@@ -11,16 +11,12 @@ inside 'app/models/' do
     # else (not logged in)
     #   find link auth -> user_id
     #   create link auth email -> user email, only for verified email
-    if current_user.blank?
-      authentication = Authentication.where( provider: auth.provider, uid: auth.uid.to_s ).first_or_initialize do |authentication|
-        authentication.token = auth.credentials.token
-        authentication.email = auth.info.email
-        authentication.user ||= User.where( email: auth.info.email ).first_or_initialize if self.email_verified?(auth)
-      end
-    else
-      authentication = current_user.authentications.where( provider: auth.provider, uid: auth.uid.to_s ).first_or_initialize do |authentication|
-        authentication.token = auth.credentials.token
-      end
+    authentication = Authentication.where( provider: auth.provider, uid: auth.uid.to_s ).first_or_initialize do |authentication|
+      authentication.token = auth.credentials.token
+      authentication.email = auth.info.email
+      authentication.user = current_user || authentication.user || (User.where( email: auth.info.email ).first_or_initialize if email_verified?(auth))
+      authentication.user.authentications << authentication
+      authentication.save
     end
 
     authentication.user
