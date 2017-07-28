@@ -42,7 +42,7 @@ inside 'app/controllers/authentication/' do
   def github
     @user = User.from_omniauth(request.env["omniauth.auth"], current_user)
     if @user.persisted?
-      flash[:notice] = t('devise.omniauth_callbacks.success', :kind => 'GitHub')
+      flash[:notice] = t('devise.omniauth_callbacks.success', kind: request.env["omniauth.auth"].provider)
       sign_in_and_redirect @user
     else
       if @user.save(:validate => false)
