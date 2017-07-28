@@ -92,6 +92,7 @@ inside 'spec/factories/' do
 \\1    token nil
 \\1  end
     CODE
+  end
 end
 
 inside 'spec/models/' do
