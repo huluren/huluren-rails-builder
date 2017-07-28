@@ -6,11 +6,9 @@ inside 'app/models/' do
   has_many :authentications
 
   def self.from_omniauth(auth, current_user)
-    # if logged in
-    #   link auth -> user_id
-    # else (not logged in)
-    #   find link auth -> user_id
-    #   create link auth email -> user email, only for verified email
+    # 1. find link auth -> user_id
+    # 2. if logged in, link auth -> user_id
+    # 3. if verified email, create link auth email -> user email
     authentication = Authentication.where( provider: auth.provider, uid: auth.uid.to_s ).first_or_initialize do |authentication|
       authentication.token = auth.credentials.token
 
