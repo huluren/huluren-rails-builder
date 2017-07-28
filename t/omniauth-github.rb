@@ -67,3 +67,7 @@ insert_into_file 'config/initializers/devise.rb', after: /# config.omniauth [^\n
   config.omniauth :github, ENV['GITHUB_APP_ID'], ENV['GITHUB_APP_SECRET'], scope: 'user:email'
   CODE
 end
+
+inside 'spec/factories/' do
+  gsub_file 'authentications.rb', /(^\s*?)(user) nil$/, '\1\2'
+end
