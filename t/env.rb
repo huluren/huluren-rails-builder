@@ -10,6 +10,8 @@ DEVISE_PEPPER=${DEVISE_PEPPER:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(6
 #TWITTER_API_SECRET=
 #FACEBOOK_APP_ID=
 #FACEBOOK_APP_SECRET=
+#GOOGLE_CLIENT_ID=
+#GOOGLE_CLIENT_SECRET=
 CODE
 
 file '.env.development', <<-CODE
