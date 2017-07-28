@@ -61,3 +61,9 @@ end
 insert_into_file 'config/routes.rb', after: 'devise_for :users' do
   %q^, controllers: { omniauth_callbacks: 'authentication/omniauth_callbacks' }^
 end
+
+insert_into_file 'config/initializers/devise.rb', after: /# config.omniauth [^\n]+?\n/ do
+  <<-CODE
+  config.omniauth :github, ENV['GITHUB_APP_ID'], ENV['GITHUB_APP_SECRET'], scope: 'user:email'
+  CODE
+end
