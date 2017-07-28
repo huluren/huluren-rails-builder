@@ -31,6 +31,14 @@ inside 'app/models/' do
     authentication.user
   end
 
+  def self.new_with_session(params, session)
+    super.tap do |user|
+      if data = session['devise.user_attributes']
+        user.email = data["email"] if user.email.blank?
+      end
+    end
+  end
+
   def self.email_verified?(auth)
     case auth.provider
     when 'github'
@@ -54,14 +62,13 @@ inside 'app/controllers/authentication/' do
     if @user.persisted?
       flash[:notice] = t('devise.omniauth_callbacks.success', kind: request.env["omniauth.auth"].provider)
       sign_in_and_redirect @user
+    elsif @user.save
+      flash[:notice] = "Account created and signed in successfully."
+      sign_in_and_redirect(@user)
     else
-      if @user.save(:validate => false)
-        flash[:notice] = "Account created and signed in successfully."
-        sign_in_and_redirect(@user)
-      else
-        session['devise.user_attributes'] = @user.attributes
-        redirect_to new_user_registration_url
-      end
+      flash[:notice] = "Please create a password for your account."
+      session['devise.user_attributes'] = @user.attributes
+      redirect_to new_user_registration_url
     end
   end
 
