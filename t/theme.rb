@@ -53,7 +53,14 @@ footer {
 /* Rules for using icons as white on a dark background. */
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
-CODE
+
+/* activites */
+#activities.list-group .list-group-item p > img {
+  max-width: 300px;
+  max-height: 300px;
+}
+  CODE
+
 end
 
 inside('app/assets/javascripts') do
