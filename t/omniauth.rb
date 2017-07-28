@@ -7,7 +7,7 @@ inside 'app/models/' do
   CODE
 
   inject_into_class 'user.rb', 'User', <<-CODE
-  has_many :authentications
+  has_many :authentications, autosave: true, dependent: :destroy
 
   def self.from_omniauth(auth, current_user)
     # 1. find link auth -> user_id
@@ -24,8 +24,6 @@ inside 'app/models/' do
 
       authentication.user = current_user || authentication.user || (User.where( email: auth.info.email ).first_or_initialize if email_verified?(auth))
       authentication.user.authentications << authentication
-
-      authentication.save
     end
 
     authentication.user
