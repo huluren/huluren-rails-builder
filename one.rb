@@ -84,6 +84,7 @@ CODE
 
 #========== Git ==========#
 append_to_file '.gitignore', <<-CODE
+
 *.rbc
 capybara-*.html
 .rspec
