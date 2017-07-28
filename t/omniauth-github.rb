@@ -11,6 +11,7 @@ inside 'app/models/' do
     # 3. if verified email, create link auth email -> user email
     authentication = Authentication.where( provider: auth.provider, uid: auth.uid.to_s ).first_or_initialize do |authentication|
       authentication.token = auth.credentials.token
+      authentication.secret = auth.credentials.secret
 
       authentication.email = auth.info.email
       authentication.name = auth.info.name
