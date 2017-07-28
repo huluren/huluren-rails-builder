@@ -27,7 +27,7 @@ inside 'app/models/' do
   end
 
   def self.email_verified?(auth)
-    auth.extra.all_emails.keep_if {|e| e.email == auth.info.email and e.verified == true }.size > 0
+    auth.extra.all_emails.select {|e| e.email == auth.info.email and e.verified == true }.size > 0
   end
   CODE
   
