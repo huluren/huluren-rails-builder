@@ -37,7 +37,7 @@ end
 inside 'app/controllers/authentication/' do
 
   inject_into_class 'omniauth_callbacks_controller.rb', 'Authentication::OmniauthCallbacksController', <<-CODE
-  def github
+  def omniauth
     @user = User.from_omniauth(request.env["omniauth.auth"], current_user)
     if @user.persisted?
       flash[:notice] = t('devise.omniauth_callbacks.success', kind: request.env["omniauth.auth"].provider)
@@ -52,6 +52,9 @@ inside 'app/controllers/authentication/' do
       end
     end
   end
+
+  alias_method :github, :omniauth
+  alias_method :twitter, :omniauth
   CODE
 
 end
