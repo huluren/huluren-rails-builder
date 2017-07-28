@@ -160,11 +160,13 @@ inside 'spec/factories/' do
 end
 
 inside 'app/assets/stylesheets/' do
-  append_to_file 'activities.scss', <<-CODE
+  append_to_file 'application.scss', <<-CODE
+
 #activities.list-group .list-group-item p > img {
   max-width: 300px;
   max-height: 300px;
 }
+
   CODE
 end
 
