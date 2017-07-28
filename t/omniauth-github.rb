@@ -63,6 +63,7 @@ inside 'app/controllers/authentication/' do
 
   alias_method :github, :omniauth
   alias_method :twitter, :omniauth
+  alias_method :facebook, :omniauth
   CODE
 
 end
@@ -73,6 +74,7 @@ insert_into_file 'config/initializers/devise.rb', after: /# config.omniauth [^\n
   <<-CODE
   config.omniauth :github, ENV['GITHUB_APP_ID'], ENV['GITHUB_APP_SECRET'], scope: 'user:email'
   config.omniauth :twitter, ENV['TWITTER_API_KEY'], ENV['TWITTER_API_SECRET']
+  config.omniauth :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET']
   CODE
 end
 
