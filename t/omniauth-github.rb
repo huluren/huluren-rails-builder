@@ -3,6 +3,7 @@ generate 'devise:controllers authentication', '-c=omniauth_callbacks'
 
 inside 'app/models/' do
   inject_into_class 'user.rb', 'User', <<-CODE
+  validates :provider, :uid, :token, presence: true
   has_many :authentications
 
   def self.from_omniauth(auth, current_user)
@@ -80,4 +81,43 @@ end
 
 inside 'spec/factories/' do
   gsub_file 'authentications.rb', /(^\s*?)(user) nil$/, '\1\2'
+  gsub_file 'authentications.rb', /(^\s*?)(provider|uid|token) .*?$/, %q^\1sequence(:\2) {|n| 'auth_\2_%d' % n }^
+
+  insert_into_file 'authentications.rb', before: /^(\s\s)end$/ do
+    <<-CODE
+
+\\1  factory :invalid_authentication do
+\\1    provider nil
+\\1    uid nil
+\\1    token nil
+\\1  end
+    CODE
+end
+
+inside 'spec/models/' do
+  gsub_file 'authentication_spec.rb', /(^(\s*)?)pending .*\n/, <<-CODE
+\\1describe "#create" do
+
+\\2  it "should increment the count" do
+\\2    expect{ create(:authentication) }.to change{Authentication.count}.by(1)
+\\2  end
+
+\\2  it "should fail with invalid" do
+\\2    expect( build(:invalid_authentication) ).to be_invalid
+\\2  end
+
+\\2  it "should fail without :provider" do
+\\2    expect( build(:authentication, provider: nil) ).to be_invalid
+\\2  end
+
+\\2  it "should fail without :uid" do
+\\2    expect( build(:authentication, uid: nil) ).to be_invalid
+\\2  end
+
+\\2  it "should fail without :token" do
+\\2    expect( build(:authentication, token: nil) ).to be_invalid
+\\2  end
+
+\\2end
+  CODE
 end
