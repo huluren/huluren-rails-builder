@@ -71,8 +71,62 @@ gem_group :development, :staging do
   gem 'rack-mini-profiler', require: false
 end
 
+#========== README ==========#
+prepend_to_file 'README.md', <<-CODE
+# huluren-rails [![Build Status](https://travis-ci.org/huluren/huluren-rails.svg?branch=master)](https://travis-ci.org/huluren/huluren-rails)
+Huluren Community
+
+# Development
+
+See https://github.com/huluren/huluren-rails-builder
+
+CODE
+
 #========== Git ==========#
-append_to_file '.gitignore', '/db/*.sqlite'
+append_to_file '.gitignore', <<-CODE
+*.rbc
+capybara-*.html
+.rspec
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/public/system
+/coverage/
+/spec/tmp
+*.orig
+rerun.txt
+pickle-email-*.html
+
+# TODO Comment out this rule if you are OK with secrets being uploaded to the repo
+config/initializers/secret_token.rb
+
+# Only include if you have production secrets in this file, which is no longer a Rails default
+# config/secrets.yml
+
+# dotenv
+# TODO Comment out this rule if environment variables can be committed
+#.env
+.env.local
+
+## Environment normalization:
+/vendor/bundle
+
+# these should all be checked in to normalize the environment:
+# Gemfile.lock, .ruby-version, .ruby-gemset
+
+# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
+.rvmrc
+
+# if using bower-rails ignore default bower_components path bower.json files
+/vendor/assets/bower_components
+*.bowerrc
+bower.json
+
+# Ignore pow environment settings
+.powenv
+
+/db/*.sqlite
+/db/*.sqlite-journal
+CODE
 
 inside 'config/' do
   gsub_file 'secrets.yml', /^(\s*secret_key_base: ).*$/, %q^\1<%= ENV['SECRET_KEY_BASE'] %>^
