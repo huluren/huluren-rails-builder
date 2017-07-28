@@ -1,4 +1,4 @@
-generate 'model authentication', 'user:references provider uid token email name nickname image'
+generate 'model authentication', 'user:references provider uid token secret email name nickname image'
 generate 'devise:controllers authentication', '-c=omniauth_callbacks'
 
 inside 'app/models/' do
