@@ -27,7 +27,14 @@ inside 'app/models/' do
   end
 
   def self.email_verified?(auth)
-    auth.extra.all_emails.select {|e| e.email == auth.info.email and e.verified == true }.size > 0
+    case auth.provider
+    when 'github'
+      auth.extra.all_emails.select {|e| e.email == auth.info.email and e.verified == true }.size > 0
+    when 'twitter'
+      true
+    else
+      false
+    end
   end
   CODE
   
