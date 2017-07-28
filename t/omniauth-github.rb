@@ -1,4 +1,4 @@
-generate 'model authentication', 'user:references provider uid token secret email nickname image'
+generate 'model authentication', 'user:references provider uid token email name nickname image'
 generate 'devise:controllers authentication', '-c=omniauth_callbacks'
 
 inside 'app/models/' do
@@ -13,9 +13,15 @@ inside 'app/models/' do
     #   create link auth email -> user email, only for verified email
     authentication = Authentication.where( provider: auth.provider, uid: auth.uid.to_s ).first_or_initialize do |authentication|
       authentication.token = auth.credentials.token
+
       authentication.email = auth.info.email
+      authentication.name = auth.info.name
+      authentication.nickname = auth.info.nickname
+      authentication.image = auth.info.image
+
       authentication.user = current_user || authentication.user || (User.where( email: auth.info.email ).first_or_initialize if email_verified?(auth))
       authentication.user.authentications << authentication
+
       authentication.save
     end
 
