@@ -205,7 +205,7 @@ after_bundle do
   # Depencencies:
   #   i18n ~> devise-user
   #   devise-user -> place
-  #   devise-user -> omniauth-github
+  #   devise-user -> omniauth
   #   devise-user, place -> activity
   #   devise-user, place, activity -> followable
   #   devise-user, place, activity -> commentable
@@ -218,7 +218,7 @@ after_bundle do
     database env
 
     models
-    i18n devise-user omniauth-github
+    i18n devise-user omniauth
     place activity ckeditor
     schedule
     followable
