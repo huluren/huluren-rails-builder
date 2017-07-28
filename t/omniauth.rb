@@ -43,6 +43,10 @@ inside 'app/models/' do
       auth.extra.all_emails.select {|e| e.email == auth.info.email and e.verified == true }.size > 0
     when 'twitter'
       true
+    when 'facebook'
+      true
+    when 'google_oauth2'
+      auth.extra.id_info.email_verified
     else
       false
     end
@@ -73,6 +77,7 @@ inside 'app/controllers/authentication/' do
   alias_method :github, :omniauth
   alias_method :twitter, :omniauth
   alias_method :facebook, :omniauth
+  alias_method :google_oauth2, :omniauth
   CODE
 
 end
@@ -84,6 +89,7 @@ insert_into_file 'config/initializers/devise.rb', after: /# config.omniauth [^\n
   config.omniauth :github, ENV['GITHUB_APP_ID'], ENV['GITHUB_APP_SECRET'], scope: 'user:email'
   config.omniauth :twitter, ENV['TWITTER_API_KEY'], ENV['TWITTER_API_SECRET']
   config.omniauth :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET']
+  config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], verify_iss: false
   CODE
 end
 
