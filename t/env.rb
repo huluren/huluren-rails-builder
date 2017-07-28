@@ -8,6 +8,8 @@ DEVISE_PEPPER=${DEVISE_PEPPER:-$(ruby -rsecurerandom -e "puts SecureRandom.hex(6
 #GITHUB_APP_SECRET=
 #TWITTER_API_KEY=
 #TWITTER_API_SECRET=
+#FACEBOOK_APP_ID=
+#FACEBOOK_APP_SECRET=
 CODE
 
 file '.env.development', <<-CODE
