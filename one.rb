@@ -17,6 +17,7 @@ gem 'ckeditor_rails'
 gem 'omniauth-github'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
 
 # i18n
 gem 'rails-i18n'
