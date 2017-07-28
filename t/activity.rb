@@ -159,6 +159,15 @@ inside 'spec/factories/' do
   end
 end
 
+inside 'app/assets/stylesheets/' do
+  append_to_file 'activities.scss', <<-CODE
+#activities.list-group .list-group-item p > img {
+  max-width: 300px;
+  max-height: 300px;
+}
+  CODE
+end
+
 inside 'spec/models/' do
   gsub_file 'activity_spec.rb', /(^(\s*)?)pending .*\n/, <<-CODE
 \\1describe "#create" do
