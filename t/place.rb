@@ -182,9 +182,9 @@ inside 'spec/models/' do
 \\2    expect{ create(:place) }.to change{Place.count}.by(1)
 \\2  end
 
-\\2it "should fail with invalid" do
-\\2  expect( build(:invalid_place) ).to be_invalid
-\\2end
+\\2  it "should fail with invalid" do
+\\2    expect( build(:invalid_place) ).to be_invalid
+\\2  end
 
 \\2  it "should fail without :name" do
 \\2    expect( build(:place, name: nil) ).to be_invalid
