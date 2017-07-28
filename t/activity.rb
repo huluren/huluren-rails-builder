@@ -49,6 +49,7 @@ inside 'app/models/' do
   CODE
 
   inject_into_class 'activity.rb', 'Activity', <<-CODE
+  default_scope { recent }
   validates :user, presence: true
   validates :description, presence: true
 
@@ -63,7 +64,7 @@ inside 'app/controllers/' do
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def index\n[^\n]*?Activity\.)all\n/m, <<-CODE
-\\1recent.sample(params[:s]).limit(params[:c])
+\\1sample(params[:s]).limit(params[:c])
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
