@@ -16,6 +16,7 @@ gem 'kaminari'
 gem 'ckeditor_rails'
 gem 'omniauth-github'
 gem 'omniauth-twitter'
+gem 'omniauth-facebook'
 
 # i18n
 gem 'rails-i18n'
