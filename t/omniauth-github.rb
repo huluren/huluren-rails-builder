@@ -31,7 +31,7 @@ inside 'app/models/' do
   end
   CODE
   
-  insert_info_file 'user.rb', after: ':validatable' do
+  insert_into_file 'user.rb', after: ':validatable' do
     %q^, :omniauthable^
   end
 end
