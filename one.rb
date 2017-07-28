@@ -14,6 +14,7 @@ gem 'devise'
 gem 'acts_as_followable', github: 'huluren/acts_as_followable'
 gem 'kaminari'
 gem 'ckeditor_rails'
+gem 'omniauth-github'
 
 # i18n
 gem 'rails-i18n'
