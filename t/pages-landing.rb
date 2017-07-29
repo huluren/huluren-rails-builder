@@ -30,12 +30,6 @@ inside('app/views/pages/') do
   CODE
 end
 
-inside('app/views/places/') do
-  file 'index.js.coffee', <<-CODE
-$("main #places").replaceWith "<%= escape_javascript(render 'items_list', items: @places) %>"
-  CODE
-end
-
 inside 'app/assets/javascripts/' do
 
   append_to_file 'pages.coffee', <<-CODE
