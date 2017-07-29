@@ -159,7 +159,7 @@ end
 
 inside 'app/assets/javascripts/' do
 
-  append_to_file 'activities.coffee', <<-CODE
+  file 'schedules.coffee', <<-CODE
 //= require jquery-ui/widgets/datepicker
 //= require jquery-ui/widgets/autocomplete
 
