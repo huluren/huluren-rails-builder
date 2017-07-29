@@ -207,6 +207,7 @@ after_bundle do
   #   i18n ~> devise-user
   #   devise-user -> place
   #   devise-user -> omniauth
+  #   post -> activity
   #   devise-user, place -> activity
   #   devise-user, place, activity -> followable
   #   devise-user, place, activity -> commentable
@@ -220,11 +221,12 @@ after_bundle do
 
     models
     i18n devise-user omniauth
+    post
     place activity ckeditor
     schedule
     followable
     commentable
-    kaminari 
+    kaminari
     pages-landing layout
     theme title
 

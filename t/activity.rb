@@ -1,4 +1,4 @@
-generate 'scaffold activity user:references:index description:text'
+generate 'scaffold activity user:references:index description:text --parent=post'
 
 file 'config/locales/activity.yml', <<-CODE
 en:
@@ -44,16 +44,10 @@ CODE
 
 inside 'app/models/' do
 
+  gsub_file 'activity.rb', /^\s+belongs_to :user\n/, ''
+
   inject_into_class 'user.rb', 'User', <<-CODE
   has_many :activities
-  CODE
-
-  inject_into_class 'activity.rb', 'Activity', <<-CODE
-  default_scope { recent }
-  validates :user, presence: true
-  validates :description, presence: true
-
-  acts_as_followable
   CODE
 
 end
@@ -147,7 +141,7 @@ $("main").trigger("activities:load")
 end
 
 inside 'app/assets/javascripts/' do
-  
+
   append_to_file 'activities.coffee', <<-CODE
 replace_activites_images = ->
 
