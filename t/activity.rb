@@ -90,6 +90,11 @@ inside 'app/views/activities/' do
 \\2
   CODE
 
+  file 'index.js.coffee', <<-CODE
+$("main #activities").replaceWith "<%= escape_javascript(render 'items', items: @activities) %>"
+$("main").trigger("activities:load")
+  CODE
+
   file '_items.html.haml', <<-CODE
 #activities.list-group{'data-url': activities_path}
   - items.each do |activity|
