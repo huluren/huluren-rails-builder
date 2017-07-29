@@ -61,7 +61,7 @@ inside 'app/models/' do
   has_many :comments, as: :commentable
   CODE
 
-  inject_into_class 'activity.rb', 'Activity', <<-CODE
+  inject_into_class 'post.rb', 'Post', <<-CODE
   has_many :comments, as: :commentable
   CODE
 
