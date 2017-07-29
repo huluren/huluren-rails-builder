@@ -144,10 +144,19 @@ end
 inside 'app/assets/javascripts/' do
   
   append_to_file 'activities.coffee', <<-CODE
+replace_activites_images = ->
+
+  $("#activities.list-group .list-group-item p > img").each () ->
+    $(this).attr "src", $(this).attr("src").replace(new RegExp("(http)[s]{0,1}(://img)[0-9]+(.doubanio.com)/"), "$1$23$3.mkmd.cn/")
+
 $(document).on "turbolinks:load", ->
 
-  $("#activities.list-group .list-group-item p > img").each ->
-    $(this).attr "src", $(this).attr("src").replace(new RegExp("(http)[s]{0,1}(://img)[0-9]+(.doubanio.com)/"), "$1$23$3.mkmd.cn/")
+  $("main.pages.landing, main.activities.index").on "activities:load", ->
+    replace_activites_images()
+
+  $("main").trigger("activities:load")
+
+  true
   CODE
 
 end
