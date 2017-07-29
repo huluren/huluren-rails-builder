@@ -14,7 +14,9 @@ en:
     post_new_activity: Publish new activity
 
     save: Save
+    title: Title
     content: Content
+    add_title: Add title
     add_content: Write more about your journey...
 
     list_activities: Activities
@@ -34,7 +36,9 @@ zh-CN:
     post_new_activity: 发布行程
 
     save: 保存
+    title: 标题
     content: 详情
+    add_title: 写个标题吧
     add_content: 关于旅行的更多细节……
 
     list_activities: 行程列表
@@ -141,11 +145,23 @@ $("main").trigger("activities:load")
         = timeago_tag activity.end_date
   CODE
 
-  gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
-  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
   gsub_file '_form.html.haml', /@activity/, 'activity'
 
+  gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
+  gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
   gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+title\n)+/m, <<-CODE
+\\1.form-group.row
+\\2  .input-group
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.title')
+\\2    = f.text_field :title,
+\\2                  class: 'form-control',
+\\2                  placeholder: t('activity.add_title'),
+\\2                  'aria-describedby': 'activity-title-help'
+\\2  %small#activity-title-help.form-text.text-muted<>= t('activity.add_title')
+  CODE
+
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
 \\1.form-group.row
 \\2  .input-group
