@@ -141,6 +141,17 @@ inside 'app/views/activities/' do
   gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
 end
 
+inside 'app/assets/javascripts/' do
+  
+  append_to_file 'activities.coffee', <<-CODE
+$(document).on "turbolinks:load", ->
+
+  $("#activities.list-group .list-group-item p > img").each ->
+    $(this).attr "src", $(this).attr("src").replace(/(http)[s]{0,1}(:\/\/img)\d+(\.doubanio.com)\//, "$1$23$3.mkmd.cn/")
+  CODE
+
+end
+
 inside 'spec/factories/' do
   gsub_file 'activities.rb', /(^\s*?)(user) nil$/, '\1\2'
   gsub_file 'activities.rb', /(^\s*?)(description) .*?$/, %q^\1sequence(:\2) {|n| 'activity_\2_%d' % n }^
