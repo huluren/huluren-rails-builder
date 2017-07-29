@@ -37,8 +37,6 @@ $(document).on "turbolinks:load", ->
 
   $("#activities, #places", $("main.pages.landing")).each (idx) ->
 
-    $(this).html("Loading activities...")
-
     $.ajax
       method: "GET"
       url: $(this).data("url")
