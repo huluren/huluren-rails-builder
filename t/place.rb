@@ -86,6 +86,10 @@ inside 'app/views/places/' do
 \\2
   CODE
 
+  file 'index.js.coffee', <<-CODE
+$("main #places").replaceWith "<%= escape_javascript(render 'items_list', items: @places) %>"
+  CODE
+
   file '_items.html.haml', <<-CODE
 #places.list-group{'data-url': places_path}
   - items.each do |place|
