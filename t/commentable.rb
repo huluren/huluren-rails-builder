@@ -57,10 +57,6 @@ inside 'app/models/' do
   has_many :comments, as: :commentable
   CODE
 
-  inject_into_class 'place.rb', 'Place', <<-CODE
-  has_many :comments, as: :commentable
-  CODE
-
   inject_into_class 'post.rb', 'Post', <<-CODE
   has_many :comments, as: :commentable
   CODE

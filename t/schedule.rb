@@ -108,21 +108,21 @@ inside 'app/views/activities/' do
         = form_for Place.new do |f|
           = f.hidden_field :user_id, value: current_user.id
           .form-group
-            = f.label :name
-            = f.text_field :name, class: "form-control"
+            = f.label :title
+            = f.text_field :title, class: "form-control"
           .form-group
-            = f.label :description
-            = f.text_area :description, class: "form-control"
+            = f.label :content
+            = f.text_area :content, class: "form-control"
           .form-group
             = f.submit class: "btn btn-primary"
   CODE
 
   file '_schedule_fields.html.haml', <<-CODE
 %fieldset.activity_schedule.card
-  = f.label :place_id, f.object.place.try(:name), class: ["btn", "btn-secondary"]
+  = f.label :place_id, f.object.place.try(:title), class: ["btn", "btn-secondary"]
   = f.hidden_field :place_id
   = f.fields_for :place do |fp|
-    = fp.text_field :name, {name: nil, class: 'place_name', placeholder: t('place.search')}
+    = fp.text_field :title, {name: nil, class: 'place_title', placeholder: t('place.search')}
   = f.label :start_date, t('schedule.arrival_at')
   = f.date_field :start_date
   = f.label :end_date, t('schedule.departure_at')
@@ -164,7 +164,7 @@ setup_datepicker = (start_date, end_date) ->
 setup_place_field = (place, place_id, place_label) ->
   selected_place = (src) ->
     place_id.val(src.id)
-    place_label.text(src.name)
+    place_label.text(src.title)
     place_label.attr("title", src.id)
 
   place.autocomplete
@@ -183,14 +183,14 @@ setup_place_field = (place, place_id, place_label) ->
         data: {q: request.term}
         dataType: "json"
         success: (res) ->
-          data = ({label: item.name, name: item.name, id: item.id} for item in res)
-          data.unshift(label: 'Add ' + request.term + '...', id: 0) unless request.term in (item.name for item in res)
+          data = ({label: item.title, title: item.title, id: item.id} for item in res)
+          data.unshift(label: 'Add ' + request.term + '...', id: 0) unless request.term in (item.title for item in res)
           response( data )
         error: (res) ->
           false
 
-create_place = (name, callback) ->
-  $('#place_name').val(name)
+create_place = (title, callback) ->
+  $('#place_title').val(title)
   $('#modalNewPlace').modal()
 
   $('#new_place').submit (e) ->
@@ -215,7 +215,7 @@ setup_schedules = () ->
     setup_schedule $(this)
 
 setup_schedule = (schedule_fs) ->
-  setup_place_field(schedule_fs.children("input[id$=_place_name]"), schedule_fs.children('input[id$=_place_id]'), schedule_fs.children('label[for$=_place_id]'))
+  setup_place_field(schedule_fs.children("input[id$=_place_title]"), schedule_fs.children('input[id$=_place_id]'), schedule_fs.children('label[for$=_place_id]'))
   setup_datepicker(schedule_fs.children("input[id$=_start_date]"), schedule_fs.children("input[id$=_end_date]"))
 
 $(document).on "turbolinks:load", ->

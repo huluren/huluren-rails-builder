@@ -50,6 +50,12 @@ inside 'app/models/' do
 
   gsub_file 'activity.rb', /^\s+belongs_to :user\n/, ''
 
+  inject_into_class 'activity.rb', 'Activity', <<-CODE
+  default_scope { recent }
+  validates :title, presence: true
+  validates :content, presence: true
+  CODE
+
   inject_into_class 'user.rb', 'User', <<-CODE
   has_many :activities
   CODE

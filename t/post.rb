@@ -2,10 +2,7 @@ generate 'model post user:references:index title:string content:text type'
 
 inside 'app/models/' do
   inject_into_class 'post.rb', 'Post', <<-CODE
-  default_scope { recent }
   validates :user, presence: true
-  validates :title, presence: true
-  validates :content, presence: true
 
   acts_as_followable
   CODE
@@ -42,12 +39,12 @@ inside 'spec/models/' do
 \\2    expect( build(:post, user: nil) ).to be_invalid
 \\2  end
 
-\\2  it "should fail without :title" do
-\\2    expect( build(:post, title: nil) ).to be_invalid
+\\2  it "should success without :title" do
+\\2    expect( build(:post, title: nil) ).to be_valid
 \\2  end
 
-\\2  it "should fail without :content" do
-\\2    expect( build(:post, content: nil) ).to be_invalid
+\\2  it "should success without :content" do
+\\2    expect( build(:post, content: nil) ).to be_valid
 \\2  end
 \\2end
 

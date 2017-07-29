@@ -1,4 +1,4 @@
-generate 'scaffold place user:references:index name:string:uniq description:text'
+generate 'scaffold place user:references:index title:string content:text --parent=post'
 
 file 'config/locales/place.yml', <<-CODE
 en:
@@ -9,10 +9,10 @@ en:
     search: Search...
 
     save: Save
-    name: Name
-    description: Description
-    add_name: Add Name of the Place
-    add_description: Add some description of the place...
+    title: Name
+    content: Description
+    add_title: Add Name of the Place
+    add_content: Add some content of the place...
 
     list_places: Places
     new_place: New Place
@@ -27,10 +27,10 @@ zh-CN:
     search: 搜索...
 
     save: 保存
-    name: 名称
-    description: 详情
-    add_name: 填写地点名称
-    add_description: 添加地点描述与介绍
+    title: 名称
+    content: 详情
+    add_title: 填写地点名称
+    add_content: 添加地点描述与介绍
 
     list_places: 地点列表
     new_place: 创建新地点
@@ -43,13 +43,12 @@ inside 'app/models/' do
   has_many :places
   CODE
 
+  gsub_file 'place.rb', /^\s+belongs_to :user\n/, ''
+
   inject_into_class 'place.rb', 'Place', <<-CODE
-  validates :user, presence: true
-  validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validates :title, presence: true, uniqueness: { case_sensitive: false }
 
-  scope :q, ->(query_string) { query_string.nil? ? nil : where("name LIKE ?", "%\#{query_string}%") }
-
-  acts_as_followable
+  scope :q, ->(query_string) { query_string.nil? ? nil : where("title LIKE ?", "%\#{query_string}%") }
   CODE
 
 end
@@ -95,9 +94,9 @@ $("main #places").replaceWith "<%= escape_javascript(render 'items_list', items:
   - items.each do |place|
     .list-group-item.flex-column.align-items-start
       .d-flex.w-100.justify-content-between<>
-        .lead.place-name= place.name
+        .lead.place-title= place.title
         %small.card.text-muted.p-1
-      %p.place-description.mt-1<>= place.description.html_safe
+      %p.place-content.mt-1<>= place.content.html_safe
       .d-flex.w-100.justify-content-between<>
         %small
           = precede t("place.posted") do
@@ -112,7 +111,7 @@ $("main #places").replaceWith "<%= escape_javascript(render 'items_list', items:
 #places.list-group{'data-url': places_path}
   - items.each do |place|
     .list-group-item.list-group-item-action.justify-content-between
-      = place.name
+      = place.title
       .badge.badge-default.badge-pill= place.activities.count
   CODE
 
@@ -121,28 +120,28 @@ $("main #places").replaceWith "<%= escape_javascript(render 'items_list', items:
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :\2_id, value: current_user.id'
   gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
 
-  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+name\n)+/m, <<-CODE
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+title\n)+/m, <<-CODE
 \\1.form-group.row
 \\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.name')
-\\2    = f.text_field :name,
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.title')
+\\2    = f.text_field :title,
 \\2                  class: 'form-control',
-\\2                  placeholder: t('place.add_name'),
-\\2                  'aria-describedby': 'place-name-help',
+\\2                  placeholder: t('place.add_title'),
+\\2                  'aria-describedby': 'place-title-help',
 \\2                  rows: 3
-\\2  %small#place-name-help.form-text.text-muted<>= t('place.add_name')
+\\2  %small#place-title-help.form-text.text-muted<>= t('place.add_title')
   CODE
 
-  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+description\n)+/m, <<-CODE
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
 \\1.form-group.row
 \\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.description')
-\\2    = f.text_area :description,
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.content')
+\\2    = f.text_area :content,
 \\2                  class: 'form-control',
-\\2                  placeholder: t('place.add_description'),
-\\2                  'aria-describedby': 'place-description-help',
+\\2                  placeholder: t('place.add_content'),
+\\2                  'aria-describedby': 'place-content-help',
 \\2                  rows: 3
-\\2  %small#place-description-help.form-text.text-muted<>= t('place.add_description')
+\\2  %small#place-content-help.form-text.text-muted<>= t('place.add_content')
   CODE
 
   gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?= f.submit [^\n]+?\n/m, <<-CODE
@@ -162,18 +161,14 @@ end
 
 inside 'spec/factories/' do
   gsub_file 'places.rb', /(^\s*?)(user) nil$/, '\1\2'
-  gsub_file 'places.rb', /(^\s*?)(name|description) .*?$/, %q^\1sequence(:\2) {|n| 'place_\2_%d' % n }^
+  gsub_file 'places.rb', /(^\s*?)(title|content) .*?$/, %q^\1sequence(:\2) {|n| 'place_\2_%d' % n }^
 
   insert_into_file 'places.rb', before: /^(\s\s)end$/ do
     <<-CODE
 \\1  factory :invalid_place do
 \\1    user nil
-\\1    name nil
-\\1  end
-\\1  factory :bare_place do
-\\1    user nil
-\\1    name nil
-\\1    description nil
+\\1    title nil
+\\1    content nil
 \\1  end
     CODE
   end
@@ -190,8 +185,8 @@ inside 'spec/models/' do
 \\2    expect( build(:invalid_place) ).to be_invalid
 \\2  end
 
-\\2  it "should fail without :name" do
-\\2    expect( build(:place, name: nil) ).to be_invalid
+\\2  it "should fail without :title" do
+\\2    expect( build(:place, title: nil) ).to be_invalid
 \\2  end
 
 \\2  it "should fail without :user" do
@@ -199,9 +194,9 @@ inside 'spec/models/' do
 \\2  end
 \\2end
 
-\\2describe "#name duplicated" do
+\\2describe "#title duplicated" do
 \\2  it "should fail with UniqueViolation" do
-\\2    expect { 2.times {create(:place, name: 'duplicate_name')} }.to raise_error(ActiveRecord::RecordInvalid)
+\\2    expect { 2.times {create(:place, title: 'duplicate_title')} }.to raise_error(ActiveRecord::RecordInvalid)
 \\2  end
 \\2end
 
@@ -258,8 +253,8 @@ inside 'spec/views/places/' do
     expect(@places.size).to be(2)
     render
     @places.each do |place|
-      assert_select "#places .place-name", :text => place.name.to_s, :count => 1
-      assert_select "#places .place-description", :text => place.description.to_s, :count => 1
+      assert_select "#places .place-title", :text => place.title.to_s, :count => 1
+      assert_select "#places .place-content", :text => place.content.to_s, :count => 1
     end
   CODE
 
@@ -278,8 +273,8 @@ inside 'spec/views/places/' do
   CODE
 
   gsub_file 'show.html.haml_spec.rb', /(it.*renders attributes in .*\n(\s*?)?)(expect.*?\n)+?(\s+end)\n/m, <<-CODE
-\\1expect(rendered).to match(/\#{@place.name}/)
-\\2expect(rendered).to match(/\#{@place.description}/)
+\\1expect(rendered).to match(/\#{@place.title}/)
+\\2expect(rendered).to match(/\#{@place.content}/)
 \\4
   CODE
 end
