@@ -13,19 +13,22 @@ places = User.first.places.create [
 
 activities = User.first.activities.create [
   {
-    description: '北京旅行',
+    title: '北京旅行',
+    content: '北京旅行',
     schedules: [
       Schedule.new(place: Place.find_by_name('北京'), start_date: Date.today - 15.days)
     ]
   },
   {
-    description: '泰国旅行',
+    title: '泰国旅行',
+    content: '泰国旅行',
     schedules: [
       Schedule.new(place: Place.find_by_name('曼谷'), start_date: Date.today + 1.months, end_date: Date.today + 45.days)
     ]
   },
   {
-    description: '江浙沪一周',
+    title: '江浙沪一周',
+    content: '江浙沪一周',
     schedules: [
       Schedule.new(place: Place.find_by_name('上海'), start_date: Date.today),
       Schedule.new(place: Place.find_by_name('杭州'), start_date: Date.tomorrow)

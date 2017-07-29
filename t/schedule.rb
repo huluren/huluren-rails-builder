@@ -86,21 +86,7 @@ end
 
 inside 'app/views/activities/' do
 
-  gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
-
-  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+description\n)+/m, <<-CODE
-\\1.form-group.row
-\\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.description')
-\\2    = f.text_area :description,
-\\2                  class: 'form-control ckeditor',
-\\2                  placeholder: t('activity.add_description'),
-\\2                  'aria-describedby': 'activity-description-help',
-\\2                  rows: 3
-\\2  %small#activity-description-help.form-text.text-muted<>= t('activity.add_description')
-  CODE
-
-  insert_into_file '_form.html.haml', before: /^(\s+?)\.actions$/ do
+  insert_into_file '_form.html.haml', before: /^(\s+?)[^\s]+?\.actions$/ do
     <<-CODE
 \\1.form-group.row.field
 \\1  = f.fields_for :schedules do |builder|
@@ -108,11 +94,6 @@ inside 'app/views/activities/' do
 \\1  = link_to_add_fields t("activity.schedule.add_schedule"), f, :schedules, class: [:btn, "btn-link", "btn-block"]
     CODE
   end
-
-  gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?= f.submit [^\n]+?\n/m, <<-CODE
-\\1.form-group.row.actions
-\\2  = f.submit t('activity.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
-  CODE
 
   append_to_file '_form.html.haml', <<-CODE
 

@@ -1,4 +1,4 @@
-generate 'scaffold activity user:references:index description:text --parent=post'
+generate 'scaffold activity user:references:index title:string content:text --parent=post'
 
 file 'config/locales/activity.yml', <<-CODE
 en:
@@ -14,8 +14,8 @@ en:
     post_new_activity: Publish new activity
 
     save: Save
-    description: Description
-    add_description: Write more about your journey...
+    content: Content
+    add_content: Write more about your journey...
 
     list_activities: Activities
     new_activity: New Activity
@@ -34,8 +34,8 @@ zh-CN:
     post_new_activity: 发布行程
 
     save: 保存
-    description: 详情
-    add_description: 关于旅行的更多细节……
+    content: 详情
+    add_content: 关于旅行的更多细节……
 
     list_activities: 行程列表
     new_activity: 发布新行程
@@ -64,6 +64,19 @@ inside 'app/controllers/' do
   gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
 \\1\\2  @activity.user = current_user
 \\3
+  CODE
+
+  gsub_file 'activities_controller.rb', /^([ ]+?)def new.*?\1end\n/m, <<-CODE
+\\0
+\\1def import
+\\1  @activity = Activity.new
+\\1  @activity.user = current_user
+\\1  @activity.schedules.new
+
+\\1  @activity.content = Nokogiri::HTML(open params[:url]).css("#content>h1, #content .article .topic-content .topic-doc .from a, #content .article .topic-content .topic-doc h3 span.color-green, #content .article .topic-content .topic-doc .topic-content")
+
+\\1  render :new
+\\1end
   CODE
 
 end
@@ -103,7 +116,8 @@ $("main").trigger("activities:load")
             %span.m-1<>
               |
             = timeago_tag activity.end_date
-      %p.activity-description.mt-1<>= activity.description.html_safe
+      %p.activity-title.mt-1<>= activity.title.html_safe
+      %p.activity-content.mt-1<>= activity.content.html_safe
       .d-flex.w-100.justify-content-between<>
         %small
           = precede t("activity.posted") do
@@ -118,6 +132,7 @@ $("main").trigger("activities:load")
 #activities.list-group{'data-url': activities_path}
   - items.each do |activity|
     .list-group-item.list-group-item-action.justify-content-between
+      = activity.title.html_safe
       = activity.places.pluck(:name).to_sentence
       .badge.badge-default.badge-pill<>
         = timeago_tag activity.start_date
@@ -129,6 +144,24 @@ $("main").trigger("activities:load")
   gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
   gsub_file '_form.html.haml', /@activity/, 'activity'
+
+  gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
+  gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
+\\1.form-group.row
+\\2  .input-group
+\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.content')
+\\2    = f.text_area :content,
+\\2                  class: 'form-control ckeditor',
+\\2                  placeholder: t('activity.add_content'),
+\\2                  'aria-describedby': 'activity-content-help',
+\\2                  rows: 3
+\\2  %small#activity-content-help.form-text.text-muted<>= t('activity.add_content')
+  CODE
+
+  gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?= f.submit [^\n]+?\n/m, <<-CODE
+\\1.form-group.row.actions
+\\2  = f.submit t('activity.save'), class: [:btn, "btn-primary", "btn-lg", "btn-block"]
+  CODE
 
   gsub_file 'new.html.haml', /= render 'form'$/, '\0, activity: @activity'
   gsub_file 'new.html.haml', /^(%h1) .*$/, %q^\1= t('activity.new_activity')^
@@ -162,17 +195,19 @@ end
 
 inside 'spec/factories/' do
   gsub_file 'activities.rb', /(^\s*?)(user) nil$/, '\1\2'
-  gsub_file 'activities.rb', /(^\s*?)(description) .*?$/, %q^\1sequence(:\2) {|n| 'activity_\2_%d' % n }^
+  gsub_file 'activities.rb', /(^\s*?)(title|content) .*?$/, %q^\1sequence(:\2) {|n| 'activity_\2_%d' % n }^
 
   insert_into_file 'activities.rb', before: /^(\s\s)end$/ do
     <<-CODE
 \\1  factory :invalid_activity do
 \\1    user nil
-\\1    description nil
+\\1    title nil
+\\1    content nil
 \\1  end
 \\1  factory :bare_activity do
 \\1    user nil
-\\1    description nil
+\\1    title nil
+\\1    content nil
 \\1  end
     CODE
   end
@@ -189,12 +224,16 @@ inside 'spec/models/' do
 \\2    expect( build(:invalid_activity) ).to be_invalid
 \\2  end
 
-\\2  it "should fail without :description" do
-\\2    expect( build(:activity, description: nil) ).to be_invalid
-\\2  end
-
 \\2  it "should fail without :user" do
 \\2    expect( build(:activity, user: nil) ).to be_invalid
+\\2  end
+
+\\2  it "should fail without :title" do
+\\2    expect( build(:activity, title: nil) ).to be_invalid
+\\2  end
+
+\\2  it "should fail without :content" do
+\\2    expect( build(:activity, content: nil) ).to be_invalid
 \\2  end
 \\2end
 
@@ -251,7 +290,7 @@ inside 'spec/views/activities/' do
     expect(@activities.size).to be(2)
     render
     @activities.each do |activity|
-      assert_select "#activities .activity-description", :text => activity.description.to_s, :count => 1
+      assert_select "#activities .activity-content", :text => activity.content.to_s, :count => 1
     end
   CODE
 
@@ -270,7 +309,7 @@ inside 'spec/views/activities/' do
   CODE
 
   gsub_file 'show.html.haml_spec.rb', /(it.*renders attributes in .*\n(\s*?)?)(expect.*?\n)+?(\s+end)\n/m, <<-CODE
-\\1expect(rendered).to match(/\#{@activity.description}/)
+\\1expect(rendered).to match(/\#{@activity.content}/)
 \\4
   CODE
 end

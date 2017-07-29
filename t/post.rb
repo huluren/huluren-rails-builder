@@ -1,10 +1,11 @@
-generate 'model post user:references:index description:text type'
+generate 'model post user:references:index title:string content:text type'
 
 inside 'app/models/' do
   inject_into_class 'post.rb', 'Post', <<-CODE
   default_scope { recent }
   validates :user, presence: true
-  validates :description, presence: true
+  validates :title, presence: true
+  validates :content, presence: true
 
   acts_as_followable
   CODE
@@ -13,13 +14,14 @@ end
 
 inside 'spec/factories/' do
   gsub_file 'posts.rb', /(^\s*?)(user) nil$/, '\1\2'
-  gsub_file 'posts.rb', /(^\s*?)(description) .*?$/, %q^\1sequence(:\2) {|n| 'post_\2_%d' % n }^
+  gsub_file 'posts.rb', /(^\s*?)(title|content) .*?$/, %q^\1sequence(:\2) {|n| 'post_\2_%d' % n }^
 
   insert_into_file 'posts.rb', before: /^(\s\s)end$/ do
     <<-CODE
 \\1  factory :invalid_post do
 \\1    user nil
-\\1    description nil
+\\1    title nil
+\\1    content nil
 \\1  end
     CODE
   end
@@ -36,12 +38,16 @@ inside 'spec/models/' do
 \\2    expect( build(:invalid_post) ).to be_invalid
 \\2  end
 
-\\2  it "should fail without :description" do
-\\2    expect( build(:post, description: nil) ).to be_invalid
-\\2  end
-
 \\2  it "should fail without :user" do
 \\2    expect( build(:post, user: nil) ).to be_invalid
+\\2  end
+
+\\2  it "should fail without :title" do
+\\2    expect( build(:post, title: nil) ).to be_invalid
+\\2  end
+
+\\2  it "should fail without :content" do
+\\2    expect( build(:post, content: nil) ).to be_invalid
 \\2  end
 \\2end
 
