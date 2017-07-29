@@ -30,15 +30,9 @@ inside('app/views/pages/') do
   CODE
 end
 
-inside('app/views/activities/') do
-  file 'index.js.coffee', <<-CODE
-$("#activities").replaceWith "<%= escape_javascript(render 'items', items: @activities) %>"
-  CODE
-end
-
 inside('app/views/places/') do
   file 'index.js.coffee', <<-CODE
-$("#places").replaceWith "<%= escape_javascript(render 'items_list', items: @places) %>"
+$("main #places").replaceWith "<%= escape_javascript(render 'items_list', items: @places) %>"
   CODE
 end
 
