@@ -147,7 +147,7 @@ inside 'app/assets/javascripts/' do
 $(document).on "turbolinks:load", ->
 
   $("#activities.list-group .list-group-item p > img").each ->
-    $(this).attr "src", $(this).attr("src").replace(/(http)[s]{0,1}(:\/\/img)\d+(\.doubanio.com)\//, "$1$23$3.mkmd.cn/")
+    $(this).attr "src", $(this).attr("src").replace(new RegExp("(http)[s]{0,1}(://img)[0-9]+(.doubanio.com)/"), "$1$23$3.mkmd.cn/")
   CODE
 
 end
