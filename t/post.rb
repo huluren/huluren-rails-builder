@@ -1,4 +1,5 @@
 generate 'model post user:references:index title:string content:text type'
+generate 'migration AddBelongsToToPost belongs_to:references{polymorphic}:index'
 
 inside 'app/models/' do
   inject_into_class 'post.rb', 'Post', <<-CODE

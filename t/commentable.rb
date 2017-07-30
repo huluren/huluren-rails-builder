@@ -1,5 +1,5 @@
 #========== Comment ==========#
-generate 'scaffold comment user:references content:text commentable:references{polymorphic}:index --no-resource-route'
+generate 'scaffold comment user:references content:text commentable:references{polymorphic}:index --no-resource-route --parent=post'
 
 route <<-CODE
 concern :commentable do
@@ -54,15 +54,18 @@ inside 'app/models/' do
   CODE
 
   inject_into_class 'user.rb', 'User', <<-CODE
-  has_many :comments, as: :commentable
+  has_many :comments, as: :commentable, foreign_key: :belongs_to_id, foreign_type: :belongs_to_type, inverse_of: :commentable
   CODE
 
   inject_into_class 'post.rb', 'Post', <<-CODE
-  has_many :comments, as: :commentable
+  has_many :comments, as: :commentable, foreign_key: :belongs_to_id, foreign_type: :belongs_to_type, inverse_of: :commentable
   CODE
 
+  gsub_file 'comment.rb', /^\s+belongs_to :user\n/, ''
+  insert_into_file 'comment.rb', ', foreign_key: :belongs_to_id, foreign_type: :belongs_to_type', after: /belongs_to :commentable, polymorphic: true$/
   inject_into_class 'comment.rb', 'Comment', <<-CODE
-  validates :user, presence: true
+  alias_attribute :commentable_id, :belongs_to_id
+  alias_attribute :commentable_type, :belongs_to_type
   validates :content, presence: true
   validates :commentable, presence: true
   CODE
@@ -96,6 +99,8 @@ inside 'app/controllers/' do
 \\2  }.call
 \\2end
   CODE
+
+  append_to_file 'comments_controller.rb', ', :belongs_to_id, :belongs_to_type', after: /params.require.+?.permit.+?:commentable_id, :commentable_type/
 
   gsub_file 'comments_controller.rb', /(def index\n.*?)Comment.all\n/m, <<-CODE
 \\1@commentable.comments
@@ -279,6 +284,13 @@ inside 'spec/models/' do
   it "should have :commentable_id" do
     expect( create(:comment).commentable ).not_to be(nil)
   end
+
+  describe "with commentable association" do
+    it "create comment with #comments.new" do
+      commentable = create(:user)
+      expect( commentable.comments.new.commentable ).to be(commentable)
+    end
+  end
 CODE
 end
 
@@ -298,7 +310,7 @@ let(:valid_attributes) {
   CODE
 
   gsub_file 'comments_controller_spec.rb', /(get :(index|new), params: \{)(})/, '\1 user_id: create(:user) \3'
-  gsub_file 'comments_controller_spec.rb', /(post :create, params: {comment: (valid_attributes|invalid_attributes))(})/, %q!\1, user_id: \2['commentable_id']\3!
+  gsub_file 'comments_controller_spec.rb', /(post :create, params: {comment: (valid_attributes|invalid_attributes))(})/, %q!\1, :"#{valid_attributes['belongs_to_type'].downcase}_id" => \2['belongs_to_id']\3!
 
   gsub_file 'comments_controller_spec.rb', /let\(:invalid_attributes\) \{\n\s*skip.*?\n\s*\}\n/m, <<-CODE
 let(:invalid_attributes) {
