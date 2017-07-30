@@ -12,6 +12,7 @@ CKEDITOR.editorConfig = (config) ->
     { name: 'basicstyles', items: [ 'Bold','Italic','Underline' ] },
     { name: 'paragraph',   items: [ 'NumberedList','BulletedList' ] },
     { name: 'insert',      items: [ 'Image','HorizontalRule','Smiley' ] },
+    { name: 'links',       items: [ 'Link', 'Unlink' ] }
     { name: 'clipboard',   items: [ 'Undo','Redo' ] }
   ]
   config.toolbar = 'Mini'

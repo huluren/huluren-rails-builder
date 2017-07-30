@@ -83,7 +83,10 @@ inside 'app/controllers/' do
 \\1  @activity.user = current_user
 \\1  @activity.schedules.new
 
-\\1  @activity.content = Nokogiri::HTML(open params[:url]).css("#content>h1, #content .article .topic-content .topic-doc .from a, #content .article .topic-content .topic-doc h3 span.color-green, #content .article .topic-content .topic-doc .topic-content")
+\\1  Nokogiri::HTML(open params[:url]).tap do |post|
+\\1    @activity.title = post.at_css("#content>h1").text.strip
+\\1    @activity.content = post.css("#content .article .topic-content .topic-doc .from a, #content .article .topic-content .topic-doc h3 span.color-green, #content .article .topic-content .topic-doc .topic-content")
+\\1  end
 
 \\1  render :new
 \\1end
