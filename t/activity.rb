@@ -117,7 +117,7 @@ $("main").trigger("activities:load")
   - items.each do |activity|
     .list-group-item.flex-column.align-items-start
       .d-flex.w-100.justify-content-between<>
-        .lead= activity.places.pluck(:name).to_sentence
+        .lead= activity.places.pluck(:title).to_sentence
         %small.card.text-muted.p-1
           .card-block.text-nowrap.p-0<>
             .font-weight-bold= t('activity.date_range')
@@ -143,7 +143,7 @@ $("main").trigger("activities:load")
   - items.each do |activity|
     .list-group-item.list-group-item-action.justify-content-between
       = activity.title.html_safe
-      = activity.places.pluck(:name).to_sentence
+      = activity.places.pluck(:title).to_sentence
       .badge.badge-default.badge-pill<>
         = timeago_tag activity.start_date
         %span.m-1<>
