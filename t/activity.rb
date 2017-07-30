@@ -4,7 +4,6 @@ file 'config/locales/activity.yml', <<-CODE
 en:
   activity:
     create: New Activity
-    import: Import Activity
     posted: Post at
     from: From
     back: Back
@@ -26,7 +25,6 @@ en:
 zh-CN:
   activity:
     create: '发布新行程'
-    import: 导入行程
     posted: '提交于'
     from: 来自
     back: 返回
@@ -64,7 +62,7 @@ end
 
 inside 'app/controllers/' do
   inject_into_class 'activities_controller.rb', ActivitiesController, <<-CODE
-  before_action :authenticate_user!, only: [:new, :import, :edit, :create, :update, :destroy]
+  before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy]
   CODE
 
   gsub_file 'activities_controller.rb', /(\n(\s*?)def index\n[^\n]*?Activity\.)all\n/m, <<-CODE
@@ -74,22 +72,6 @@ inside 'app/controllers/' do
   gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n[^\n]*?\n)(\s*?end)\n/m, <<-CODE
 \\1\\2  @activity.user = current_user
 \\3
-  CODE
-
-  gsub_file 'activities_controller.rb', /^([ ]+?)def new.*?\1end\n/m, <<-CODE
-\\0
-\\1def import
-\\1  @activity = Activity.new
-\\1  @activity.user = current_user
-\\1  @activity.schedules.new
-
-\\1  Nokogiri::HTML(open params[:url]).tap do |post|
-\\1    @activity.title = post.at_css("#content>h1").text.strip
-\\1    @activity.content = post.css("#content .article .topic-content .topic-doc .from a, #content .article .topic-content .topic-doc h3 span.color-green, #content .article .topic-content .topic-doc .topic-content")
-\\1  end
-
-\\1  render :new
-\\1end
   CODE
 
 end
@@ -161,7 +143,7 @@ $("main").trigger("activities:load")
   gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+title\n)+/m, <<-CODE
-\\1.form-group.row
+\\1.form-group
 \\2  .input-group
 \\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.title')
 \\2    = f.text_field :title,
@@ -172,14 +154,13 @@ $("main").trigger("activities:load")
   CODE
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
-\\1.form-group.row
-\\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.content')
-\\2    = f.text_area :content,
-\\2                  class: 'form-control ckeditor',
-\\2                  placeholder: t('activity.add_content'),
-\\2                  'aria-describedby': 'activity-content-help',
-\\2                  rows: 3
+\\1.form-group
+\\2  %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.content')
+\\2  = f.text_area :content,
+\\2                class: 'form-control ckeditor',
+\\2                placeholder: t('activity.add_content'),
+\\2                'aria-describedby': 'activity-content-help',
+\\2                rows: 5
 \\2  %small#activity-content-help.form-text.text-muted<>= t('activity.add_content')
   CODE
 

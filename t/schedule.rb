@@ -74,7 +74,7 @@ inside 'app/helpers/' do
     new_object = f.object.send(association).klass.new
     id = new_object.object_id
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
-      render(association.to_s.singularize + "_fields", f: builder)
+      render(association.to_s.pluralize + "/fields", f: builder)
     end
     link_to(name, '#', class: options.fetch(:class, []) << "add_fields", data: {id: id, fields: fields.gsub("\n", "")})
   end
@@ -90,7 +90,7 @@ inside 'app/views/activities/' do
     <<-CODE
 \\1.form-group.row.field
 \\1  = f.fields_for :schedules do |builder|
-\\1    = render 'schedule_fields', f: builder
+\\1    = render 'schedules/fields', f: builder
 \\1  = link_to_add_fields t("activity.schedule.add_schedule"), f, :schedules, class: [:btn, "btn-link", "btn-block"]
     CODE
   end
@@ -117,7 +117,11 @@ inside 'app/views/activities/' do
             = f.submit class: "btn btn-primary"
   CODE
 
-  file '_schedule_fields.html.haml', <<-CODE
+end
+
+inside 'app/views/schedules/' do
+
+  file '_fields.html.haml', <<-CODE
 %fieldset.activity_schedule.card
   = f.label :place_id, f.object.place.try(:title), class: ["btn", "btn-secondary"]
   = f.hidden_field :place_id

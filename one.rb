@@ -214,6 +214,7 @@ after_bundle do
   #   place, activity -> schedule
   #   place, activity, commentable -> kaminari
   #   activity -> ckeditor
+  #   activity, place, schedule -> import
   #   devise-user(login), place, activity, pages-landing(root) -> layout
   modules = %w{
     heroku travis puma
@@ -224,6 +225,7 @@ after_bundle do
     post
     place activity ckeditor
     schedule
+    import
     followable
     commentable
     kaminari
