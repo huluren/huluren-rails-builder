@@ -94,7 +94,7 @@ inside 'app/views/activities/' do
 
   file 'index.js.coffee', <<-CODE
 $("main #activities").replaceWith "<%= escape_javascript(render 'items', items: @activities) %>"
-$("main").trigger("activities:load")
+$("main #activities.list-group").trigger("activities:load")
   CODE
 
   file '_items.html.haml', <<-CODE
@@ -182,17 +182,42 @@ end
 inside 'app/assets/javascripts/' do
 
   append_to_file 'activities.coffee', <<-CODE
-replace_activites_images = ->
+delay = (ms, func) -> setTimeout func, ms
 
-  $("#activities.list-group .list-group-item p > img").each () ->
-    $(this).attr "src", $(this).attr("src").replace(new RegExp("(http)[s]{0,1}(://img)[0-9]+(.doubanio.com)/"), "$1$23$3.mkmd.cn/")
+load_image_from_iframe = (img, callback) ->
+  if img.attr("loading")
+    return
+
+  $(this).attr("loading", true)
+
+  iframe = $('<iframe style="display: none;"></iframe>')
+  $(iframe).attr "src", 'data:text/html;charset=utf-8,' + encodeURI('<img src="' + img.data("src") + '" />')
+
+  iframe.on "load", ->
+    img.attr "src", img.data("src")
+    img.data "loading-complete", (new Date()).getTime()
+    img.attr "loading-cost", (img.data("loading-complete") - img.data("loading-start"))
+    img.attr "title", "success " + (img.data("loading-complete") - img.data("loading-start"))
+
+  iframe.on "error", ->
+    $(this).attr("loading", false)
+    img.data "loading-complete", (new Date()).getTime()
+    img.attr "loading-cost", (img.data("loading-complete") - img.data("loading-start"))
+    img.attr "title", "error " + (img.data("loading-complete") - img.data("loading-start"))
+
+  img.data "loading-start", (new Date()).getTime()
+  img.before(iframe)
 
 $(document).on "turbolinks:load", ->
 
-  $("main.pages.landing, main.activities.index").on "activities:load", ->
-    replace_activites_images()
+  $("main").on "activities:load", "#activities.list-group", ->
 
-  $("main").trigger("activities:load")
+    $(".list-group-item p > img", $(this)).each ->
+      $(this).data "src", $(this).attr("src")
+      $(this).removeAttr "src"
+      load_image_from_iframe $(this)
+
+  $("main #activities.list-group").trigger("activities:load")
 
   true
   CODE

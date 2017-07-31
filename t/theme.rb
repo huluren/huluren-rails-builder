@@ -1,5 +1,5 @@
 #========== Theme Setup ==========#
-default_theme = :materia
+default_theme = :cerulean
 
 #bs_theme = ask('Bootstrap theme name? (Go to https://bootswatch.com/4-alpha/ for available themes.) [default: %s]: ' % default_theme, :cyan)
 bs_theme = default_theme # if bs_theme.blank?
