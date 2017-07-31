@@ -111,8 +111,8 @@ $("main").trigger("activities:load")
             %span.m-1<>
               |
             = timeago_tag activity.end_date
-      %p.activity-title.mt-1<>= activity.title.html_safe
-      %p.activity-content.mt-1<>= activity.content.html_safe
+      %h5.activity-title.mt-1<>= activity.title.html_safe
+      .activity-content.mt-1<>= activity.content.html_safe
       .d-flex.w-100.justify-content-between<>
         %small
           = precede t("activity.posted") do
