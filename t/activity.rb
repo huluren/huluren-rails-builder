@@ -188,7 +188,7 @@ load_image_from_iframe = (img, callback) ->
   if img.attr("loading")
     return
 
-  $(this).attr("loading", true)
+  img.attr("loading", true)
 
   iframe = $('<iframe style="display: none;"></iframe>')
   $(iframe).attr "src", 'data:text/html;charset=utf-8,' + encodeURI('<img src="' + img.data("src") + '" />')
@@ -200,7 +200,7 @@ load_image_from_iframe = (img, callback) ->
     img.attr "title", "success " + (img.data("loading-complete") - img.data("loading-start"))
 
   iframe.on "error", ->
-    $(this).attr("loading", false)
+    img.attr("loading", false)
     img.data "loading-complete", (new Date()).getTime()
     img.attr "loading-cost", (img.data("loading-complete") - img.data("loading-start"))
     img.attr "title", "error " + (img.data("loading-complete") - img.data("loading-start"))
