@@ -12,7 +12,8 @@ file 'app.json', <<-CODE
     }
   ],
   "addons": [
-    "heroku-postgresql:hobby-dev"
+    "heroku-postgresql:hobby-dev",
+    "heroku-redis:hobby-dev"
   ],
   "scripts": {
     "postdeploy": "bundle exec rails db:migrate"
