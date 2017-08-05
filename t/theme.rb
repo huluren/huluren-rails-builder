@@ -59,6 +59,21 @@ footer {
   max-width: 300px;
   max-height: 300px;
 }
+
+/* sets */
+.set {
+}
+.set-accept {
+  color: $green;
+}
+.set-inbox {
+  color: $gray;
+  background-color: $gray-lighter;
+}
+.set-deny {
+  color: $white;
+  background-color: darken($gray-light, 15%);
+}
   CODE
 
 end

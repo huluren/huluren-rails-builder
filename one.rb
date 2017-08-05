@@ -26,6 +26,8 @@ gem 'globalize', github: 'globalize/globalize'
 gem 'activemodel-serializers-xml'
 gem 'title'
 
+gem 'redis'
+
 add_source 'https://rails-assets.org' do
   gem 'rails-assets-tether'
 end
