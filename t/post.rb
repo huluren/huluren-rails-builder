@@ -1,5 +1,6 @@
 generate 'model post user:references:index title:string content:text type'
 generate 'migration AddBelongsToToPost belongs_to:references{polymorphic}:index'
+generate 'migration add_uuid_to_post uuid:string:uniq'
 
 inside 'app/models/' do
   inject_into_class 'post.rb', 'Post', <<-CODE

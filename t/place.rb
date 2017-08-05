@@ -272,10 +272,10 @@ inside 'spec/views/places/' do
 \\1\\3create(:place))
   CODE
 
-  gsub_file 'show.html.haml_spec.rb', /(it.*renders attributes in .*\n(\s*?)?)(expect.*?\n)+?(\s+end)\n/m, <<-CODE
-\\1expect(rendered).to match(/\#{@place.title}/)
-\\2expect(rendered).to match(/\#{@place.content}/)
-\\4
+  gsub_file 'show.html.haml_spec.rb', /([ ]+)(it.*renders attributes in .*?)expect.*?\n(\1end)\n/m, <<-CODE
+\\1\\2expect(rendered).to match(/\#{@place.title}/)
+\\1  expect(rendered).to match(/\#{@place.content}/)
+\\3
   CODE
 end
 

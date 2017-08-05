@@ -21,6 +21,7 @@ inside 'app/controllers/' do
   def douban_post
     Nokogiri::HTML(open params[:url]).tap do |page|
       @activity = Activity.new
+      @activity.uuid = params[:url]
       @activity.title = page.at_css("#content>h1").text.strip
       @activity.content = page.css("#content .article .topic-content .topic-doc .from a, #content .article .topic-content .topic-doc h3 span.color-green, #content .article .topic-content .topic-doc .topic-content").to_html
     end
@@ -116,8 +117,7 @@ $(document).on "turbolinks:load", ->
       dataType: "json"
       success: (response) =>
         $(this).siblings().removeClass("active")
-        $(this).attr 'class', 'active set set-' + response["set"]
-
+        $(this).addClass 'active set set-' + response["set"]
         $(this).parent().next("label").text response["set"]
         $(this).parent().next("label").attr 'class', 'set set-' + response["set"]
         $("a[href='" + $("#douban-topic-set").data("url") + "']").trigger "import:present"

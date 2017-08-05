@@ -1,4 +1,4 @@
-generate 'scaffold activity user:references:index title:string content:text --parent=post'
+generate 'scaffold activity user:references:index title:string content:text uuid:string:uniq --parent=post'
 
 file 'config/locales/activity.yml', <<-CODE
 en:
@@ -52,6 +52,7 @@ inside 'app/models/' do
   default_scope { recent }
   validates :title, presence: true
   validates :content, presence: true
+  validates :uuid, uniqueness: { case_sensitive: false }, allow_nil: true
   CODE
 
   inject_into_class 'user.rb', 'User', <<-CODE
@@ -140,6 +141,7 @@ $("main #activities.list-group").trigger("activities:load")
 
   gsub_file '_form.html.haml', /(= f.label :)(user)$/, '= f.label :user, current_user.email'
   gsub_file '_form.html.haml', /(= f.text_field :)(user)$/, '= f.hidden_field :user_id, value: current_user.id'
+  gsub_file '_form.html.haml', /(= f.text_field :)(uuid)$/, '= f.hidden_field :uuid if activity.uuid'
   gsub_file '_form.html.haml', /(\s+?).field\n\s+?= f\.label[^\n]+\n\s+?(= f\.hidden_field [^\n]+?\n)/m, '\1\2'
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+title\n)+/m, <<-CODE
@@ -226,7 +228,7 @@ end
 
 inside 'spec/factories/' do
   gsub_file 'activities.rb', /(^\s*?)(user) nil$/, '\1\2'
-  gsub_file 'activities.rb', /(^\s*?)(title|content) .*?$/, %q^\1sequence(:\2) {|n| 'activity_\2_%d' % n }^
+  gsub_file 'activities.rb', /(^\s*?)(title|content|uuid) .*?$/, %q^\1sequence(:\2) {|n| 'activity_\2_%d' % n }^
 
   insert_into_file 'activities.rb', before: /^(\s\s)end$/ do
     <<-CODE
@@ -265,6 +267,10 @@ inside 'spec/models/' do
 
 \\2  it "should fail without :content" do
 \\2    expect( build(:activity, content: nil) ).to be_invalid
+\\2  end
+
+\\2  it "should fail with duplicate :uuid" do
+\\2    expect{ 2.times { create(:activity, uuid: 'duplicate_uuid') } }.to raise_error(ActiveRecord::RecordInvalid)
 \\2  end
 \\2end
 
@@ -339,9 +345,9 @@ inside 'spec/views/activities/' do
 \\1\\3create(:activity))
   CODE
 
-  gsub_file 'show.html.haml_spec.rb', /(it.*renders attributes in .*\n(\s*?)?)(expect.*?\n)+?(\s+end)\n/m, <<-CODE
-\\1expect(rendered).to match(/\#{@activity.content}/)
-\\4
+  gsub_file 'show.html.haml_spec.rb', /([ ]+)(it.*renders attributes in .*?)expect.*?\n(\1end)\n/m, <<-CODE
+\\1\\2expect(rendered).to match(/\#{@activity.content}/)
+\\3
   CODE
 end
 
