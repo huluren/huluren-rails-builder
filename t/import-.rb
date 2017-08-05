@@ -7,11 +7,20 @@ scope :import do
   end
 CODE
 
+file 'config/initializers/present.rb', <<-CODE
+Rails.application.configure do
+  config.present_enable = true
+  config.present_redis_client = ConnectionPool::Wrapper.new(size: 1, timeout: 5) {
+                                  Redis.new url: ENV.fetch('REDIS_URL', 'redis://127.0.0.1:6379')
+                                }
+end
+CODE
+
 inside 'app/models/' do
   file 'present.rb', <<-CODE
 class Present
-  def initialize(url = ENV['REDIS_URL'])
-    @client = Redis.new(url: url).tap {|c| c.ping }
+  def initialize
+    @client = Rails.configuration.present_redis_client
     @sets = [:accept, :deny, :inbox]
 
     self
@@ -32,6 +41,7 @@ class Present
 end
   CODE
 end
+
 inside 'app/controllers/' do
   inject_into_class 'import_controller.rb', 'ImportController', <<-CODE
   before_action :authenticate_user!

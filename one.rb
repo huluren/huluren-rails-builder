@@ -14,6 +14,7 @@ gem 'devise'
 gem 'acts_as_followable', github: 'huluren/acts_as_followable'
 gem 'kaminari'
 gem 'ckeditor_rails'
+gem 'non-stupid-digest-assets'
 gem 'omniauth-github'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
@@ -22,11 +23,13 @@ gem 'omniauth-google-oauth2'
 # i18n
 gem 'rails-i18n'
 gem 'devise-i18n'
-gem 'globalize', github: 'globalize/globalize'
+gem 'globalize', '~> 5.1.0.beta2'
 gem 'activemodel-serializers-xml'
 gem 'title'
 
-gem 'redis'
+gem 'redis', require: %w{ redis redis/connection/hiredis }
+gem 'hiredis'
+gem 'connection_pool'
 
 add_source 'https://rails-assets.org' do
   gem 'rails-assets-tether'

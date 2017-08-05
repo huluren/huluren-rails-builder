@@ -1,3 +1,21 @@
+file 'config/initializers/ckeditor.rb', <<-CODE
+Ckeditor::Rails.configure do |config|
+  # default is nil for all languages, or set as %w[en zh]
+  config.assets_languages = nil
+
+  # default is nil for all plugins,
+  # or set as white list: %w[image link liststyle table tabletools]
+  # or set as black list: config.default_plugins - %w[about a11yhelp]
+  config.assets_plugins = nil
+
+  # default is nil for all skins, or set as %w[moono-lisa]
+  config.assets_skins = nil
+end
+
+Rails.application.config.assets.precompile += %w(ckeditor/config.js)
+NonStupidDigestAssets.whitelist += %w(ckeditor/config.js)
+CODE
+
 inside('app/assets/javascripts') do
   insert_into_file 'application.js', after: "//= require rails-ujs\n" do
     <<-CODE
@@ -8,7 +26,6 @@ inside('app/assets/javascripts') do
   file 'ckeditor/config.coffee', <<-CODE
 CKEDITOR.editorConfig = (config) ->
   config.toolbar_Mini = [
-    { name: 'styles',      items: [ 'Font' ] },
     { name: 'basicstyles', items: [ 'Bold','Italic','Underline' ] },
     { name: 'paragraph',   items: [ 'NumberedList','BulletedList' ] },
     { name: 'insert',      items: [ 'Image','HorizontalRule','Smiley' ] },
@@ -18,5 +35,14 @@ CKEDITOR.editorConfig = (config) ->
   config.toolbar = 'Mini'
   config.resize_dir = 'both'
   true
+  CODE
+end
+
+inside 'app/assets/stylesheets/ckeditor/' do
+  file 'contents.css.scss', <<-CODE
+p > img {
+  max-width: 360px;
+  max-height: 360px;
+}
   CODE
 end
