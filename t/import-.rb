@@ -1,9 +1,10 @@
 route <<-CODE
 scope :import do
-    get  '/'       => 'import#index',       as: :import
-    post 'present' => 'import#present',     as: :present
-    post 'douban'  => 'import#douban',      as: :import_douban_list
-    get  'douban'  => 'import#douban_post', as: :import_douban_post
+    get  '/'             => 'import#index',         as: :import
+    post 'present'       => 'import#present',       as: :present
+    get  'douban/groups' => 'import#douban_groups', as: :douban_groups
+    get  'douban/topics' => 'import#douban_topics', as: :douban_topics
+    get  'douban/topic'  => 'import#douban_topic',  as: :douban_topic
   end
 CODE
 

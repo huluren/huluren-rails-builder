@@ -3,6 +3,7 @@ generate 'controller import --skip-routes --no-stylesheets --no-helper'
 inside 'app/views/import/' do
   file 'index.html.haml', <<-CODE
 %h3 Import
+#import{'data-present-url': present_path, 'data-present-method': 'POST'}
   CODE
 end
 
