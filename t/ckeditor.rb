@@ -23,6 +23,14 @@ inside('app/assets/javascripts') do
     CODE
   end
 
+  file 'ckeditor.coffee', <<-CODE
+$(document).on "turbolinks:load", ->
+
+  $(".ckeditor").ckeditor()
+
+  true
+  CODE
+
   file 'ckeditor/config.coffee', <<-CODE
 CKEDITOR.editorConfig = (config) ->
   config.toolbar_Mini = [
