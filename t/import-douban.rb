@@ -69,7 +69,6 @@ $("main #douban .douban-groups").trigger 'douban:groups:loaded'
       %label.btn.btn-outline-info
         = radio_button_tag :url, group[0]
         = group[1]
-  = submit_tag
   CODE
 
   file 'douban_topics.html.haml', <<-CODE
