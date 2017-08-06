@@ -12,7 +12,7 @@ Ckeditor::Rails.configure do |config|
   config.assets_skins = nil
 end
 
-Rails.application.config.assets.precompile += %w(ckeditor/config.js)
+Rails.application.config.assets.precompile += %w(ckeditor/*)
 NonStupidDigestAssets.whitelist += %w(ckeditor/config.js)
 CODE
 
@@ -34,6 +34,8 @@ CKEDITOR.editorConfig = (config) ->
   ]
   config.toolbar = 'Mini'
   config.resize_dir = 'both'
+  config.enterMode = CKEDITOR.ENTER_BR
+  config.shiftEnterMode = CKEDITOR.ENTER_P
   true
   CODE
 end
