@@ -17,13 +17,9 @@ NonStupidDigestAssets.whitelist += %w(ckeditor/config.js)
 CODE
 
 inside('app/assets/javascripts') do
-  insert_into_file 'application.js', after: "//= require rails-ujs\n" do
-    <<-CODE
-//= require ckeditor-jquery
-    CODE
-  end
-
   file 'ckeditor.coffee', <<-CODE
+//= require ckeditor-jquery
+
 $(document).on "turbolinks:load", ->
 
   $(".ckeditor").ckeditor()
