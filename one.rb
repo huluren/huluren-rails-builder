@@ -78,6 +78,10 @@ gem_group :development, :staging do
   gem 'rack-mini-profiler', require: false
 end
 
+gem_group :staging, :production do
+  gem 'newrelic_rpm'
+end
+
 #========== README ==========#
 prepend_to_file 'README.md', <<-CODE
 # huluren-rails [![Build Status](https://travis-ci.org/huluren/huluren-rails.svg?branch=master)](https://travis-ci.org/huluren/huluren-rails)
