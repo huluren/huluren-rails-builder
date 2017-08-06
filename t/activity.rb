@@ -80,7 +80,7 @@ end
 inside 'app/views/activities/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('activity.list_activities')^
-  gsub_file 'index.html.haml', /(link_to )'New Activity'(, new_activity_path)/, %q^\1t('activity.new_activity')\2, data: {"no-turbolink": true}^
+  gsub_file 'index.html.haml', /(link_to )'New Activity'/, %q^\1t('activity.new_activity')^
 
   insert_into_file 'index.html.haml', before: /^%(table|br)/ do
     <<-CODE
