@@ -13,7 +13,8 @@ file 'app.json', <<-CODE
   ],
   "addons": [
     "heroku-postgresql:hobby-dev",
-    "heroku-redis:hobby-dev"
+    "heroku-redis:hobby-dev",
+    "newrelic:wayne"
   ],
   "scripts": {
     "postdeploy": "bundle exec rails db:migrate"
