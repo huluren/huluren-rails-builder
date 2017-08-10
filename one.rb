@@ -210,6 +210,10 @@ RSpec.configure do |config|
 end
 CODE
 
+after_bundle do
+  run 'spring binstub --all'
+end
+
 # modules setup
 after_bundle do
   # Depencencies:
