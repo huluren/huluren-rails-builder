@@ -39,6 +39,7 @@ gem_group :development do
   gem 'listen'
   gem 'spring'
   gem 'spring-commands-rspec'
+  gem 'spring-watcher-listen'
   gem 'web-console'
   gem 'better_errors'
   gem 'binding_of_caller'
