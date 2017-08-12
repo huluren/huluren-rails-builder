@@ -6,7 +6,7 @@ unless File.exists? 'config/initializers/devise.rb'
   generate :devise, :user
 
   route 'resources :users, only: []'
-  
+
   inside 'app/views/users/' do
     file '_items.html.haml', <<-CODE
 #users.list-group

@@ -211,10 +211,6 @@ RSpec.configure do |config|
 end
 CODE
 
-after_bundle do
-  run 'spring binstub --all'
-end
-
 # modules setup
 after_bundle do
   # Depencencies:
@@ -260,6 +256,10 @@ after_bundle do
 
     rails_command 'app:template LOCATION=%s' % fp
   end
+end
+
+after_bundle do
+  run 'spring binstub --all'
 end
 
 after_bundle do

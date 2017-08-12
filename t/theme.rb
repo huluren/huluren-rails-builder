@@ -5,8 +5,8 @@ default_theme = :cerulean
 bs_theme = default_theme # if bs_theme.blank?
 
 inside('app/assets/stylesheets/%s/' % bs_theme) do
-  get 'http://bootswatch.com/4-alpha/%s/_variables.scss' % bs_theme, '_variables.scss'
-  get 'http://bootswatch.com/4-alpha/%s/_bootswatch.scss' % bs_theme, '_bootswatch.scss'
+  get 'https://lax.github.io/bootswatch/4-alpha/%s/_variables.scss?_' % bs_theme, '_variables.scss'
+  get 'https://lax.github.io/bootswatch/4-alpha/%s/_bootswatch.scss?_' % bs_theme, '_bootswatch.scss'
 end
 
 inside('app/assets/stylesheets') do

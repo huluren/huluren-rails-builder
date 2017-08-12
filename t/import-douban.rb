@@ -59,16 +59,14 @@ inside 'app/views/import/' do
 
   file 'douban_groups.js.coffee', <<-CODE
 $("main #douban .douban-groups").replaceWith "<%= escape_javascript(render 'douban_groups', groups: @douban_user_groups) %>"
-$("main #douban .douban-groups").trigger 'douban:groups:loaded'
   CODE
 
   file '_douban_groups.html.haml', <<-CODE
-= form_tag :douban_topics, method: 'GET', class: 'douban-groups' do
-  .groups-sel.btn-group-wrap.btn-group-sm.mx-auto{role: "group", "data-toggle": "buttons"}
-    - groups.each do |group|
-      %label.btn.btn-outline-info
-        = radio_button_tag :url, group[0]
-        = group[1]
+.douban-groups.btn-group.btn-group-sm.mx-auto{role: "group", "data-toggle": "buttons"}
+  - groups.each do |group|
+    = link_to :douban_topics, remote: true, data: {method: :get, type: :script, params: "url=\#{group[0]}", "disable-with": "Loading ..."}, class: 'btn btn-outline-info' do
+      = group[1]
+      = radio_button_tag :url, group[0]
   CODE
 
   file 'douban_topics.html.haml', <<-CODE
@@ -102,13 +100,11 @@ $("main #douban .douban-topic-form :nth-child(1)").replaceWith "<%= escape_javas
           %span{"aria-hidden": "true"} ×
         %h4#newActivity.modal-title= t('activity.new_activity')
       .modal-body
-        = form_tag :present, method: 'POST', class: 'douban-topic-set', role: "group", "data-toggle": "buttons" do
-          = hidden_field_tag :key
-          .btn-group-d
-            - [:inbox, :deny, :accept].each do |set|
-              %label.btn.btn-outline-info
-                = radio_button_tag :set, set, class: "set set-\#{set}"
-                = set
+        .douban-topic-set.btn-group.btn-group-sm.mx-auto{role: "group", "data-toggle": "buttons"}
+          - [:inbox, :deny, :accept].each do |set|
+            = link_to :present, remote: true, data: {method: :post, type: :json, params: "set=\#{set}&key=", "disable-with": "Loading ..."}, class: "btn btn-outline-info set set-\#{set}" do
+              = set
+              = radio_button_tag :set, set
         .douban-topic-form
           .replace
             &hellip;
@@ -118,6 +114,34 @@ end
 
 inside 'app/assets/javascripts/' do
   append_to_file 'import.coffee', <<-CODE
+@update_topic_link = (e, callback) ->
+
+  e.addClass "btn"
+  e.attr "data-url", e.attr("href")
+  e.attr "href", $("#douban").data("topic-url")
+
+  e.attr "data-remote", "true"
+  e.attr "data-method", "GET"
+  e.attr "data-type", "script"
+  e.attr "data-params", "url=" + e.data("url")
+
+  if callback != undefined
+    callback()
+
+@check_present = (e, callback) ->
+
+  $.ajax
+    url: $('#import').data('present-url')
+    method: $('#import').data('present-method')
+    data:
+      key: e.data("url")
+    dataType: "json"
+    success: (data, textStatus, jqXHR) ->
+      e.attr "class", 'set set-' + data["set"]
+
+      if callback != undefined
+        callback(data, textStatus, jqXHR)
+
 $(document).on "turbolinks:load", ->
 
   # Fetch Groups
@@ -128,119 +152,40 @@ $(document).on "turbolinks:load", ->
       method: 'GET'
       dataType: 'script'
 
-  # Fetch Groups finished
-  $('main #douban').on 'douban:groups:loaded', '.douban-groups', ->
+  # group button clicked and topics returned.
+  $("main #douban").on "ajax:success", ".douban-groups[role=group] a[data-remote]", (event, response, statusText, xhr) ->
+    $("#douban .douban-topics td.title a:not([data-remote])").each ->
+      update_topic_link $(this), =>
+        check_present $(this), (data, textStatus, jqXHR) =>
+          true
 
-    # setup once
-    $('main #douban .douban-groups').on "change", 'label input[name=url]', ->
-      $(this).parents("form").submit()
-
-    $('main #douban form.douban-groups').submit (e) ->
-      e.preventDefault()
-
-      $.ajax
-        url: $(this).attr("action")
-        method: $(this).attr("method")
-        data: $(this).serialize()
-        dataType: "script"
-        complete: (jqXHR, textStatus) ->
-          $.rails.enableFormElements($("main #douban .douban-groups"))
-          $("#douban .douban-topics .title + td a, #douban .douban-topics .title a").trigger("check:present")
-
-  # Check present
-  $("#douban .douban-topics").on "check:present", "td.title + td a, td.title a", ->
-
-    $.ajax
-      url: $('#import').data('present-url')
-      method: $('#import').data('present-method')
-      data:
-        key: $(this).attr("href")
-      dataType: "json"
-      success: (data, textStatus, jqXHR) =>
-        $(this).attr 'class', 'set set-' + data["set"]
-
-  # disable click event
-  $("#douban .douban-topics").on 'click', "td.title + td a", (e) ->
+  # douban topic author: disable click event
+  $("main #douban").on 'click', ".douban-topics td.title + td a:new([data-remote])", (e) ->
     e.preventDefault()
 
-  # trigger click
-  $("#douban").on 'click', "td.title a", (e) ->
-    e.preventDefault()
+  # load topic into modal form
+  $("main #douban").on "ajax:success", ".douban-topics td.title a[data-remote]", (e, xhr, status, err) ->
+    $("#douban .douban-topic").find('.ckeditor').ckeditor()
+    # $("#douban .douban-topic").find(".activity-add-place").trigger("setup").autocomplete("option", "appendTo", ".douban-topic.modal")
+    $("#douban .douban-topic").data "url", $(this).data("url")
+    $("#douban .douban-topic.modal").modal()
 
-    $("#douban .douban-topic").data "url", $(this).attr("href")
-    $("#douban .douban-topic").trigger "check:present"
-    $("#douban .douban-topic").trigger "douban:topic:load"
+  $("main #douban .douban-topic.modal").on "ajax:success", "form.new_activity, form.edit_activity", (event, response, statusText, xhr) ->
+    $(".douban-topic.modal").modal("toggle")
+    $(".douban-topic-set a.set-accept[data-remote]").click()
+  $("main #douban .douban-topic.modal").on "ajax:error", "form.new_activity, form.edit_activity", (event, response, statusText, xhr) ->
+    $(this).trigger("reset")
+    return ! confirm "Error, cannot save: " + statusText + ", " + response.statusText + " - " + response.status
+  $("main #douban .douban-topic.modal").on "ajax:complete", "form.new_activity, form.edit_activity", (event, xhr, statusText) ->
+    $.rails.enableFormElements($(this))
+    $(this).off( "submit" )
 
-  # modal btn-group fetch check:present status
-  $("#douban .douban-topic").on "check:present", ->
+  $("main #douban .douban-topic-set").on "ajax:beforeSend", "a.set[data-remote]", (event, jqXHR, ajaxOptions) ->
+    ajaxOptions.data += $("#douban .douban-topic").data("url")
+    true
 
-    $.ajax
-      url: $('#import').data('present-url')
-      method: $('#import').data('present-method')
-      data:
-        key: $(this).data("url")
-      dataType: "json"
-      success: (data, textStatus, jqXHR) =>
-        $(this).find("label:has(input[name=set])").removeClass "active"
-        $(this).find("label:has(input[name=set][value=" + data["set"] + "])").addClass "active"
-
-  # modal btn-group topic set changed
-  $("#douban .douban-topic").on "douban:topic:set:changed", "form.douban-topic-set", ->
-
-    $(this).submit (e) ->
-      e.preventDefault()
-
-      $(this).find('input[name=key]').val $("#douban .douban-topic").data("url")
-
-      $.ajax
-        url: $(this).attr("action")
-        method: $(this).attr("method")
-        data: $(this).serialize()
-        dataType: "json"
-        success: (data, textStatus, jqXHR) ->
-          $("a[href='" + data["key"] + "']").trigger "check:present"
-
-    $(this).submit()
-
-  # topic set changed
-  $("#douban .douban-topic").on "change", 'label input[name=set]', ->
-    $(this).parents("form").trigger "douban:topic:set:changed"
-
-  # Fetch topic form
-  $("#douban .douban-topic").on "douban:topic:load", ->
-
-    $.ajax
-      method: "GET"
-      url: $("#douban").data("topic-url")
-      data:
-        url: $(this).data("url")
-      dataType: "script"
-      complete: (jqXHR, textStatus) =>
-        $(this).trigger "douban:topic:loaded"
-
-  # Fetch topic form finished
-  $('main #douban').on 'douban:topic:loaded', '.douban-topic.modal', ->
-    $(this).modal()
-
-    $(this).find('.ckeditor').ckeditor()
-
-    $(this).find('.douban-topic-form > form').submit (e) ->
-      e.preventDefault()
-
-      $.ajax
-        method: 'POST'
-        url: $(this).attr("action")
-        data: $(this).serialize()
-        dataType: "json"
-        success: (data, textStatus, jqXHR) ->
-          $("label:has(input[name=set][value=accept])").click()
-          $(".douban-topic.modal").modal("toggle")
-        error: (jqXHR, textStatus, errorThrown) =>
-          $(this).trigger("reset")
-          return ! confirm "Error, cannot save " + jqXHR.responseText
-        complete: (jqXHR, textStatus) =>
-          $.rails.enableFormElements($(this))
-          $(this).off( "submit" )
+  $("main #douban .douban-topic-set").on "ajax:success", "a.set[data-remote]", (event, response, statusText, xhr) ->
+    check_present $(".douban-topics td.title a[data-remote][data-url='" + response.key + "']")
 
   # trigger No. 1
   $("main #douban .douban-groups").trigger 'douban:groups:load'

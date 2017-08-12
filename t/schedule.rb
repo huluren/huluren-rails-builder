@@ -54,11 +54,6 @@ end
 
 inside 'app/controllers/' do
 
-  gsub_file 'activities_controller.rb', /(\n(\s*?)def new\n.*?\n)(\2end)\n/m, <<-CODE
-\\1\\2  @activity.schedules.new
-\\3
-  CODE
-
   gsub_file 'activities_controller.rb', /(def activity_params\n(\s+?)params[^\n]+)(\))\n/m, <<-CODE
 \\1, schedules_attributes: {}\\3
   CODE
@@ -70,13 +65,14 @@ inside 'app/helpers/' do
   insert_into_file 'application_helper.rb', after: %/module ApplicationHelper\n/ do
     <<-CODE
 
-  def link_to_add_fields(name, f, association, options={})
+  def text_input_to_add_fields(name, f, association, options={})
     new_object = f.object.send(association).klass.new
     id = new_object.object_id
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
       render(association.to_s.pluralize + "/fields", f: builder)
     end
-    link_to(name, '#', class: options.fetch(:class, []) << "add_fields", data: {id: id, fields: fields.gsub("\n", "")})
+    text_field_tag(name, nil, options.merge( name: nil, class: options.fetch(:class, []) << 'add_fields', 'data-id': id, 'data-fields': fields.gsub("
+", "") ))
   end
 
     CODE
@@ -89,9 +85,10 @@ inside 'app/views/activities/' do
   insert_into_file '_form.html.haml', before: /^(\s+?)[^\s]+?\.actions$/ do
     <<-CODE
 \\1.form-group.row.field
-\\1  = f.fields_for :schedules do |builder|
-\\1    = render 'schedules/fields', f: builder
-\\1  = link_to_add_fields t("activity.schedule.add_schedule"), f, :schedules, class: [:btn, "btn-link", "btn-block"]
+\\1  .input-group
+\\1    = f.fields_for :schedules do |builder|
+\\1      = render 'schedules/fields', f: builder
+\\1    = text_input_to_add_fields :activity_schedule_place, f, :schedules, class: ['form-control', 'activity-add-place'], placeholder: t('place.search')
     CODE
   end
 
@@ -105,7 +102,7 @@ inside 'app/views/activities/' do
           %span{"aria-hidden": "true"} ×
         %h4#newPlace.modal-title= t("place.add_place")
       .modal-body
-        = form_for Place.new do |f|
+        = form_for Place.new, remote: true do |f|
           = f.hidden_field :user_id, value: current_user.id
           .form-group
             = f.label :title
@@ -125,15 +122,8 @@ inside 'app/views/schedules/' do
 %fieldset.activity_schedule.card
   = f.label :place_id, f.object.place.try(:title), class: ["btn", "btn-secondary"]
   = f.hidden_field :place_id
-  = f.fields_for :place do |fp|
-    = fp.text_field :title, {name: nil, class: 'place_title', placeholder: t('place.search')}
-  = f.label :start_date, t('schedule.arrival_at')
-  = f.date_field :start_date
-  = f.label :end_date, t('schedule.departure_at')
-  = f.date_field :end_date
-  = f.text_field :description, placeholder: t('schedule.description')
   = f.hidden_field :_destroy
-  = link_to t("schedule.remove"), '#', class: 'remove_fields'
+  = link_to "&times;".html_safe, '#', title: t("schedule.remove"), class: ['remove_fields', 'activity-remove-place']
   CODE
 
 end
@@ -148,55 +138,8 @@ inside 'app/assets/javascripts/' do
 //= require jquery-ui/widgets/datepicker
 //= require jquery-ui/widgets/autocomplete
 
-setup_datepicker = (start_date, end_date) ->
-  start_date.datepicker
-    dateFormat: 'yy-mm-dd'
-    defaultDate: "+1w"
-    changeMonth: true
-    numberOfMonths: 1
-    onSelect: (selectedDate) ->
-      end_date.datepicker "option", "minDate", selectedDate
-  end_date.datepicker
-    dateFormat: 'yy-mm-dd'
-    defaultDate: "+1w"
-    changeMonth: false
-    numberOfMonths: 1
-    onSelect: (selectedDate) ->
-      start_date.datepicker "option", "maxDate", selectedDate
-  true
-
-setup_place_field = (place, place_id, place_label) ->
-  selected_place = (src) ->
-    place_id.val(src.id)
-    place_label.text(src.title)
-    place_label.attr("title", src.id)
-
-  place.autocomplete
-    minLength: 1
-    select: ( event, ui ) ->
-      if ui.item.id == 0
-        create_place place.val(), (new_place) ->
-          selected_place new_place
-      selected_place ui.item
-    close: ( event, ui ) ->
-      $(this).val(null)
-    source: (request, response) ->
-      $.ajax
-        method: "GET"
-        url: '/places'
-        data: {q: request.term}
-        dataType: "json"
-        success: (res) ->
-          data = ({label: item.title, title: item.title, id: item.id} for item in res)
-          data.unshift(label: 'Add ' + request.term + '...', id: 0) unless request.term in (item.title for item in res)
-          response( data )
-        error: (res) ->
-          false
-
-create_place = (title, callback) ->
-  $('#place_title').val(title)
-  $('#modalNewPlace').modal()
-
+# create place
+@create_place = (title, callback) ->
   $('#new_place').submit (e) ->
     e.preventDefault()
     $.ajax
@@ -213,35 +156,61 @@ create_place = (title, callback) ->
         $("#new_place").trigger("reset")
   true
 
-setup_schedules = () ->
-  fields = $(".activity_schedule")
-  fields.each (idx) ->
-    setup_schedule $(this)
-
-setup_schedule = (schedule_fs) ->
-  setup_place_field(schedule_fs.children("input[id$=_place_title]"), schedule_fs.children('input[id$=_place_id]'), schedule_fs.children('label[for$=_place_id]'))
-  setup_datepicker(schedule_fs.children("input[id$=_start_date]"), schedule_fs.children("input[id$=_end_date]"))
-
 $(document).on "turbolinks:load", ->
-  setup_schedules()
 
-  $("#modalNewPlace").on "hide.bs.modal", (e) ->
+  $("main").on "hide.bs.modal", "#modalNewPlace", (e) ->
     $("#new_place").trigger("reset")
     $.rails.enableFormElements($("#new_place"))
 
-  $('form').on 'click', '.remove_fields', (event) ->
+  $('main').on 'click', '.activity-remove-place', (event) ->
     event.preventDefault()
     $(this).prev('input[type=hidden]').val('1')
     $(this).closest('fieldset').hide()
-    true
 
-  $('form').on 'click', '.add_fields', (event) ->
-    event.preventDefault()
+  $("main").on 'add:fields', '.activity-add-place', ->
     time = new Date().getTime()
     regexp = new RegExp($(this).data('id'), 'g')
-    $(this).before($(this).data('fields').replace(regexp, time))
-    setup_schedule($(this).prev('fieldset'))
-    true
+    $(this).before $(this).data('fields').replace(regexp, time)
+    $(this).prev('fieldset').find('label').text $(this).data("place_title")
+    $(this).prev('fieldset').find('label').attr "title", $(this).data("place_id")
+    $(this).prev('fieldset').find('input[name$=\[place_id\]]').val $(this).data("place_id")
+
+  $("main").on "setup", "form.new_activity, form.edit_activity", ->
+    $(this).find('.ckeditor').ckeditor()
+    $(this).find(".activity-add-place").trigger("setup")
+
+  $('main').on 'setup', '.activity-add-place', ->
+    $(this).autocomplete
+      minLength: 1
+      select: ( event, ui ) ->
+        if ui.item.id == 0
+          $('#place_title').val(ui.item.title)
+          $('#modalNewPlace').modal()
+
+          create_place ui.item.title, (new_place) =>
+            $(this).data "place_id", new_place.id
+            $(this).data "place_title", new_place.title
+            $(this).trigger "add:fields"
+        else
+          $(this).data "place_id", ui.item.id
+          $(this).data "place_title", ui.item.title
+          $(this).trigger "add:fields"
+      close: ( event, ui ) ->
+        $(this).val(null)
+      source: (request, response) ->
+        $.ajax
+          method: "GET"
+          url: '/places'
+          data: {q: request.term}
+          dataType: "json"
+          success: (res) ->
+            data = ({label: item.title, title: item.title, id: item.id} for item in res)
+            data.unshift(label: 'Add ' + request.term + '...', title: request.term, id: 0) unless request.term in (item.title for item in res)
+            response( data )
+          error: (res) ->
+            false
+
+  $("main.activities").find("form.new_activity, form.edit_activity").trigger "setup"
 
   true
   CODE
