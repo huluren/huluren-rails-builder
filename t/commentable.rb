@@ -131,7 +131,7 @@ inside 'app/views/comments/' do
   gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment]), id: (user_signed_in? ? :new_comment : nil)'
 
   prepend_to_file 'index.html.haml', <<-CODE
-= render '%s/items' % @commentable.model_name.route_key, items: [@commentable]
+= render @commentable
   CODE
 
   insert_into_file 'index.html.haml', before: /^%(table|br)/ do

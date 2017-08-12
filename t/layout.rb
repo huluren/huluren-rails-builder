@@ -125,14 +125,15 @@ inside 'app/views/layouts/' do
   CODE
 
   file '_menu.html.haml', <<-CODE
-%nav#navbar.navbar.navbar-inverse.bg-primary.fixed-top.navbar-toggleable-sm
-  %button.navbar-toggler.navbar-toggler-right{'aria-controls': 'navbarNavCollapse', 'aria-expanded': 'false', 'aria-label': 'Toggle navigation', 'data-target': '#navbarNavCollapse', 'data-toggle': 'collapse', type: 'button'}
+%nav#navbar.navbar.navbar-expand-lg.navbar-dark.bg-primary.sticky-top
+
+  %button.navbar-toggler.navbar-toggler-right{aria: {controls: 'navbarNavSiteMenus', expanded: 'false', label: 'Toggle navigation'}, 'aria-label': 'Toggle navigation', data: {toggle: 'collapse', target: '#navbarNavSiteMenus'}, type: 'button'}
     %span.navbar-toggler-icon
 
-  = link_to :root, class: 'navbar-brand' do
-    %img{alt: :🏝⛵️🍀🌿}
+  = link_to :root, class: 'h1 navbar-brand mb-0' do
+    %img.d-inline-block.align-top{alt: :🏝⛵️🍀🌿}
 
-  #navbarNavCollapse.collapse.navbar-collapse
+  #navbarNavSiteMenus.collapse.navbar-collapse
     .navbar-nav.mr-auto
       = link_to :root, class: active_class(root_path, base: 'nav-item nav-link') do
         %i.material-icons.md-18<> home
@@ -152,11 +153,11 @@ inside 'app/views/layouts/' do
         = link_to t('menu.login'), :new_user_session, class: active_class(new_user_session_path, base: 'nav-item nav-link')
       - else
         .nav-item.dropdown
-          %a#navbarProfileMenuLink.nav-link.dropdown-toggle{"aria-expanded": "false", "aria-haspopup": "true", "data-toggle": "dropdown"}
+          %a#navbarNavProfileMenuLink.nav-link.dropdown-toggle{aria: {haspopup: "true", expanded: "false"}, data: {toggle: "dropdown"}}
             %i.material-icons.md-18<> person
             = t('menu.profile')
             %span.caret>
-          .dropdown-menu.dropdown-menu-right{"aria-labelledby": "navbarProfileMenuLink"}
+          .dropdown-menu.dropdown-menu-right{aria: {labelledby: "navbarNavProfileMenuLink"}}
             %h6.dropdown-header<
               = current_user.email
               %br<

@@ -1,39 +1,34 @@
 #========== Rails Gems ==========#
 gem 'rails'
-
-gem 'sprockets-rails'
-gem 'bootstrap', '~> 4.0.0.alpha6'
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-gem 'normalize-rails'
-gem 'haml-rails'
 gem 'pg'
 gem 'puma'
-gem 'rails-timeago'
-gem 'devise'
-gem 'acts_as_followable', github: 'huluren/acts_as_followable'
-gem 'kaminari'
-gem 'ckeditor_rails'
-gem 'non-stupid-digest-assets'
-gem 'omniauth-github'
-gem 'omniauth-twitter'
-gem 'omniauth-facebook'
-gem 'omniauth-google-oauth2'
-
-# i18n
-gem 'rails-i18n'
-gem 'devise-i18n'
-gem 'globalize', '~> 5.1.0.beta2'
-gem 'activemodel-serializers-xml'
-gem 'title'
 
 gem 'redis', require: %w{ redis redis/connection/hiredis }
 gem 'hiredis'
 gem 'connection_pool'
 
-add_source 'https://rails-assets.org' do
-  gem 'rails-assets-tether'
-end
+gem 'devise'
+gem 'devise-i18n'
+gem 'omniauth-github'
+gem 'omniauth-twitter'
+gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
+
+gem 'acts_as_followable', github: 'huluren/acts_as_followable'
+
+gem 'haml-rails'
+gem 'rails-timeago'
+gem 'kaminari'
+gem 'ckeditor_rails'
+gem 'rails-i18n'
+gem 'title'
+
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'bootstrap', '~> 4.0.0.beta'
+gem 'normalize-rails'
+
+gem 'non-stupid-digest-assets'
 
 gem_group :development do
   gem 'listen'
@@ -185,7 +180,6 @@ Rails.application.configure do
   config.i18n.default_locale = :'zh-CN'
 
   config.i18n.fallbacks = [:en, :'zh-CN']
-  Globalize.fallbacks = {:en => [:en, :'zh-CN'], :'zh-CN' => [:'zh-CN', :en]}
 end
   CODE
 
@@ -230,6 +224,7 @@ after_bundle do
   modules = %w{
     heroku travis puma
     database env
+    theme
 
     models
     i18n devise-user omniauth
@@ -241,7 +236,7 @@ after_bundle do
     commentable
     kaminari
     pages-landing layout
-    theme title
+    title
 
     db-seeds
   }

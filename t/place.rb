@@ -81,7 +81,7 @@ inside 'app/views/places/' do
   end
 
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
-\\1= render 'items', items: @places
+\\1= render 'places', places: @places
 \\2
   CODE
 
@@ -89,22 +89,26 @@ inside 'app/views/places/' do
 $("main #places").replaceWith "<%= escape_javascript(render 'items_list', items: @places) %>"
   CODE
 
-  file '_items.html.haml', <<-CODE
+  file '_places.html.haml', <<-CODE
 #places.list-group{'data-url': places_path}
-  - items.each do |place|
-    .list-group-item.flex-column.align-items-start
-      .d-flex.w-100.justify-content-between<>
-        .lead.place-title= place.title
-        %small.card.text-muted.p-1
-      %p.place-content.mt-1<>= place.content.html_safe
-      .d-flex.w-100.justify-content-between<>
-        %small
-          = precede t("place.posted") do
-            = timeago_tag place.created_at, class: 'ml-1'
-        - if place.respond_to? :comments
-          %small
-            = link_to t('comment.comments', count: place.comments.count),
-                      polymorphic_url([place, :comments], only_path: true)
+  - places.each do |place|
+    = render place
+  CODE
+
+  file '_place.html.haml', <<-CODE
+.list-group-item.flex-column.align-items-start
+  .d-flex.w-100.justify-content-between<>
+    .lead.place-title= place.title
+    %small.card.text-muted.p-1
+  %p.place-content.mt-1<>= place.content.html_safe
+  .d-flex.w-100.justify-content-between<>
+    %small
+      = precede t("place.posted") do
+        = timeago_tag place.created_at, class: 'ml-1'
+    - if place.respond_to? :comments
+      %small
+        = link_to t('comment.comments', count: place.comments.count),
+                  polymorphic_url([place, :comments], only_path: true)
   CODE
 
   file '_items_list.html.haml', <<-CODE

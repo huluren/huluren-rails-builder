@@ -89,39 +89,43 @@ inside 'app/views/activities/' do
   end
 
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
-\\1= render 'items', items: @activities
+\\1= render 'activities', activities: @activities
 \\2
   CODE
 
   file 'index.js.coffee', <<-CODE
-$("main #activities").replaceWith "<%= escape_javascript(render 'items', items: @activities) %>"
+$("main #activities").replaceWith "<%= escape_javascript(render 'activities', activities: @activities) %>"
 $("main #activities.list-group").trigger("activities:load")
   CODE
 
-  file '_items.html.haml', <<-CODE
+  file '_activities.html.haml', <<-CODE
 #activities.list-group{'data-url': activities_path}
-  - items.each do |activity|
-    .list-group-item.flex-column.align-items-start
-      .d-flex.w-100.justify-content-between<>
-        .lead= activity.places.pluck(:title).to_sentence
-        %small.card.text-muted.p-1
-          .card-block.text-nowrap.p-0<>
-            .font-weight-bold= t('activity.date_range')
-          .card-block.text-nowrap.p-0<>
-            = timeago_tag activity.start_date
-            %span.m-1<>
-              |
-            = timeago_tag activity.end_date
-      %h5.activity-title.mt-1<>= activity.title.html_safe
-      .activity-content.mt-1<>= activity.content.html_safe
-      .d-flex.w-100.justify-content-between<>
-        %small
-          = precede t("activity.posted") do
-            = timeago_tag activity.created_at, class: 'ml-1'
-        - if activity.respond_to? :comments
-          %small
-            = link_to t('comment.comments', count: activity.comments.count),
-                      polymorphic_url([activity, :comments], only_path: true)
+  - activities.each do |activity|
+    = render activity
+  CODE
+
+  file '_activity.html.haml', <<-CODE
+.list-group-item.flex-column.align-items-start
+  .d-flex.w-100.justify-content-between<>
+    .lead= activity.places.pluck(:title).to_sentence
+    %small.card.text-muted.p-1
+      .card-block.text-nowrap.p-0<>
+        .font-weight-bold= t('activity.date_range')
+      .card-block.text-nowrap.p-0<>
+        = timeago_tag activity.start_date
+        %span.m-1<>
+          |
+        = timeago_tag activity.end_date
+  %h5.activity-title.mt-1<>= activity.title.html_safe
+  .activity-content.mt-1<>= activity.content.html_safe
+  .d-flex.w-100.justify-content-between<>
+    %small
+      = precede t("activity.posted") do
+        = timeago_tag activity.created_at, class: 'ml-1'
+    - if activity.respond_to? :comments
+      %small
+        = link_to t('comment.comments', count: activity.comments.count),
+                  polymorphic_url([activity, :comments], only_path: true)
   CODE
 
   file '_items_list.html.haml', <<-CODE
@@ -181,6 +185,17 @@ $("main #activities.list-group").trigger("activities:load")
   gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
 end
 
+inside 'app/assets/stylesheets/' do
+
+  append_to_file 'application.scss', <<-CODE
+/* activites */
+#activities.list-group .list-group-item p > img {
+  max-width: 300px;
+  max-height: 300px;
+}
+  CODE
+
+end
 inside 'app/assets/javascripts/' do
 
   append_to_file 'activities.coffee', <<-CODE

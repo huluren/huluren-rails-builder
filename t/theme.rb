@@ -1,23 +1,10 @@
-#========== Theme Setup ==========#
-default_theme = :cerulean
-
-#bs_theme = ask('Bootstrap theme name? (Go to https://bootswatch.com/4-alpha/ for available themes.) [default: %s]: ' % default_theme, :cyan)
-bs_theme = default_theme # if bs_theme.blank?
-
-inside('app/assets/stylesheets/%s/' % bs_theme) do
-  get 'https://lax.github.io/bootswatch/4-alpha/%s/_variables.scss?_' % bs_theme, '_variables.scss'
-  get 'https://lax.github.io/bootswatch/4-alpha/%s/_bootswatch.scss?_' % bs_theme, '_bootswatch.scss'
-end
-
 inside('app/assets/stylesheets') do
   run 'mv application.css application.scss'
 
   insert_into_file 'application.scss', %^ *= require normalize-rails\n^, before: /^\s\*= require_tree \.\n/
   insert_into_file 'application.scss', before: /^\s\*= require_tree \.\n/ do
     <<-CODE
- *= require jquery-ui/datepicker
  *= require jquery-ui/autocomplete
- *= require jquery-ui/menu
     CODE
   end
 
@@ -25,19 +12,13 @@ inside('app/assets/stylesheets') do
   gsub_file 'application.scss', /^\s*\*= require_self\n/, ''
 
   append_to_file 'application.scss', <<-CODE
-@import '#{bs_theme}/variables';
 @import 'bootstrap';
-@import '#{bs_theme}/bootswatch';
-
-body {
-  margin: 85px auto 0 auto;
-}
 
 footer {
   padding: 3rem 0 3rem 0;
   margin: 3rem auto 0 auto;
   text-align: left;
-  background-color: $gray-lightest;
+  background-color: $gray-100;
 }
 
 /* Rules for sizing the icon. */
@@ -54,26 +35,6 @@ footer {
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
-/* activites */
-#activities.list-group .list-group-item p > img {
-  max-width: 300px;
-  max-height: 300px;
-}
-
-/* sets */
-.set {
-}
-.set-accept {
-  color: $green;
-}
-.set-inbox {
-  color: $gray;
-  background-color: $gray-lighter;
-}
-.set-deny {
-  color: $white;
-  background-color: darken($gray-light, 15%);
-}
   CODE
 
 end
@@ -83,7 +44,7 @@ inside('app/assets/javascripts') do
     <<-CODE
 //= require jquery.min
 //= require jquery_ujs
-//= require tether
+//= require popper
 //= require bootstrap.min
     CODE
   end
@@ -98,7 +59,7 @@ inside('app/assets/javascripts') do
   file 'navbar_hide.coffee', <<-CODE
 $(document).ready ->
   $(window).scroll ->
-    if $(this).scrollTop() > 100
+    if $(this).scrollTop() > 85
       $('#navbar').fadeOut 500
     else
       $('#navbar').fadeIn 500
