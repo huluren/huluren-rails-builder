@@ -62,7 +62,7 @@ $("main #douban .douban-groups").replaceWith "<%= escape_javascript(render 'doub
   CODE
 
   file '_douban_groups.html.haml', <<-CODE
-.douban-groups.btn-group.btn-group-sm.mx-auto{role: "group", "data-toggle": "buttons"}
+.douban-groups.btn-group-sm.mx-auto{role: "group", "data-toggle": "buttons"}
   - groups.each do |group|
     = link_to :douban_topics, remote: true, data: {method: :get, type: :script, params: "url=\#{group[0]}", "disable-with": "Loading ..."}, class: 'btn btn-outline-info' do
       = group[1]

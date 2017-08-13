@@ -127,7 +127,7 @@ $("main #places").replaceWith "<%= escape_javascript(render 'items_list', items:
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+title\n)+/m, <<-CODE
 \\1.form-group.row
 \\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.title')
+\\2    %span.input-group-addon.btn.btn-secondary<>= t('place.title')
 \\2    = f.text_field :title,
 \\2                  class: 'form-control',
 \\2                  placeholder: t('place.add_title'),
@@ -139,7 +139,7 @@ $("main #places").replaceWith "<%= escape_javascript(render 'items_list', items:
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
 \\1.form-group.row
 \\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('place.content')
+\\2    %span.input-group-addon.btn.btn-secondary<>= t('place.content')
 \\2    = f.text_area :content,
 \\2                  class: 'form-control',
 \\2                  placeholder: t('place.add_content'),

@@ -151,7 +151,7 @@ $("main #activities.list-group").trigger("activities:load")
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+title\n)+/m, <<-CODE
 \\1.form-group
 \\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.title')
+\\2    %span.input-group-addon.btn.btn-secondary<>= t('activity.title')
 \\2    = f.text_field :title,
 \\2                  class: 'form-control',
 \\2                  placeholder: t('activity.add_title'),
@@ -161,7 +161,7 @@ $("main #activities.list-group").trigger("activities:load")
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
 \\1.form-group
-\\2  %span.input-group-addon.btn.btn-secondary.mr-2<>= t('activity.content')
+\\2  %span.input-group-addon.btn.btn-secondary<>= t('activity.content')
 \\2  = f.text_area :content,
 \\2                class: 'form-control ckeditor',
 \\2                placeholder: t('activity.add_content'),

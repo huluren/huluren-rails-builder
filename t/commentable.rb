@@ -169,7 +169,7 @@ inside 'app/views/comments/' do
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
 \\1.form-group.row
 \\2  .input-group
-\\2    %span.input-group-addon.btn.btn-secondary.mr-2<>= t('comment.content')
+\\2    %span.input-group-addon.btn.btn-secondary<>= t('comment.content')
 \\2    = f.text_area :content,
 \\2                  class: 'form-control ckeditor',
 \\2                  placeholder: t('comment.write_comment'),

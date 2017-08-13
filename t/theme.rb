@@ -1,7 +1,6 @@
 inside('app/assets/stylesheets') do
   run 'mv application.css application.scss'
 
-  insert_into_file 'application.scss', %^ *= require normalize-rails\n^, before: /^\s\*= require_tree \.\n/
   insert_into_file 'application.scss', before: /^\s\*= require_tree \.\n/ do
     <<-CODE
  *= require jquery-ui/autocomplete

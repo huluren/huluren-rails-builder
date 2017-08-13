@@ -26,7 +26,6 @@ gem 'title'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'bootstrap', '~> 4.0.0.beta'
-gem 'normalize-rails'
 
 gem 'non-stupid-digest-assets'
 

@@ -6,13 +6,13 @@ inside('app/views/pages/') do
   remove_file 'landing.html.haml'
 
   file 'landing.html.haml', <<-CODE
-.row.d-flex.justify-content-center<>
-  .activities.col-md.card.border-0
+.row<>
+  .activities.col-md.col-md-8.card.border-0
     .nav.nav-tabs.justify-content-between
       %h5.nav-item.nav-link= t('menu.activities')
       .nav-item.nav-link= link_to t('action.more'), activities_path, class: 'btn btn-link'
     #activities{'data-url': activities_path}
-  .places.col-md.col-lg-4.card.border-0
+  .places.col.card.border-0
     .nav.nav-tabs.justify-content-between
       %h5.nav-item.nav-link= t('menu.places')
       .nav-item.nav-link= link_to t('action.more'), places_path, class: 'btn btn-link'

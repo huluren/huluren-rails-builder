@@ -73,7 +73,7 @@ end
 inside 'app/views/layouts/' do
   insert_into_file 'application.html.erb', before: /^([ ]+?)\<(title)>.+\<\/(\2)>$/ do
     <<-CODE
-\\1<meta name="viewport" content="width=device-width, initial-scale=1.0">
+\\1<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     CODE
   end
 
@@ -125,7 +125,7 @@ inside 'app/views/layouts/' do
   CODE
 
   file '_menu.html.haml', <<-CODE
-%nav#navbar.navbar.navbar-expand-lg.navbar-dark.bg-primary.sticky-top
+%nav#navbar.navbar.navbar-expand-sm.navbar-dark.bg-primary.sticky-top
 
   %button.navbar-toggler.navbar-toggler-right{aria: {controls: 'navbarNavSiteMenus', expanded: 'false', label: 'Toggle navigation'}, 'aria-label': 'Toggle navigation', data: {toggle: 'collapse', target: '#navbarNavSiteMenus'}, type: 'button'}
     %span.navbar-toggler-icon
