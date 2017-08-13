@@ -128,25 +128,33 @@ inside 'app/views/comments/' do
   gsub_file 'index.html.haml', /^(\s*?%)(table|thead)$/, '\1\2.\2'
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^%h3= t('comment.list_comments')^
   gsub_file 'index.html.haml', /link_to 'New Comment'/, %q{link_to t('comment.new_comment')}
-  gsub_file 'index.html.haml', /new_comment_path/, 'new_polymorphic_url([@commentable, Comment]), id: (user_signed_in? ? :new_comment : nil)'
+  gsub_file 'index.html.haml', /new_comment_path\n/, <<-CODE
+new_polymorphic_url([@commentable, Comment]),
+          id: (user_signed_in? ? :new_comment : nil),
+          data: {remote: true, method: :get, type: :script}
+  CODE
 
   prepend_to_file 'index.html.haml', <<-CODE
 = render @commentable
   CODE
 
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
-\\1= render 'items', commentable: @commentable, items: @comments
+\\1= render 'comments', commentable: @commentable, comments: @comments
 \\2
   CODE
 
-  file '_items.html.haml', <<-CODE
-/ commentable, items
+  file '_comments.html.haml', <<-CODE
+/ commentable, comments
 #comments.list-group{'data-url': polymorphic_url([commentable, :comments], only_path: true)}
-  - items.each do |comment|
-    .list-group-item.flex-column.align-items-start
-      .d-flex.w-100.justify-content-between<>
-      %p.comment-content.mt-1<>= comment.content.html_safe
-      %small<>
+  - comments.each do |comment|
+    = render comment
+  CODE
+
+  file '_comment.html.haml', <<-CODE
+.list-group-item.flex-column.align-items-start
+  .d-flex.w-100.justify-content-between<>
+  %p.comment-content.mt-1<>= comment.content.html_safe
+  %small<>
   CODE
 
   gsub_file '_form.html.haml', /@comment/, 'comment'
@@ -157,7 +165,7 @@ inside 'app/views/comments/' do
 
   gsub_file '_form.html.haml', /(= form_for ([@]*comment))( do .*)\n/, <<-CODE
 - form_path = \\2.id ? comment_path(\\2) : polymorphic_url([\\2.commentable, :comments], only_path: true)
-\\1, url: form_path\\3
+\\1, url: form_path, data: {remote: true, method: :post, type: :script, 'disable-with': 'Saving...'}\\3
   CODE
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
@@ -192,8 +200,10 @@ $("#new_comment").replaceWith "<%= escape_javascript(render 'form', comment: @co
   gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('comment.edit_comment')^
 
   file 'create.js.coffee', <<-CODE
-$("#new_comment").replaceWith "<%= escape_javascript(render 'items', commentable: @commentable, items: [@comment]) %>"
+$("#new_comment").before "<%= escape_javascript(render @comment, commentable: @commentable) %>"
   CODE
+
+  gsub_file 'show.html.haml', /^%p\n.+(\n\n)/m, '= render @comment\1'
 
   gsub_file 'new.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
   gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
@@ -203,25 +213,14 @@ inside 'app/assets/javascripts/' do
 
   append_to_file 'comments.coffee', <<-CODE
 $(document).on "turbolinks:load", ->
-  setup_form_new_comment = ->
-    $("main.comments.index form#new_comment").submit (e) ->
-      e.preventDefault()
-      $.ajax
-        method: 'POST'
-        url: $(this).attr("action")
-        data: $(this).serialize()
-        dataType: "script"
 
-  $("main.comments.index a#new_comment").on 'click', (event) ->
-    event.preventDefault()
-
-    $.ajax
-      method: "GET"
-      url: $(this).attr("href")
-      dataType: "script"
-      complete: setup_form_new_comment
-
-  true
+  $("main").on "ajax:success", "form#new_comment", (event, response, statusText, xhr) ->
+    $(this).trigger("reset")
+  $("main").on "ajax:error", "form#new_comment", (event, response, statusText, xhr) ->
+    return ! confirm "Error, cannot save: " + statusText + ", " + response.statusText + " - " + response.status
+  $("main").on "ajax:complete", "form#new_comment", (event, xhr, statusText) ->
+    $.rails.enableFormElements($(this))
+    $(this).off( "submit" )
   CODE
 
 end

@@ -84,7 +84,7 @@ $("main .places").html "<%= escape_javascript(render @places, short: true) %>"
   CODE
 
   file '_places.html.haml', <<-CODE
-#places.list-group{'data-url': places_path}
+.places.list-group{'data-url': places_path}
   - places.each do |place|
     = render place, short: local_assigns[:short]
   CODE
@@ -98,7 +98,7 @@ $("main .places").html "<%= escape_javascript(render @places, short: true) %>"
   .list-group-item.flex-column.align-items-start
     .d-flex.w-100.justify-content-between<>
       .lead.place-title= place.title
-      %small.card.text-muted.p-1
+      %small.text-muted<>= place.activities.count
     %p.place-content.mt-1<>= place.content.html_safe
     .d-flex.w-100.justify-content-between<>
       %small
@@ -124,7 +124,7 @@ $("main .places").html "<%= escape_javascript(render @places, short: true) %>"
 \\2                  placeholder: t('place.add_title'),
 \\2                  'aria-describedby': 'place-title-help',
 \\2                  rows: 3
-\\2  %small#place-title-help.form-text.text-muted<>= t('place.add_title')
+\\2  %small#place-title-help.form-text.text-muted<>= t('place.add_title_tips')
   CODE
 
   gsub_file '_form.html.haml', /(\n+?(\s+?)).field\n(\s+?[^\n]+content\n)+/m, <<-CODE
@@ -136,7 +136,7 @@ $("main .places").html "<%= escape_javascript(render @places, short: true) %>"
 \\2                  placeholder: t('place.add_content'),
 \\2                  'aria-describedby': 'place-content-help',
 \\2                  rows: 3
-\\2  %small#place-content-help.form-text.text-muted<>= t('place.add_content')
+\\2  %small#place-content-help.form-text.text-muted<>= t('place.add_content_tips')
   CODE
 
   gsub_file '_form.html.haml', /(\n+?(\s+?))\.actions\n\s+?= f.submit [^\n]+?\n/m, <<-CODE
@@ -149,6 +149,8 @@ $("main .places").html "<%= escape_javascript(render @places, short: true) %>"
 
   gsub_file 'edit.html.haml', /= render 'form'$/, '\0, place: @place'
   gsub_file 'edit.html.haml', /^(%h1) .*$/, %q^\1= t('place.edit_place')^
+
+  gsub_file 'show.html.haml', /^%p\n.+(\n\n)/m, '= render @place\1'
 
   gsub_file 'new.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
   gsub_file 'edit.html.haml', /= link_to 'Back', .*$/, %q^= link_to t('action.back'), :back^
@@ -248,8 +250,8 @@ inside 'spec/views/places/' do
     expect(@places.size).to be(2)
     render
     @places.each do |place|
-      assert_select "#places .place-title", text: place.title.to_s, count: 1
-      assert_select "#places .place-content", text: place.content.to_s, count: 1
+      assert_select ".places .place-title", text: place.title.to_s, count: 1
+      assert_select ".places .place-content", text: place.content.to_s, count: 1
     end
   CODE
 
