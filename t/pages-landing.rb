@@ -7,16 +7,16 @@ inside('app/views/pages/') do
 
   file 'landing.html.haml', <<-CODE
 .row<>
-  .activities.col-md.col-md-8.card.border-0
+  .activities-col.col-md.col-md-8.card.border-0
     .nav.nav-tabs.justify-content-between
       %h5.nav-item.nav-link= t('menu.activities')
       .nav-item.nav-link= link_to t('action.more'), activities_path, class: 'btn btn-link'
-    #activities.list-group{'data-url': activities_path}
-  .places.col.card.border-0
+    .activities.list-group{data: {remote: 'true', url: activities_path, params: 'c=6&s=true', trigger: 'activities:load', method: :get, type: :script}}
+  .places-col.col.card.border-0
     .nav.nav-tabs.justify-content-between
       %h5.nav-item.nav-link= t('menu.places')
       .nav-item.nav-link= link_to t('action.more'), places_path, class: 'btn btn-link'
-    #places.list-group{'data-url': places_path}
+    .places.list-group{data: {remote: 'true', url: places_path, params: 'c=6&s=true', trigger: 'places:load', method: :get, type: :script}}
 /
   .row.d-flex.justify-content-center<>
     .articles.col-md.card.border-0
@@ -35,15 +35,16 @@ inside 'app/assets/javascripts/' do
   append_to_file 'pages.coffee', <<-CODE
 $(document).on "turbolinks:load", ->
 
-  $("#activities, #places", $("main.pages.landing")).each (idx) ->
+  $("main.c-pages.a-landing").find(".activities, .places").each (idx) ->
 
     $.ajax
-      method: "GET"
+      method: $(this).data("method")
       url: $(this).data("url")
-      data:
-        c: 6
-        s: true
-      dataType: "script"
+      data: $(this).data("params")
+      dataType: $(this).data("type")
+      context: $(this)
+      success: ->
+        $(this).trigger $(this).data("trigger")
 
   true
   CODE
@@ -54,8 +55,8 @@ inside('spec/views/pages/') do
   gsub_file 'landing.html.haml_spec.rb', /^\s.pending .*\n/, <<-CODE
   it 'renders landing' do
     render
-    assert_select '#activities'
-    assert_select '#places'
+    assert_select '.activities'
+    assert_select '.places'
   end
   CODE
 end

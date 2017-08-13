@@ -94,7 +94,7 @@ inside 'app/views/layouts/' do
   CODE
 
   file '_main.html.haml', <<-CODE
-%main{class: [controller_name, action_name]}
+%main{class: [:c, :a].zip([controller_name, action_name]).map {|n| n.join("-") }}
   .container<
     = render 'layouts/flash'
   .container<

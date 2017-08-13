@@ -74,19 +74,13 @@ inside 'app/views/places/' do
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('place.list_places')^
   gsub_file 'index.html.haml', /link_to 'New Place'/, %q{link_to t('place.new_place')}
 
-  insert_into_file 'index.html.haml', before: /^%(table|br)/ do
-    <<-CODE
-= paginate @places
-    CODE
-  end
-
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
 \\1= render 'places', places: @places
 \\2
   CODE
 
   file 'index.js.coffee', <<-CODE
-$("main #places").html "<%= escape_javascript(render @places, short: true) %>"
+$("main .places").html "<%= escape_javascript(render @places, short: true) %>"
   CODE
 
   file '_places.html.haml', <<-CODE
@@ -97,9 +91,9 @@ $("main #places").html "<%= escape_javascript(render @places, short: true) %>"
 
   file '_place.html.haml', <<-CODE
 - if local_assigns[:short]
-  .list-group-item.list-group-item-action.justify-content-between
+  .list-group-item.d-flex.justify-content-between.align-items-center
     = place.title
-    .badge.badge-default.badge-pill= place.activities.count
+    .badge.badge-secondary.badge-pill= place.activities.count
 - else
   .list-group-item.flex-column.align-items-start
     .d-flex.w-100.justify-content-between<>
@@ -254,8 +248,8 @@ inside 'spec/views/places/' do
     expect(@places.size).to be(2)
     render
     @places.each do |place|
-      assert_select "#places .place-title", :text => place.title.to_s, :count => 1
-      assert_select "#places .place-content", :text => place.content.to_s, :count => 1
+      assert_select "#places .place-title", text: place.title.to_s, count: 1
+      assert_select "#places .place-content", text: place.content.to_s, count: 1
     end
   CODE
 

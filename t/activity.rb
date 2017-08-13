@@ -82,24 +82,17 @@ inside 'app/views/activities/' do
   gsub_file 'index.html.haml', /^(%h1) .*$/, %q^\1= t('activity.list_activities')^
   gsub_file 'index.html.haml', /(link_to )'New Activity'/, %q^\1t('activity.new_activity')^
 
-  insert_into_file 'index.html.haml', before: /^%(table|br)/ do
-    <<-CODE
-= paginate @activities
-    CODE
-  end
-
   gsub_file 'index.html.haml', /(\n)%table.*?\n([^\s].*)\n/m, <<-CODE
 \\1= render 'activities', activities: @activities
 \\2
   CODE
 
   file 'index.js.coffee', <<-CODE
-$("main #activities").html "<%= escape_javascript(render @activities) %>"
-$("main #activities.list-group").trigger("activities:load")
+$("main .activities").html "<%= escape_javascript(render @activities) %>"
   CODE
 
   file '_activities.html.haml', <<-CODE
-#activities.list-group{'data-url': activities_path}
+.activities.list-group{'data-url': activities_path}
   - activities.each do |activity|
     = render activity, short: local_assigns[:short]
   CODE
@@ -186,7 +179,7 @@ inside 'app/assets/stylesheets/' do
 
   append_to_file 'application.scss', <<-CODE
 /* activites */
-#activities.list-group .list-group-item p > img {
+.activities.list-group .list-group-item p > img {
   max-width: 300px;
   max-height: 300px;
 }
@@ -222,16 +215,18 @@ load_image_from_iframe = (img, callback) ->
   img.data "loading-start", (new Date()).getTime()
   img.before(iframe)
 
+$("main").on "activities:load", ".activities", ->
+
+  $(".list-group-item p > img", $(this)).each ->
+    $(this).data "src", $(this).attr("src")
+    $(this).removeAttr "src"
+    load_image_from_iframe $(this)
+
+  true
+
 $(document).on "turbolinks:load", ->
 
-  $("main").on "activities:load", "#activities.list-group", ->
-
-    $(".list-group-item p > img", $(this)).each ->
-      $(this).data "src", $(this).attr("src")
-      $(this).removeAttr "src"
-      load_image_from_iframe $(this)
-
-  $("main #activities.list-group").trigger("activities:load")
+  $("main .activities").trigger("activities:load")
 
   true
   CODE
@@ -339,7 +334,7 @@ inside 'spec/views/activities/' do
     expect(@activities.size).to be(2)
     render
     @activities.each do |activity|
-      assert_select "#activities .activity-content", :text => activity.content.to_s, :count => 1
+      assert_select ".activities .activity-content", text: activity.content.to_s, count: 1
     end
   CODE
 

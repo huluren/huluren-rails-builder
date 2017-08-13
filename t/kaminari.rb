@@ -15,6 +15,28 @@ inside 'app/controllers/' do
 
 end
 
+inside 'app/views/' do
+
+  insert_into_file 'comments/index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @comments
+    CODE
+  end
+
+  insert_into_file 'places/index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @places
+    CODE
+  end
+
+  insert_into_file 'activities/index.html.haml', before: /^%(table|br)/ do
+    <<-CODE
+= paginate @activities
+    CODE
+  end
+
+end
+
 inside 'spec/views/' do
   gsub_file 'comments/index.html.haml_spec.rb', /(@(comments) = assign\(:\2, )(create_list.+?)(\))\n/, <<-CODE
 \\1Kaminari.paginate_array(\\3).page(1)\\4
