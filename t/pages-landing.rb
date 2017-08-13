@@ -11,12 +11,12 @@ inside('app/views/pages/') do
     .nav.nav-tabs.justify-content-between
       %h5.nav-item.nav-link= t('menu.activities')
       .nav-item.nav-link= link_to t('action.more'), activities_path, class: 'btn btn-link'
-    #activities{'data-url': activities_path}
+    #activities.list-group{'data-url': activities_path}
   .places.col.card.border-0
     .nav.nav-tabs.justify-content-between
       %h5.nav-item.nav-link= t('menu.places')
       .nav-item.nav-link= link_to t('action.more'), places_path, class: 'btn btn-link'
-    #places{'data-url': places_path}
+    #places.list-group{'data-url': places_path}
 /
   .row.d-flex.justify-content-center<>
     .articles.col-md.card.border-0

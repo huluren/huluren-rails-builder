@@ -13,11 +13,23 @@ inside('app/assets/stylesheets') do
   append_to_file 'application.scss', <<-CODE
 @import 'bootstrap';
 
+::-moz-selection {
+  background: darken($orange, $theme-color-interval);
+  color: theme-color("light");
+  text-shadow: 0 0 transparent
+}
+
+::selection {
+  background: darken($orange, $theme-color-interval);
+  color: theme-color("light");
+  text-shadow: 0 0 transparent
+}
+
 footer {
   padding: 3rem 0 3rem 0;
   margin: 3rem auto 0 auto;
   text-align: left;
-  background-color: $gray-100;
+  background-color: theme-color("light");
 }
 
 /* Rules for sizing the icon. */

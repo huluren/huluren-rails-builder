@@ -94,51 +94,48 @@ inside 'app/views/activities/' do
   CODE
 
   file 'index.js.coffee', <<-CODE
-$("main #activities").replaceWith "<%= escape_javascript(render 'activities', activities: @activities) %>"
+$("main #activities").html "<%= escape_javascript(render @activities) %>"
 $("main #activities.list-group").trigger("activities:load")
   CODE
 
   file '_activities.html.haml', <<-CODE
 #activities.list-group{'data-url': activities_path}
   - activities.each do |activity|
-    = render activity
+    = render activity, short: local_assigns[:short]
   CODE
 
   file '_activity.html.haml', <<-CODE
-.list-group-item.flex-column.align-items-start
-  .d-flex.w-100.justify-content-between<>
-    .lead= activity.places.pluck(:title).to_sentence
-    %small.card.text-muted.p-1
-      .card-block.text-nowrap.p-0<>
-        .font-weight-bold= t('activity.date_range')
-      .card-block.text-nowrap.p-0<>
-        = timeago_tag activity.start_date
-        %span.m-1<>
-          |
-        = timeago_tag activity.end_date
-  %h5.activity-title.mt-1<>= activity.title.html_safe
-  .activity-content.mt-1<>= activity.content.html_safe
-  .d-flex.w-100.justify-content-between<>
-    %small
-      = precede t("activity.posted") do
-        = timeago_tag activity.created_at, class: 'ml-1'
-    - if activity.respond_to? :comments
+- if local_assigns[:short]
+  .list-group-item.list-group-item-action.justify-content-between
+    = activity.title.html_safe
+    = activity.places.pluck(:title).to_sentence
+    .badge.badge-default.badge-pill<>
+      = timeago_tag activity.start_date
+      %span.m-1<>
+        |
+      = timeago_tag activity.end_date
+- else
+  .list-group-item.flex-column.align-items-start
+    .d-flex.w-100.justify-content-between<>
+      .lead= activity.places.pluck(:title).to_sentence
+      %small.card.text-muted.p-1
+        .card-block.text-nowrap.p-0<>
+          .font-weight-bold= t('activity.date_range')
+        .card-block.text-nowrap.p-0<>
+          = timeago_tag activity.start_date
+          %span.m-1<>
+            |
+          = timeago_tag activity.end_date
+    %h5.activity-title.mt-1<>= activity.title.html_safe
+    .activity-content.mt-1<>= activity.content.html_safe
+    .d-flex.w-100.justify-content-between<>
       %small
-        = link_to t('comment.comments', count: activity.comments.count),
-                  polymorphic_url([activity, :comments], only_path: true)
-  CODE
-
-  file '_items_list.html.haml', <<-CODE
-#activities.list-group{'data-url': activities_path}
-  - items.each do |activity|
-    .list-group-item.list-group-item-action.justify-content-between
-      = activity.title.html_safe
-      = activity.places.pluck(:title).to_sentence
-      .badge.badge-default.badge-pill<>
-        = timeago_tag activity.start_date
-        %span.m-1<>
-          |
-        = timeago_tag activity.end_date
+        = precede t("activity.posted") do
+          = timeago_tag activity.created_at, class: 'ml-1'
+      - if activity.respond_to? :comments
+        %small
+          = link_to t('comment.comments', count: activity.comments.count),
+                    polymorphic_url([activity, :comments], only_path: true)
   CODE
 
   gsub_file '_form.html.haml', /@activity/, 'activity'

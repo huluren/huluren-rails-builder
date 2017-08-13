@@ -86,37 +86,34 @@ inside 'app/views/places/' do
   CODE
 
   file 'index.js.coffee', <<-CODE
-$("main #places").replaceWith "<%= escape_javascript(render 'items_list', items: @places) %>"
+$("main #places").html "<%= escape_javascript(render @places, short: true) %>"
   CODE
 
   file '_places.html.haml', <<-CODE
 #places.list-group{'data-url': places_path}
   - places.each do |place|
-    = render place
+    = render place, short: local_assigns[:short]
   CODE
 
   file '_place.html.haml', <<-CODE
-.list-group-item.flex-column.align-items-start
-  .d-flex.w-100.justify-content-between<>
-    .lead.place-title= place.title
-    %small.card.text-muted.p-1
-  %p.place-content.mt-1<>= place.content.html_safe
-  .d-flex.w-100.justify-content-between<>
-    %small
-      = precede t("place.posted") do
-        = timeago_tag place.created_at, class: 'ml-1'
-    - if place.respond_to? :comments
+- if local_assigns[:short]
+  .list-group-item.list-group-item-action.justify-content-between
+    = place.title
+    .badge.badge-default.badge-pill= place.activities.count
+- else
+  .list-group-item.flex-column.align-items-start
+    .d-flex.w-100.justify-content-between<>
+      .lead.place-title= place.title
+      %small.card.text-muted.p-1
+    %p.place-content.mt-1<>= place.content.html_safe
+    .d-flex.w-100.justify-content-between<>
       %small
-        = link_to t('comment.comments', count: place.comments.count),
-                  polymorphic_url([place, :comments], only_path: true)
-  CODE
-
-  file '_items_list.html.haml', <<-CODE
-#places.list-group{'data-url': places_path}
-  - items.each do |place|
-    .list-group-item.list-group-item-action.justify-content-between
-      = place.title
-      .badge.badge-default.badge-pill= place.activities.count
+        = precede t("place.posted") do
+          = timeago_tag place.created_at, class: 'ml-1'
+      - if place.respond_to? :comments
+        %small
+          = link_to t('comment.comments', count: place.comments.count),
+                    polymorphic_url([place, :comments], only_path: true)
   CODE
 
   gsub_file '_form.html.haml', /@place/, 'place'
