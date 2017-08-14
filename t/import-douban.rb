@@ -44,11 +44,10 @@ inside 'app/views/import/' do
 
   file '_douban.html.haml', <<-CODE
 #douban{'data-groups-url': douban_groups_path, 'data-topics-url': douban_topics_path, 'data-topic-url': douban_topic_path}
-  .douban-groups
+  .douban-groups.btn-group-sm.mx-auto{role: "group", "data-toggle": "buttons"}
     &hellip;
   .douban-topics
-    .from-douban
-      &hellip;
+    &hellip;
   / .douban-topic
   = render 'douban_topic'
   CODE
@@ -58,15 +57,14 @@ inside 'app/views/import/' do
   CODE
 
   file 'douban_groups.js.coffee', <<-CODE
-$("main #douban .douban-groups").replaceWith "<%= escape_javascript(render 'douban_groups', groups: @douban_user_groups) %>"
+$("main #douban .douban-groups").html "<%= escape_javascript(render 'douban_groups', groups: @douban_user_groups) %>"
   CODE
 
   file '_douban_groups.html.haml', <<-CODE
-.douban-groups.btn-group-sm.mx-auto{role: "group", "data-toggle": "buttons"}
-  - groups.each do |group|
-    = link_to :douban_topics, remote: true, data: {method: :get, type: :script, params: "url=\#{group[0]}", "disable-with": "Loading ..."}, class: 'btn btn-outline-info' do
-      = group[1]
-      = radio_button_tag :url, group[0]
+- groups.each do |group|
+  = link_to :douban_topics, remote: true, data: {method: :get, type: :script, params: "url=\#{group[0]}", "disable-with": "Loading ..."}, class: 'btn btn-outline-info' do
+    = group[1]
+    = radio_button_tag :url, group[0]
   CODE
 
   file 'douban_topics.html.haml', <<-CODE
@@ -74,13 +72,11 @@ $("main #douban .douban-groups").replaceWith "<%= escape_javascript(render 'doub
   CODE
 
   file '_douban_topics.html.haml', <<-CODE
-.from-douban
-  = content.html_safe
+= content.html_safe
   CODE
 
   file 'douban_topics.js.coffee', <<-CODE
-$("main #douban .douban-topics :nth-child(1)").replaceWith "<%= escape_javascript(render 'douban_topics', content: @table) %>"
-$("main #douban .douban-topics").trigger 'douban:topics:loaded'
+$("main #douban .douban-topics").html "<%= escape_javascript(render 'douban_topics', content: @table) %>"
   CODE
 
   file 'douban_topic.html.haml', <<-CODE
@@ -88,7 +84,7 @@ $("main #douban .douban-topics").trigger 'douban:topics:loaded'
   CODE
 
   file 'douban_topic.js.coffee', <<-CODE
-$("main #douban .douban-topic-form :nth-child(1)").replaceWith "<%= escape_javascript(render 'activities/form', activity: @activity) %>"
+$("main #douban .douban-topic-form").html "<%= escape_javascript(render 'activities/form', activity: @activity) %>"
   CODE
 
   file '_douban_topic.html.haml', <<-CODE
@@ -106,8 +102,7 @@ $("main #douban .douban-topic-form :nth-child(1)").replaceWith "<%= escape_javas
               = set
               = radio_button_tag :set, set
         .douban-topic-form
-          .replace
-            &hellip;
+          &hellip;
   CODE
 
 end
@@ -153,38 +148,42 @@ $(document).on "turbolinks:load", ->
       dataType: 'script'
 
   # group button clicked and topics returned.
-  $("main #douban").on "ajax:success", ".douban-groups[role=group] a[data-remote]", (event, response, statusText, xhr) ->
+  $("main #douban").on "ajax:success", ".douban-groups[role=group] a[data-remote]", (event) ->
+    [response, status, xhr] = event.detail
     $("#douban .douban-topics td.title a:not([data-remote])").each ->
       update_topic_link $(this), =>
         check_present $(this), (data, textStatus, jqXHR) =>
           true
 
   # douban topic author: disable click event
-  $("main #douban").on 'click', ".douban-topics td.title + td a:new([data-remote])", (e) ->
+  $("main #douban").on 'click', ".douban-topics td.title + td a:not([data-remote])", (e) ->
     e.preventDefault()
 
   # load topic into modal form
-  $("main #douban").on "ajax:success", ".douban-topics td.title a[data-remote]", (e, xhr, status, err) ->
-    $("#douban .douban-topic").find('.ckeditor').ckeditor()
+  $("main #douban").on "ajax:success", ".douban-topics td.title a[data-remote]", (event) ->
+    # $("#douban .douban-topic").find(".ckeditor:not(:has(+ .cke))").ckeditor()
     # $("#douban .douban-topic").find(".activity-add-place").trigger("setup").autocomplete("option", "appendTo", ".douban-topic.modal")
     $("#douban .douban-topic").data "url", $(this).data("url")
     $("#douban .douban-topic.modal").modal()
 
-  $("main #douban .douban-topic.modal").on "ajax:success", "form.new_activity, form.edit_activity", (event, response, statusText, xhr) ->
+  $("main #douban .douban-topic.modal").on "ajax:success", "form.new_activity, form.edit_activity", (event) ->
     $(".douban-topic.modal").modal("toggle")
     $(".douban-topic-set a.set-accept[data-remote]").click()
-  $("main #douban .douban-topic.modal").on "ajax:error", "form.new_activity, form.edit_activity", (event, response, statusText, xhr) ->
+  $("main #douban .douban-topic.modal").on "ajax:error", "form.new_activity, form.edit_activity", (event) ->
+    [response, status, xhr] = event.detail
     $(this).trigger("reset")
-    return ! confirm "Error, cannot save: " + statusText + ", " + response.statusText + " - " + response.status
-  $("main #douban .douban-topic.modal").on "ajax:complete", "form.new_activity, form.edit_activity", (event, xhr, statusText) ->
+    return ! confirm "Error, cannot save: " + status
+  $("main #douban .douban-topic.modal").on "ajax:complete", "form.new_activity, form.edit_activity", (event) ->
     $.rails.enableFormElements($(this))
     $(this).off( "submit" )
 
-  $("main #douban .douban-topic-set").on "ajax:beforeSend", "a.set[data-remote]", (event, jqXHR, ajaxOptions) ->
-    ajaxOptions.data += $("#douban .douban-topic").data("url")
+  $("main #douban .douban-topic-set").on "ajax:beforeSend", "a.set[data-remote]", (event) ->
+    [xhr, options] = event.detail
+    options.data += $("#douban .douban-topic").data("url")
     true
 
-  $("main #douban .douban-topic-set").on "ajax:success", "a.set[data-remote]", (event, response, statusText, xhr) ->
+  $("main #douban .douban-topic-set").on "ajax:success", "a.set[data-remote]", (event) ->
+    [response, status, xhr] = event.detail
     check_present $(".douban-topics td.title a[data-remote][data-url='" + response.key + "']")
 
   # trigger No. 1

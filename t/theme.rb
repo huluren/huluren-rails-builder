@@ -54,7 +54,6 @@ inside('app/assets/javascripts') do
   insert_into_file 'application.js', before: '//= require rails-ujs' do
     <<-CODE
 //= require jquery.min
-//= require jquery_ujs
 //= require popper
 //= require bootstrap.min
     CODE

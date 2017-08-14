@@ -214,13 +214,18 @@ inside 'app/assets/javascripts/' do
   append_to_file 'comments.coffee', <<-CODE
 $(document).on "turbolinks:load", ->
 
-  $("main").on "ajax:success", "form#new_comment", (event, response, statusText, xhr) ->
+  $("main").on "ajax:success", "form#new_comment", (event) ->
+    [response, status, xhr] = event.detail
     $(this).trigger("reset")
-  $("main").on "ajax:error", "form#new_comment", (event, response, statusText, xhr) ->
-    return ! confirm "Error, cannot save: " + statusText + ", " + response.statusText + " - " + response.status
-  $("main").on "ajax:complete", "form#new_comment", (event, xhr, statusText) ->
+  $("main").on "ajax:error", "form#new_comment", (event) ->
+    [response, status, xhr] = event.detail
+    return ! confirm "Error, cannot save: " + status
+  $("main").on "ajax:complete", "form#new_comment", (event) ->
+    [xhr, status] = event.detail
     $.rails.enableFormElements($(this))
     $(this).off( "submit" )
+
+  true
   CODE
 
 end

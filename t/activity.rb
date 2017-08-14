@@ -181,7 +181,7 @@ inside 'app/assets/stylesheets/' do
 
   append_to_file 'application.scss', <<-CODE
 /* activites */
-.activities.list-group .list-group-item p > img {
+.activities.list-group .list-group-item img {
   max-width: 300px;
   max-height: 300px;
 }
@@ -191,19 +191,17 @@ end
 inside 'app/assets/javascripts/' do
 
   append_to_file 'activities.coffee', <<-CODE
-delay = (ms, func) -> setTimeout func, ms
-
-load_image_from_iframe = (img, callback) ->
+load_image_from_iframe = (src, img) ->
   if img.attr("loading")
     return
 
   img.attr("loading", true)
 
   iframe = $('<iframe style="display: none;"></iframe>')
-  $(iframe).attr "src", 'data:text/html;charset=utf-8,' + encodeURI('<img src="' + img.data("src") + '" />')
+  $(iframe).attr "src", 'data:text/html;charset=utf-8,' + encodeURI('<img src="' + src + '" />')
 
   iframe.on "load", ->
-    img.attr "src", img.data("src")
+    img.attr "src", src
     img.data "loading-complete", (new Date()).getTime()
     img.attr "loading-cost", (img.data("loading-complete") - img.data("loading-start"))
     img.attr "title", "success " + (img.data("loading-complete") - img.data("loading-start"))
@@ -217,16 +215,14 @@ load_image_from_iframe = (img, callback) ->
   img.data "loading-start", (new Date()).getTime()
   img.before(iframe)
 
-$("main").on "activities:load", ".activities", ->
-
-  $(".list-group-item p > img", $(this)).each ->
-    $(this).data "src", $(this).attr("src")
-    $(this).removeAttr "src"
-    load_image_from_iframe $(this)
-
-  true
-
 $(document).on "turbolinks:load", ->
+
+  $("main").on "activities:load", ".activities", ->
+
+    $(this).find(".list-group-item img[src]").each ->
+      $(this).data "src", $(this).attr("src")
+      $(this).removeAttr "src"
+      load_image_from_iframe $(this).data("src"), $(this)
 
   $("main .activities").trigger("activities:load")
 

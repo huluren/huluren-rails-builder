@@ -132,7 +132,7 @@ $("main .places").html "<%= escape_javascript(render @places, short: true) %>"
 \\2  .input-group
 \\2    %span.input-group-addon.btn.btn-secondary<>= t('place.content')
 \\2    = f.text_area :content,
-\\2                  class: 'form-control',
+\\2                  class: 'form-control ckeditor',
 \\2                  placeholder: t('place.add_content'),
 \\2                  'aria-describedby': 'place-content-help',
 \\2                  rows: 3

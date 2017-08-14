@@ -22,7 +22,7 @@ inside('app/assets/javascripts') do
 
 $(document).on "turbolinks:load", ->
 
-  $(".ckeditor").ckeditor()
+  $(".ckeditor:not(:has(+ .cke))").ckeditor()
 
   true
   CODE
